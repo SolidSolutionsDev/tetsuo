@@ -1,7 +1,8 @@
 {
     "name": "tetsuo",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "dist/tetsuo.min.js",
+    "types": "./src/index.d.ts",
     "license": "MIT",
     "dependencies": {
         "three": "^0.115.0",
@@ -29,6 +30,6 @@
         "build:dev": "cross-env NODE_ENV=development webpack",
         "watch": "cross-env NODE_ENV=development webpack --watch",
         "build:prod": "cross-env NODE_ENV=production webpack",
-        "serve": "live-server --no-browser --watch=dist,examples"
+        "serve": "live-server --no-browser --watch=dist,examples,dev"
     }
 }
