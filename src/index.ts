@@ -1,5 +1,6 @@
 import { Viewport } from "./Viewport";
 import { Scene } from "./Scene";
+import { Shaders } from "./shaders";
 import { PostShader } from "./PostShader";
 import { ShadedObject } from "./ShadedObject";
 import * as Utils from "./utils";
@@ -7,6 +8,7 @@ import * as Utils from "./utils";
 const TETSUO = {
     Scene,
     Viewport,
+    Shaders,
     PostShader,
     ShadedObject,
     Utils,
