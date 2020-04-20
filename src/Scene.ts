@@ -17,7 +17,7 @@ export interface SceneOptions {
     /**
      * Element in the DOM to attach the canvas to
      */
-    viewportElement: HTMLElement;
+    viewportElement?: HTMLElement;
 
     /**
      * Whether to render x, y, z axis in the scene (only renders if dev is true)
@@ -34,6 +34,11 @@ export interface SceneOptions {
      * This attaches dat.gui and stats element and allows for other development utilities
      */
     dev?: boolean;
+
+    /**
+     * Whether to start the animation loop automatically when the scene is created.
+     */
+    autoStart?: boolean;
 }
 
 /**
@@ -95,9 +100,20 @@ export class Scene {
      */
     dev: boolean = false;
 
-    constructor({ viewportElement, axis, background, dev }: SceneOptions) {
+    /**
+     * Whether to start the animation loop automatically when the scene is created.
+     */
+    autoStart: boolean = false;
+
+    constructor({ viewportElement, axis, background, dev, autoStart }: SceneOptions) {
         // initialize viewport DOM element handler
-        this.viewport = new Viewport(viewportElement);
+        let viewport: HTMLElement | null = viewportElement || document.getElementById("viewport");
+
+        if (!viewport) {
+            throw Error("viewport element not found");
+        }
+
+        this.viewport = new Viewport(viewport);
         this.viewport.createResizeListener(() => this.onResize());
 
         // initialize three.js scene
@@ -135,6 +151,8 @@ export class Scene {
             this.stats = new Stats();
             this.viewport.domElement.appendChild(this.stats.dom);
         }
+
+        autoStart && this.animate();
     }
 
     /**
@@ -244,7 +262,7 @@ export class Scene {
      *
      * @param onTick - Callback when animation ticks
      */
-    animate(onTick: (time?: number) => void) {
+    animate(onTick?: (time?: number) => void) {
         if (this.dev) {
             // start counting fps time for this frame
             this.stats && this.stats.begin();
