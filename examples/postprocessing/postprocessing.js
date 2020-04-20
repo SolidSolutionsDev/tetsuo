@@ -58,7 +58,7 @@ const postFrag = [
 
         void main() {
             vec4 texel = texture2D( tDiffuse, vUv );
-            gl_FragColor = vec4(texel.r * sin(iTime), texel.g * cos(iTime), texel.b * sin(iTime), 1.);
+            gl_FragColor = vec4(texel.r * sin(iTime), texel.g * cos(iTime), texel.b, 1.);
         }
     `,
 ].join("\n");
