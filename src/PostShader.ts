@@ -1,7 +1,7 @@
 import { defaultUniforms } from "./uniforms";
 
 const defaultVertexShader = require("./shaders/default.vert");
-const defaultFragmentShader = require("./shaders/default.frag");
+const defaultFragmentShader = require("./shaders/defaultPost.frag");
 
 /**
  * Post processing shader initializer
