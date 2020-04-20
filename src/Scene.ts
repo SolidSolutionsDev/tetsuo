@@ -7,6 +7,7 @@ import { CopyShader } from "three/examples/jsm/shaders/CopyShader";
 import * as dat from "dat.gui";
 import Stats from "stats.js";
 import { Viewport } from "./Viewport";
+import { Clock } from "./Clock";
 import { datUniform } from "./utils";
 
 /**
@@ -57,7 +58,7 @@ export class Scene {
     /**
      * Clock for animating
      */
-    clock: THREE.Clock;
+    clock: Clock;
 
     /**
      * Three.js WebGL renderer
@@ -114,7 +115,7 @@ export class Scene {
         this.renderer.setSize(this.viewport.width, this.viewport.height);
 
         // initialize the clock
-        this.clock = new THREE.Clock();
+        this.clock = new Clock();
 
         // dev utils initialization
         this.dev = !!dev;
@@ -256,12 +257,14 @@ export class Scene {
             }
         }
 
+        let clockDelta = this.clock.tick();
+
         // callback
         onTick && onTick(this.clock.getElapsedTime());
 
         // render post-processing effects
         if (this.composer) {
-            this.composer.render(this.clock.getDelta());
+            this.composer.render(clockDelta);
 
             // update post processing uniforms
             if (this.shaders.length > 0) {
@@ -315,5 +318,12 @@ export class Scene {
 
         // resize renderer
         this.renderer.setSize(this.viewport.width, this.viewport.height);
+    }
+
+    /**
+     * Jump clock elapsed time
+     */
+    jumpClock(diff: number) {
+        this.clock.jump(diff);
     }
 }

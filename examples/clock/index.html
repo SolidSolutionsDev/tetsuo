@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>Clock controls example</title>
+
+        <style>
+            body,
+            html {
+                margin: 0;
+                background: black;
+                color: white;
+            }
+
+            #viewport {
+                width: 500px;
+                height: 500px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="viewport"></div>
+        <div>
+            <span><b>Elapsed time:</b></span>
+            <span id="elapsed">0</span>
+        </div>
+
+        <!-- time jump controls -->
+        <div>
+            <button onclick="jumpBack()">back</button>
+            <button onclick="startStop()">start/stop</button>
+            <button onclick="jumpForward()">forward</button>
+        </div>
+
+        <script src="../../node_modules/three/build/three.min.js"></script>
+        <script src="../../dist/tetsuo.min.js"></script>
+
+        <script src="./clock.js"></script>
+    </body>
+</html>

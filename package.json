@@ -1,8 +1,8 @@
 {
     "name": "tetsuo",
     "version": "1.0.0",
-    "main": "dist/tetsuo.min.js",
-    "types": "./src/index.d.ts",
+    "main": "./dist/tetsuo.min.js",
+    "types": "./dist/index.d.ts",
     "license": "MIT",
     "dependencies": {
         "three": "^0.115.0",
