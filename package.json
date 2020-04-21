@@ -14,13 +14,16 @@
     "devDependencies": {
         "@babel/core": "^7.8.0",
         "@types/dat.gui": "^0.7.5",
+        "@types/jest": "^25.2.1",
         "@types/stats.js": "^0.17.0",
         "babel-loader": "^8.0.6",
         "clean-webpack-plugin": "^3.0.0",
         "cross-env": "^7.0.2",
         "dat.gui": "^0.7.6",
+        "jest": "^25.4.0",
         "live-server": "^1.2.1",
         "stats.js": "^0.17.0",
+        "ts-jest": "^25.4.0",
         "ts-loader": "^7.0.0",
         "webpack": "^4.41.5",
         "webpack-cli": "^3.3.10",
@@ -28,8 +31,10 @@
     },
     "scripts": {
         "build:dev": "cross-env NODE_ENV=development webpack",
-        "watch": "cross-env NODE_ENV=development webpack --watch",
+        "watch": "yarn build:dev --watch",
         "build:prod": "cross-env NODE_ENV=production webpack",
-        "serve": "live-server --no-browser --watch=dist,examples,dev"
+        "serve": "live-server --no-browser --watch=dist,examples,dev",
+        "test": "jest --detectOpenHandles --colors",
+        "test:watch": "yarn test --watch"
     }
 }
