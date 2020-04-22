@@ -1,6 +1,7 @@
 # tetsuo
 
 graphics prototyping framework (WIP)
+[examples](./examples)
 
 ## install dependencies
 
