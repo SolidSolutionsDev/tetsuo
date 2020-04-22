@@ -1,7 +1,8 @@
 # tetsuo
 
 graphics prototyping framework (WIP)
-[examples](./examples)
+
+[examples](https://solidsolutionsdev.github.io/tetsuo/examples/)
 
 ## install dependencies
 
