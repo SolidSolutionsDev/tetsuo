@@ -6,34 +6,22 @@ TETSUO.Utils.ready(() => {
         dev: true,
     });
 
-    // add a post processing shader
-    let shader = scene.addPostShader(
-        TETSUO.PostShader({
-            fragmentShader: fragmentShader,
+    let shader = new TETSUO.ShaderNode("shader", scene.renderer, {
+        fragmentShader,
+    })
+        .addInput(new TETSUO.UniformNode("rotXAmount", { value: 1 }))
+        .addInput(new TETSUO.UniformNode("rotYAmount", { value: 1 }))
+        .addInput(new TETSUO.UniformNode("rotZAmount", { value: 1 }))
+        .addInput(new TETSUO.UniformNode("sphereSize", { value: 1 }))
+        .addInput(new TETSUO.UniformNode("cubeSize", { value: 1 }))
+        .addInput(new TETSUO.UniformNode("normalAmount", { value: 0.5 }))
+        .addInput(new TETSUO.UniformNode("diffuse1Amount", { value: 0.3 }))
+        .addInput(new TETSUO.UniformNode("diffuse2Amount", { value: 0.2 }));
 
-            // add uniforms to be tracked by dat.gui
-            uniforms: {
-                rotXAmount: { value: 1, gui: true },
-                rotYAmount: { value: 1, gui: true },
-                rotZAmount: { value: 1, gui: true },
-                sphereSize: { value: 1, gui: true },
-                cubeSize: { value: 1, gui: true },
-                normalAmount: { value: 0.5, gui: true },
-                diffuse1Amount: { value: 0.3, gui: true },
-                diffuse2Amount: { value: 0.2, gui: true },
-            },
-        })
-    );
-
-    // initialize post processing chain
-    scene.initPostProcessing();
+    scene.connectToScreen(shader);
 
     // start rendering
-    scene.animate((time) => {
-        // alter uniforms values
-        shader.uniforms["cubeSize"].value = Math.abs(Math.sin(time));
-        shader.uniforms["sphereSize"].value = Math.abs(Math.cos(time));
-    });
+    scene.animate();
 });
 
 const fragmentShader = [
@@ -61,8 +49,10 @@ const fragmentShader = [
         const float PRECISION = 0.1;
         const float MAX_DISTANCE = 99999.;
         const int SPHERE_COUNT = 8;
-
+        
         float spheresMap (vec3 point) {
+            float time = iTime / 10.;
+
             vec3 center = vec3(0., 0., 0.);
             float d = 99999.;
             float sphereRand, sphereSpeed, sphereRadius;
@@ -70,11 +60,11 @@ const fragmentShader = [
             for (int i = 0; i < SPHERE_COUNT; i++) {
                 sphereRand = rand(float(i)) + rand(float(i-1));
                 sphereSpeed = 1. / sphereRand;
-                sphereRadius = (1. - sphereRand * sin(iTime) * cos(iTime * sphereRand)) * sphereSize;
+                sphereRadius = (1. - sphereRand * sin(time) * cos(time * sphereRand)) * sphereSize;
                 spherePos = vec3(
-                    center.x + sin(iTime * sphereRand *  - randSignal(sphereRand) * .4), 
-                    center.y  + sin(iTime * sphereRand*  + randSignal(sphereRand) * 2.4), 
-                    center.z  + sin(iTime * sphereRand / .3) *  - randSignal(sphereRand) * 1.
+                    center.x + sin(time * sphereRand *  - randSignal(sphereRand) * .4), 
+                    center.y  + sin(time * sphereRand*  + randSignal(sphereRand) * 2.4), 
+                    center.z  + sin(time * sphereRand / .3) *  - randSignal(sphereRand) * 1.
                 );
                 d = opSmoothUnion(d, sdSphere(point, spherePos, sphereRadius), 1.);
             }
@@ -87,10 +77,11 @@ const fragmentShader = [
         }
 
         float map (vec3 point) {
+            float time = iTime / 10.;
             vec3 transformedPoint = (point + vec3(0., 0., 10.))
-            * rotX(iTime * rotXAmount)
-            * rotY(iTime * rotYAmount)
-            * rotZ(iTime * rotZAmount);
+            * rotX(time * rotXAmount)
+            * rotY(time * rotYAmount)
+            * rotZ(time * rotZAmount);
             return opSmoothUnion(spheresMap(transformedPoint), cubeMap(transformedPoint), .4);
         }
 

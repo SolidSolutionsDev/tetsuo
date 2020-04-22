@@ -1,17 +1,23 @@
 import { Node } from "./Node";
 
-export type ConnectionValue =
-    | null
-    | number
-    | THREE.Vector2
-    | THREE.Vector3
-    | THREE.Vector4
-    | THREE.Texture;
-
+/**
+ * Represents a connection between nodes
+ */
 export class Connection {
+    /**
+     * Node where the value comes from
+     */
     from: Node | null = null;
+
+    /**
+     * Nodes where the value goes to
+     */
     to: { [key: string]: Node } = {};
-    value: ConnectionValue = null;
+
+    /**
+     * Current connection value
+     */
+    value: any = null;
 
     constructor(fromNode?: Node) {
         if (fromNode) {
@@ -19,21 +25,39 @@ export class Connection {
         }
     }
 
+    /**
+     * Change output node
+     *
+     * @param node
+     */
     setFrom(node: Node) {
         this.from = node;
         return this;
     }
 
+    /**
+     * Add new input node
+     *
+     * @param node
+     */
     addTo(node: Node) {
         this.to[node.id] = node;
         return this;
     }
 
-    setValue(value: ConnectionValue) {
+    /**
+     * Set the connection value
+     *
+     * @param value
+     */
+    setValue(value: any) {
         this.value = value;
         return this;
     }
 
+    /**
+     * Get the connection value
+     */
     getValue() {
         return this.value;
     }
