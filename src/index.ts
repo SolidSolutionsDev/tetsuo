@@ -7,6 +7,7 @@ import { NodeRenderer } from "./nodes/NodeRenderer";
 import { NodeGraph } from "./nodes/NodeGraph";
 import { Node } from "./nodes/Node";
 import { ShaderNode } from "./nodes/ShaderNode";
+import { THREENode } from "./nodes/THREENode";
 import { Connection } from "./nodes/Connection";
 import * as Utils from "./utils";
 
@@ -20,6 +21,7 @@ const TETSUO = {
     NodeGraph,
     Node,
     ShaderNode,
+    THREENode,
     Connection,
     Utils,
 };

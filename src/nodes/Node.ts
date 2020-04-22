@@ -10,6 +10,8 @@ export class Node {
 
     output: Connection = new Connection(this);
 
+    _onUpdate: ((time: number) => void) | null = null;
+
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
     }
@@ -26,9 +28,17 @@ export class Node {
         return this;
     }
 
+    onUpdate(fn: (time: number) => void) {
+        this._onUpdate = fn;
+    }
+
     prepare() {}
 
-    update(time: number) {}
+    update(time: number) {
+        this._onUpdate && this._onUpdate(time);
+    }
 
     render() {}
+
+    resize() {}
 }

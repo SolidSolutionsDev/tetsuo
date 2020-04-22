@@ -122,6 +122,7 @@ export class NodeRenderer {
     onResize() {
         this.renderer.setSize(this.viewport.width, this.viewport.height);
         this.targetPool.targets.forEach((target) => target.setSize(this.viewport.width, this.viewport.height));
+        this.nodeGraph.traverse((node) => node.resize());
         this.render();
     }
 }

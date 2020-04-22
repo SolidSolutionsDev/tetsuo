@@ -7,56 +7,31 @@ TETSUO.Utils.ready(() => {
     let diffuse = new TETSUO.ShaderNode("tDiffuse", renderer, {
         fragmentShader: /* glsl */ `
             varying vec2 vUv;
-            uniform sampler2D red;
-            uniform sampler2D green;
+            uniform sampler2D cubeScene;
 
             void main() {
-                vec4 redTexel = texture2D(red, vUv);
-                vec4 greenTexel = texture2D(green, vUv);
-                gl_FragColor = redTexel + greenTexel;
+                vec4 cubeTexel = texture2D(cubeScene, vUv);
+                gl_FragColor = cubeTexel;
             }
         `,
     });
 
-    let red = new TETSUO.ShaderNode("red", renderer, {
-        fragmentShader: /* glsl */ `
-            varying vec2 vUv;
-            uniform sampler2D uvColor;
+    let cubeScene = new TETSUO.THREENode("cubeScene", renderer);
+    let cube = new THREE.Mesh(new THREE.BoxGeometry(50, 50, 50), new THREE.MeshStandardMaterial());
+    cubeScene.scene.add(cube);
 
-            void main() {
-                vec4 texel = texture2D(uvColor, vUv);
-                gl_FragColor = vec4(texel.x, 0., 0., 1.);
-            }
-        `,
-    });
+    var light1 = new THREE.PointLight(0xff0000, 1, 100);
+    light1.position.set(50, 50, 60);
+    cubeScene.scene.add(light1);
 
-    let green = new TETSUO.ShaderNode("green", renderer, {
-        fragmentShader: /* glsl */ `
-            varying vec2 vUv;
-            uniform sampler2D uvColor;
+    var light2 = new THREE.PointLight(0x0000ff, 1, 100);
+    light2.position.set(-50, -50, 70);
+    cubeScene.scene.add(light2);
 
-            void main() {
-                vec4 texel = texture2D(uvColor, vUv);
-                gl_FragColor = vec4(0., texel.y, 0., 1.);
-            }
-        `,
-    });
-
-    let uvColor = new TETSUO.ShaderNode("uvColor", renderer, {
-        fragmentShader: /* glsl */ `
-            varying vec2 vUv;
-
-            void main() {
-                gl_FragColor = vec4(vUv, 0., 1.);
-            }
-        `,
-    });
-
-    uvColor.connectTo(red);
-    uvColor.connectTo(green);
-    green.connectTo(diffuse);
-    red.connectTo(diffuse);
+    cubeScene.connectTo(diffuse);
     diffuse.connectTo(root);
+
+    cubeScene.onUpdate((time) => cube.rotation.set(Math.sin(time), Math.cos(time), 0));
 
     scene.animate();
 });

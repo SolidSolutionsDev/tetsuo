@@ -66,6 +66,8 @@ export class ShaderNode extends Node {
     }
 
     update(time: number) {
+        super.update(time);
+
         this.uniforms["iTime"].value = time;
         this.uniforms["iResolution"].value.set(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height, 1);
 
