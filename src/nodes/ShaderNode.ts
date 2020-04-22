@@ -26,8 +26,10 @@ export class ShaderNode extends Node {
 
     nodeRenderer: NodeRenderer;
 
-    constructor(nodeRenderer: NodeRenderer, options: ShaderNodeOptions) {
-        super(options);
+    constructor(id: string, nodeRenderer: NodeRenderer, options?: ShaderNodeOptions) {
+        super(id, options);
+
+        options = options || {};
 
         this.nodeRenderer = nodeRenderer;
 

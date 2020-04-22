@@ -4,7 +4,7 @@ describe("Node", () => {
     let node: Node;
 
     beforeAll(() => {
-        node = new Node({ id: "node" });
+        node = new Node("node");
     });
 
     test("can instantiate", () => {
@@ -16,7 +16,7 @@ describe("Node", () => {
     });
 
     test("can connect to other node", () => {
-        let nodeB = new Node({ id: "nodeB" });
+        let nodeB = new Node("nodeB");
         node.connectTo(nodeB);
         expect(nodeB.inputs["node"]).toBe(node.output);
     });

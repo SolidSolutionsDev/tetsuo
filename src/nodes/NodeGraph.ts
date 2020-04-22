@@ -15,14 +15,14 @@ export class NodeGraph {
         return this;
     }
 
-    createNode(nodeOptions: NodeOptions) {
-        let node = new Node(nodeOptions);
+    createNode(id: string, nodeOptions?: NodeOptions) {
+        let node = new Node(id, nodeOptions);
         this.addNode(node);
         return node;
     }
 
-    createRootNode(nodeOptions: NodeOptions) {
-        let node = this.createNode(nodeOptions);
+    createRootNode(nodeOptions?: NodeOptions) {
+        let node = this.createNode("root", nodeOptions);
         this.setRootNode(node);
         return node;
     }

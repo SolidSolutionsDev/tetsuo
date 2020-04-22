@@ -4,8 +4,7 @@ TETSUO.Utils.ready(() => {
 
     let root = renderer.nodeGraph.root;
 
-    let diffuse = new TETSUO.ShaderNode(renderer, {
-        id: "tDiffuse",
+    let diffuse = new TETSUO.ShaderNode("tDiffuse", renderer, {
         fragmentShader: /* glsl */ `
             varying vec2 vUv;
             uniform sampler2D red;
@@ -19,8 +18,7 @@ TETSUO.Utils.ready(() => {
         `,
     });
 
-    let red = new TETSUO.ShaderNode(renderer, {
-        id: "red",
+    let red = new TETSUO.ShaderNode("red", renderer, {
         fragmentShader: /* glsl */ `
             varying vec2 vUv;
             uniform sampler2D uvColor;
@@ -32,8 +30,7 @@ TETSUO.Utils.ready(() => {
         `,
     });
 
-    let green = new TETSUO.ShaderNode(renderer, {
-        id: "green",
+    let green = new TETSUO.ShaderNode("green", renderer, {
         fragmentShader: /* glsl */ `
             varying vec2 vUv;
             uniform sampler2D uvColor;
@@ -45,8 +42,7 @@ TETSUO.Utils.ready(() => {
         `,
     });
 
-    let uvColor = new TETSUO.ShaderNode(renderer, {
-        id: "uvColor",
+    let uvColor = new TETSUO.ShaderNode("uvColor", renderer, {
         fragmentShader: /* glsl */ `
             varying vec2 vUv;
 

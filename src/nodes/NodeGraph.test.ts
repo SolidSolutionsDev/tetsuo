@@ -8,15 +8,16 @@ describe("Node graph", () => {
     beforeAll(() => {
         graph = new NodeGraph();
 
-        root = graph.createRootNode({ id: "root" });
+        root = graph.createRootNode();
 
-        nodeA = graph.createNode({ id: "nodeA" });
+        nodeA = graph.createNode("nodeA");
         nodeA.connectTo(root);
 
-        nodeB = graph.createNode({ id: "nodeB" });
+        nodeB = graph.createNode("nodeB");
         nodeB.connectTo(root);
 
-        nodeC = graph.createNode({ id: "nodeC" });
+        nodeC = graph.createNode("nodeC");
+
         nodeC.connectTo(nodeA);
         nodeC.connectTo(nodeB);
     });

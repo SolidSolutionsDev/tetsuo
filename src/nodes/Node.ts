@@ -1,9 +1,7 @@
 import { Connection } from "./Connection";
 import { NodeRenderer, NodeRendererOptions } from "./NodeRenderer";
 
-export interface NodeOptions {
-    id: string;
-}
+export interface NodeOptions {}
 
 export class Node {
     id: string;
@@ -12,7 +10,7 @@ export class Node {
 
     output: Connection = new Connection(this);
 
-    constructor({ id }: NodeOptions) {
+    constructor(id: string, options?: NodeOptions) {
         this.id = id;
     }
 

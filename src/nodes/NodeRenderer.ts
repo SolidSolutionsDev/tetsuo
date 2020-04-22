@@ -56,7 +56,7 @@ export class NodeRenderer {
         this.renderer.autoClear = false;
 
         this.nodeGraph = new NodeGraph();
-        this.nodeGraph.setRootNode(new ShaderNode(this, { id: "root" }));
+        this.nodeGraph.setRootNode(new ShaderNode("root", this));
 
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
         this.scene = new THREE.Scene();
