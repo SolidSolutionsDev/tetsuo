@@ -1,4 +1,5 @@
 import { Connection } from "./Connection";
+import { NodeRenderer, NodeRendererOptions } from "./NodeRenderer";
 
 export interface NodeOptions {
     id: string;
@@ -23,12 +24,13 @@ export class Node {
     addInput(id: string, connection: Connection) {
         connection.addTo(this);
         this.inputs[id] = connection;
+        this.prepare();
         return this;
     }
 
-    prepare: () => void = () => {};
+    prepare() {}
 
-    update: (time: number) => void = () => {};
+    update(time: number) {}
 
-    render: (renderer: THREE.WebGLRenderer) => void = () => {};
+    render() {}
 }

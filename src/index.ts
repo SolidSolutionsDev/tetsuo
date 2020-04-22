@@ -2,8 +2,12 @@ import { Viewport } from "./Viewport";
 import { Scene } from "./Scene";
 import { Clock } from "./Clock";
 import { Shaders } from "./shaders";
-import { PostShader } from "./PostShader";
 import { ShadedObject } from "./ShadedObject";
+import { NodeRenderer } from "./nodes/NodeRenderer";
+import { NodeGraph } from "./nodes/NodeGraph";
+import { Node } from "./nodes/Node";
+import { ShaderNode } from "./nodes/ShaderNode";
+import { Connection } from "./nodes/Connection";
 import * as Utils from "./utils";
 
 const TETSUO = {
@@ -11,8 +15,12 @@ const TETSUO = {
     Viewport,
     Clock,
     Shaders,
-    PostShader,
     ShadedObject,
+    NodeRenderer,
+    NodeGraph,
+    Node,
+    ShaderNode,
+    Connection,
     Utils,
 };
 
