@@ -1,25 +1,25 @@
 // when page is ready
 TETSUO.Utils.ready(() => {
-    // initialize scene
-    let scene = new TETSUO.Scene({
+    // initialize scene in basic mode
+    // returns a node where objects can be added
+    let { scene, node } = new TETSUO.Scene({
         viewportElement: document.getElementById("viewport"),
-        background: 0x1c1c1c,
         dev: true,
-        axis: true,
-    });
+    }).basic();
 
     // add an object
     let object = new THREE.Mesh(
-        new THREE.SphereGeometry(0.5, 20, 20),
+        new THREE.SphereGeometry(20, 20, 20),
         new THREE.MeshLambertMaterial({ color: 0xff0000 })
     );
-    scene.addObject(object);
+    node.add(object);
 
     // add a light
-    scene.addObject(new THREE.DirectionalLight(0xffffff, 0.5));
+    node.add(new THREE.DirectionalLight(0xffffff, 0.5));
 
     // start animation loop
     scene.animate((time) => {
-        object.position.set(Math.sin(time), Math.cos(time), 0);
+        time /= 5;
+        object.position.set(Math.sin(time) * 10, Math.cos(time) * 10, 0);
     });
 });
