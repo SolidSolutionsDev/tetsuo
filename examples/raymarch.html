@@ -70,8 +70,6 @@
                     const int SPHERE_COUNT = 8;
                     
                     float spheresMap (vec3 point) {
-                        float time = iTime / 10.;
-
                         vec3 center = vec3(0., 0., 0.);
                         float d = 99999.;
                         float sphereRand, sphereSpeed, sphereRadius;
@@ -79,11 +77,11 @@
                         for (int i = 0; i < SPHERE_COUNT; i++) {
                             sphereRand = rand(float(i)) + rand(float(i-1));
                             sphereSpeed = 1. / sphereRand;
-                            sphereRadius = (1. - sphereRand * sin(time) * cos(time * sphereRand)) * sphereSize;
+                            sphereRadius = (1. - sphereRand * sin(iTime) * cos(iTime * sphereRand)) * sphereSize;
                             spherePos = vec3(
-                                center.x + sin(time * sphereRand *  - randSignal(sphereRand) * .4), 
-                                center.y  + sin(time * sphereRand*  + randSignal(sphereRand) * 2.4), 
-                                center.z  + sin(time * sphereRand / .3) *  - randSignal(sphereRand) * 1.
+                                center.x + sin(iTime * sphereRand *  - randSignal(sphereRand) * .4), 
+                                center.y  + sin(iTime * sphereRand*  + randSignal(sphereRand) * 2.4), 
+                                center.z  + sin(iTime * sphereRand / .3) *  - randSignal(sphereRand) * 1.
                             );
                             d = opSmoothUnion(d, sdSphere(point, spherePos, sphereRadius), 1.);
                         }
@@ -96,11 +94,10 @@
                     }
 
                     float map (vec3 point) {
-                        float time = iTime / 10.;
                         vec3 transformedPoint = (point + vec3(0., 0., 10.))
-                        * rotX(time * rotXAmount)
-                        * rotY(time * rotYAmount)
-                        * rotZ(time * rotZAmount);
+                        * rotX(iTime * rotXAmount)
+                        * rotY(iTime * rotYAmount)
+                        * rotZ(iTime * rotZAmount);
                         return opSmoothUnion(spheresMap(transformedPoint), cubeMap(transformedPoint), .4);
                     }
 

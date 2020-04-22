@@ -32,7 +32,6 @@
 
                 // rotate cube when scene updates
                 cubeScene.onUpdate((time) => {
-                    time /= 10;
                     cube.rotation.set(Math.sin(time), Math.cos(time), 0);
                 });
 

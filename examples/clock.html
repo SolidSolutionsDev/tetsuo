@@ -57,7 +57,6 @@
 
                 // start animation loop
                 scene.animate((time) => {
-                    time /= 10;
                     object.position.set(Math.sin(time) * 20, Math.cos(time) * 20, 0);
                     document.getElementById("elapsed").innerHTML = scene.clock.getElapsedTime();
                 });

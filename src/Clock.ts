@@ -88,7 +88,7 @@ export class Clock {
         if (this.running) {
             var newTime = (typeof performance === "undefined" ? Date : performance).now();
 
-            diff = (newTime - this.prevTime) / 100;
+            diff = (newTime - this.prevTime) / 1000;
             this.prevTime = newTime;
 
             this.elapsedTime += diff;
