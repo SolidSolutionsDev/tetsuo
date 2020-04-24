@@ -2,6 +2,7 @@ export const Shaders = {
     defaultFrag: require("./default.frag"),
     defaultPostFrag: require("./defaultPost.frag"),
     defaultVert: require("./default.vert"),
+    depth: require("./lib/depth.glsl"),
     light: require("./lib/light.glsl"),
     math: require("./lib/math.glsl"),
     move: require("./lib/move.glsl"),
