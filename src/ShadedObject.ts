@@ -13,6 +13,7 @@ export const ShadedObject = (shaderOptions: {
     geometry: THREE.Geometry;
     vertexShader?: string;
     fragmentShader?: string;
+    points?: boolean;
     uniforms?: { [key: string]: { value: any; gui?: boolean } };
 }) => {
     let mergedUniforms = THREE.UniformsUtils.merge([
@@ -32,5 +33,7 @@ export const ShadedObject = (shaderOptions: {
         lights: true,
     });
 
-    return new THREE.Mesh(shaderOptions.geometry, shaderMaterial);
+    return shaderOptions.points
+        ? new THREE.Points(shaderOptions.geometry, shaderMaterial)
+        : new THREE.Mesh(shaderOptions.geometry, shaderMaterial);
 };

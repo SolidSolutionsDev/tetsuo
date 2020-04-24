@@ -1,9 +1,18 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 
 export interface THREENodeOptions extends NodeOptions {
-    depthBuffer: boolean;
+    /**
+     * Whether this node will render and output a depth texture
+     */
+    depthBuffer?: boolean;
+
+    /**
+     * Whether to create orbit controls for the scene camera
+     */
+    orbitControls?: boolean;
 }
 
 /**
@@ -24,6 +33,8 @@ export class THREENode extends Node {
      * Internal three.js camera
      */
     camera: THREE.PerspectiveCamera;
+
+    controls?: OrbitControls;
 
     /**
      * Whether this node will render and output a depth texture
@@ -48,8 +59,12 @@ export class THREENode extends Node {
         this.nodeRenderer = nodeRenderer;
         this.target = new THREE.WebGLRenderTarget(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
 
+        if (options && options.orbitControls) {
+            this.controls = new OrbitControls(this.camera, this.nodeRenderer.viewport.domElement);
+        }
+
         // if depth texture is active, create it and setup the output
-        this.depthBuffer = !!options && options.depthBuffer;
+        this.depthBuffer = !!options && !!options.depthBuffer;
         if (this.depthBuffer) {
             this.output.value = { diffuse: null, depth: null };
             this.target.depthTexture = new THREE.DepthTexture(
