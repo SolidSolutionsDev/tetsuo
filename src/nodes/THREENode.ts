@@ -25,7 +25,16 @@ export class THREENode extends Node {
      */
     camera: THREE.PerspectiveCamera;
 
+    /**
+     * Whether this node will render and output a depth texture
+     * If true, the output value is a struct containing 2 textures - diffuse and depth
+     */
     depthBuffer: boolean = false;
+
+    /**
+     * Render target for this node
+     */
+    target: THREE.WebGLRenderTarget;
 
     constructor(id: string, nodeRenderer: NodeRenderer, options?: THREENodeOptions) {
         super(id, options);
@@ -33,14 +42,20 @@ export class THREENode extends Node {
         this.scene = new THREE.Scene();
 
         // TODO add camera configuration as node input
-        this.camera = new THREE.PerspectiveCamera(70, nodeRenderer.viewport.ratio, 0.01, 50);
+        this.camera = new THREE.PerspectiveCamera(45, nodeRenderer.viewport.ratio, 0.1, 50);
         this.camera.position.z = 4;
 
         this.nodeRenderer = nodeRenderer;
+        this.target = new THREE.WebGLRenderTarget(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
 
+        // if depth texture is active, create it and setup the output
         this.depthBuffer = !!options && options.depthBuffer;
         if (this.depthBuffer) {
             this.output.value = { diffuse: null, depth: null };
+            this.target.depthTexture = new THREE.DepthTexture(
+                this.nodeRenderer.viewport.width,
+                this.nodeRenderer.viewport.height
+            );
         }
     }
 
@@ -60,28 +75,13 @@ export class THREENode extends Node {
     render() {
         let renderer = this.nodeRenderer.renderer;
 
-        // render to a render target
-        let target = this.nodeRenderer.getRenderTarget();
-        renderer.setRenderTarget(target);
-        renderer.clear();
-
-        target.depthBuffer = this.depthBuffer;
-        if (this.depthBuffer) {
-            target.stencilBuffer = false;
-            target.depthTexture = new THREE.DepthTexture(
-                this.nodeRenderer.viewport.width,
-                this.nodeRenderer.viewport.height
-            );
-            target.depthTexture.format = THREE.DepthFormat;
-            target.depthTexture.type = THREE.UnsignedShortType;
-        }
-
+        renderer.setRenderTarget(this.target);
+        renderer.clear(true, true, true);
         renderer.render(this.scene, this.camera);
-        renderer.setRenderTarget(null);
 
         // update output connection
         this.output.setValue(
-            this.depthBuffer ? { diffuse: target.texture, depth: target.depthTexture } : target.texture
+            this.depthBuffer ? { diffuse: this.target.texture, depth: this.target.depthTexture } : this.target.texture
         );
 
         return this;
@@ -93,6 +93,7 @@ export class THREENode extends Node {
     resize() {
         this.camera.aspect = this.nodeRenderer.viewport.ratio;
         this.camera.updateProjectionMatrix();
+        this.target.setSize(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
 
         return this;
     }

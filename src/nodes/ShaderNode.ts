@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 import { defaultUniforms } from "../uniforms";
-import { IUniform } from "three";
+import { IUniform, WebGLRenderTarget } from "three";
 
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/defaultPost.frag");
@@ -53,6 +53,11 @@ export class ShaderNode extends Node {
      */
     nodeRenderer: NodeRenderer;
 
+    /**
+     * Render target for this node
+     */
+    target: WebGLRenderTarget;
+
     constructor(id: string, nodeRenderer: NodeRenderer, options?: ShaderNodeOptions) {
         super(id, options);
 
@@ -61,6 +66,7 @@ export class ShaderNode extends Node {
         this.fragmentShader = options.fragmentShader || defaultFragmentShader;
 
         this.nodeRenderer = nodeRenderer;
+        this.target = new THREE.WebGLRenderTarget(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 100);
@@ -73,7 +79,9 @@ export class ShaderNode extends Node {
      */
     prepare() {
         // (re)initialize shader uniforms
-        let uniforms = { ...defaultUniforms };
+        let uniforms: { [key: string]: IUniform } = {
+            ...defaultUniforms,
+        };
         for (let key in this.inputs) {
             if (!uniforms[key]) uniforms[key] = { value: this.inputs[key].getValue() };
         }
@@ -124,14 +132,21 @@ export class ShaderNode extends Node {
         let renderer = this.nodeRenderer.renderer;
 
         // render to a render target
-        let target = this.nodeRenderer.getRenderTarget();
-        renderer.setRenderTarget(target);
-        renderer.clear();
+        renderer.setRenderTarget(this.target);
+        renderer.clear(true, true, true);
         renderer.render(this.scene, this.camera);
-        renderer.setRenderTarget(null);
 
         // update output connection
-        this.output.setValue(target.texture);
+        this.output.setValue(this.target.texture);
+
+        return this;
+    }
+
+    /**
+     * Handles renderer resize
+     */
+    resize() {
+        this.target.setSize(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
 
         return this;
     }

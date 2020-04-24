@@ -60,14 +60,6 @@ export class NodeRenderer {
      */
     material: THREE.MeshBasicMaterial;
 
-    /**
-     * Render target pool for easy management
-     */
-    targetPool: {
-        targets: THREE.WebGLRenderTarget[];
-        used: number;
-    } = { targets: [], used: 0 };
-
     constructor(options?: NodeRendererOptions) {
         // initialize default options
         options = options || {};
@@ -116,76 +108,10 @@ export class NodeRenderer {
     }
 
     /**
-     * Renders the node graph onto the screen
-     */
-    render() {
-        if (this.nodeGraph.root) {
-            this.renderer.clear(true, true, true);
-
-            // traverse the node graph and render each node
-            this.nodeGraph.traverse((node) => node.render());
-
-            // render the result to screen
-            let map = this.nodeGraph.root.output.getValue() as THREE.Texture;
-            this.quad.material = new THREE.MeshBasicMaterial({
-                map,
-            });
-            this.renderer.setRenderTarget(null);
-            this.renderer.clear();
-            this.renderer.render(this.scene, this.camera);
-
-            // reset render targets for next render
-            this.withdrawRenderTargets();
-        }
-    }
-
-    /**
-     * Creates a new render target for rendering a node
-     */
-    createRenderTarget() {
-        let target = new THREE.WebGLRenderTarget(this.viewport.width, this.viewport.height, {
-            minFilter: THREE.LinearFilter,
-            magFilter: THREE.LinearFilter,
-            format: THREE.RGBAFormat,
-        });
-
-        return target;
-    }
-
-    /**
-     * Retrieves the next available render target, creates one if one is not available
-     */
-    getRenderTarget() {
-        let target = this.targetPool.targets[this.targetPool.used];
-
-        if (!target) {
-            target = this.createRenderTarget();
-            this.targetPool.targets[this.targetPool.used] = target;
-        }
-
-        this.targetPool.used++;
-
-        target.texture.repeat.set(1, 1);
-        target.texture.offset.set(0, 0);
-
-        return target;
-    }
-
-    /**
-     * Resets the render target pointer in order to reutilize render targets after a render
-     */
-    withdrawRenderTargets() {
-        this.targetPool.used = 0;
-    }
-
-    /**
      * Handles renderer resize
      */
     onResize() {
         this.renderer.setSize(this.viewport.width, this.viewport.height);
-
-        // resize each render target
-        this.targetPool.targets.forEach((target) => target.setSize(this.viewport.width, this.viewport.height));
 
         // resize each node
         this.nodeGraph.traverse((node) => node.resize());
@@ -205,6 +131,25 @@ export class NodeRenderer {
             node.id = "tDiffuse";
 
             node.connectTo(this.nodeGraph.root);
+        }
+    }
+
+    /**
+     * Renders the node graph onto the screen
+     */
+    render() {
+        if (this.nodeGraph.root) {
+            // traverse the node graph and render each node
+            this.nodeGraph.traverse((node) => node.render());
+
+            // render the result to screen
+            let map = this.nodeGraph.root.output.getValue() as THREE.Texture;
+            this.quad.material = new THREE.MeshBasicMaterial({
+                map,
+            });
+            this.renderer.setRenderTarget(null);
+            this.renderer.clear(true, true, true);
+            this.renderer.render(this.scene, this.camera);
         }
     }
 }
