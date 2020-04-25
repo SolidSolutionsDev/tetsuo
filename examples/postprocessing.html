@@ -27,7 +27,7 @@
                 let cubeScene = new TETSUO.THREENode("cubeScene", scene.renderer);
 
                 // add a cube to the scene
-                let cube = new THREE.Mesh(new THREE.BoxGeometry(50, 50, 50), new THREE.MeshStandardMaterial());
+                let cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial());
                 cubeScene.add(cube);
 
                 // rotate cube when scene updates
@@ -37,17 +37,17 @@
 
                 // add a red light
                 let lightR = new THREE.PointLight(0xff0000, 1, 100);
-                lightR.position.set(50, 50, 60);
+                lightR.position.set(3, 3, 3);
                 cubeScene.add(lightR);
 
                 // add a green light
                 let lightG = new THREE.PointLight(0x00ff00, 1, 100);
-                lightG.position.set(0, -50, 50);
+                lightG.position.set(0, -3, 3);
                 cubeScene.add(lightG);
 
                 // add a blue light
                 let lightB = new THREE.PointLight(0x0000ff, 1, 100);
-                lightB.position.set(-50, -50, 70);
+                lightB.position.set(-3, -3, 3);
                 cubeScene.add(lightB);
 
                 // create a shader node
