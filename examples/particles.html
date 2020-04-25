@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <style>
+            body,
+            html {
+                margin: 0;
+                background: black;
+            }
+
+            #viewport {
+                width: 1280px;
+                height: 720px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="viewport"></div>
+
+        <script src="../node_modules/three/build/three.min.js"></script>
+        <script src="../dist/tetsuo.min.js"></script>
+
+        <script>
+            TETSUO.Utils.ready(() => {
+                let scene = new TETSUO.Scene({
+                    dev: true,
+                    autoStart: true,
+                });
+
+                let three = new TETSUO.THREENode("three", scene.renderer, { orbitControls: true });
+                three.camera.position.set(0, 2, 10);
+                three.camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+                // create cylinders
+                let cylCount = 25;
+                let cylHeight = 0.1;
+                let cylSpacing = cylHeight / 2;
+                let cyls = [];
+                for (let i = 0; i < cylCount; i++) {
+                    let geo = new THREE.CylinderGeometry(1, 1, cylHeight, 5);
+                    let mat = new THREE.MeshNormalMaterial();
+                    let cyl = new THREE.Mesh(geo, mat);
+                    cyl.position.y = i * (cylHeight + cylSpacing);
+                    cyl.rotation.y = i / 20;
+                    cyls.push(cyl);
+                    three.add(cyl);
+                }
+
+                // create particles
+                let ps = [];
+                let psCount = 300;
+                const pGeo = new THREE.Geometry();
+                for (let i = 0; i < psCount; i++) {
+                    let p = {
+                        position: new THREE.Vector3(Math.random() * 4 - 2, Math.random() * 3.5, Math.random() * 4 - 2),
+                    };
+
+                    ps.push(p);
+                    pGeo.vertices.push(p.position);
+                }
+                const pMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+                let pMesh = new THREE.Points(pGeo, pMat);
+                three.add(pMesh);
+
+                // animate cylinders and particles
+                three.onUpdate(() => {
+                    cyls.forEach((cyl) => {
+                        cyl.rotation.y += 0.01;
+                        pMesh.rotation.y -= 0.001;
+                    });
+                });
+
+                scene.connectToScreen(three);
+            });
+        </script>
+    </body>
+</html>

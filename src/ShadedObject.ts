@@ -14,6 +14,8 @@ export const ShadedObject = (shaderOptions: {
     vertexShader?: string;
     fragmentShader?: string;
     points?: boolean;
+    blending?: THREE.Blending;
+    transparent?: boolean;
     uniforms?: { [key: string]: { value: any; gui?: boolean } };
 }) => {
     let mergedUniforms = THREE.UniformsUtils.merge([
@@ -30,6 +32,8 @@ export const ShadedObject = (shaderOptions: {
         vertexShader: shaderOptions.vertexShader || defaultVertexShader,
         fragmentShader: shaderOptions.fragmentShader || defaultFragmentShader,
         uniforms: mergedUniforms,
+        transparent: true && !!shaderOptions.transparent,
+        blending: shaderOptions.blending || THREE.AdditiveBlending,
         lights: true,
     });
 
