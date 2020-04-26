@@ -5,6 +5,7 @@
     "types": "./dist/index.d.ts",
     "license": "MIT",
     "dependencies": {
+        "pixi.js": "^5.2.3",
         "three": "^0.115.0",
         "typescript": "^3.8.3"
     },
