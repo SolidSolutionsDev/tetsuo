@@ -10,8 +10,10 @@ import { ShaderNode } from "./nodes/ShaderNode";
 import { THREENode } from "./nodes/THREENode";
 import { PIXINode } from "./nodes/PIXINode";
 import { UniformNode } from "./nodes/UniformNode";
+import { TextureNode } from "./nodes/TextureNode";
 import { Connection } from "./nodes/Connection";
 import * as Utils from "./utils";
+import Loader from "./Loader";
 
 const TETSUO = {
     Scene,
@@ -27,7 +29,9 @@ const TETSUO = {
     THREENode,
     PIXINode,
     UniformNode,
+    TextureNode,
     Utils,
+    Loader,
 };
 
 (window as any)["TETSUO"] = TETSUO;
