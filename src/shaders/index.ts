@@ -5,6 +5,7 @@ export const Shaders = {
     depth: require("./lib/depth.glsl"),
     light: require("./lib/light.glsl"),
     math: require("./lib/math.glsl"),
+    hash: require("./lib/hash.glsl"),
     move: require("./lib/move.glsl"),
     sdf: require("./lib/sdf.glsl"),
     worley: require("./lib/worley.glsl"),
