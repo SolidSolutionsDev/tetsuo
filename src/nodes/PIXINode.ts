@@ -3,7 +3,9 @@ import * as THREE from "three";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 
-export interface PIXINodeOptions extends NodeOptions {}
+export interface PIXINodeOptions extends NodeOptions {
+    manualRender?: boolean;
+}
 
 /**
  * pixi.js scene node
@@ -24,10 +26,22 @@ export class PIXINode extends Node {
      */
     texture: THREE.CanvasTexture;
 
+    /**
+     * Whether to render this node only when needsUpdate is true
+     */
+    manualRender?: boolean;
+
+    /**
+     * Whether to rerender this node on the next pass (for manual render)
+     */
+    needsUpdate: boolean = true;
+
     constructor(id: string, nodeRenderer: NodeRenderer, options?: PIXINodeOptions) {
         super(id, options);
 
         this.nodeRenderer = nodeRenderer;
+
+        PIXI.utils.skipHello();
 
         this.app = new PIXI.Application({
             width: this.nodeRenderer.viewport.width,
@@ -41,6 +55,8 @@ export class PIXINode extends Node {
         this.texture = new THREE.CanvasTexture(this.app.view);
         this.texture.minFilter = THREE.LinearFilter;
         this.texture.magFilter = THREE.LinearFilter;
+
+        this.manualRender = options?.manualRender;
     }
 
     /**
@@ -56,9 +72,14 @@ export class PIXINode extends Node {
      * Renders the node to an output connection
      */
     render() {
-        this.app.render();
-        this.texture.needsUpdate = true;
-        this.output.setValue(this.texture);
+        if (!this.manualRender || this.needsUpdate) {
+            this.app.render();
+            this.texture.needsUpdate = true;
+            this.output.setValue(this.texture);
+
+            this.needsUpdate = false;
+        }
+
         return this;
     }
 

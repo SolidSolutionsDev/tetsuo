@@ -10,6 +10,7 @@ const defaultFragmentShader = require("../shaders/defaultPost.frag");
 export interface ShaderNodeOptions extends NodeOptions {
     vertexShader?: string;
     fragmentShader?: string;
+    manualRender?: boolean;
 }
 
 /**
@@ -58,6 +59,16 @@ export class ShaderNode extends Node {
      */
     target: WebGLRenderTarget;
 
+    /**
+     * Whether to render this node only when needsUpdate is true
+     */
+    manualRender?: boolean;
+
+    /**
+     * Whether to rerender this node on the next pass (for manual render)
+     */
+    needsUpdate: boolean = true;
+
     constructor(id: string, nodeRenderer: NodeRenderer, options?: ShaderNodeOptions) {
         super(id, options);
 
@@ -70,6 +81,8 @@ export class ShaderNode extends Node {
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 100);
+
+        this.manualRender = options?.manualRender;
 
         this.prepare();
     }
@@ -129,15 +142,19 @@ export class ShaderNode extends Node {
      * Renders shader
      */
     render() {
-        let renderer = this.nodeRenderer.renderer;
+        if (!this.manualRender || this.needsUpdate) {
+            let renderer = this.nodeRenderer.renderer;
 
-        // render to a render target
-        renderer.setRenderTarget(this.target);
-        renderer.clear(true, true, true);
-        renderer.render(this.scene, this.camera);
+            // render to a render target
+            renderer.setRenderTarget(this.target);
+            renderer.clear(true, true, true);
+            renderer.render(this.scene, this.camera);
 
-        // update output connection
-        this.output.setValue(this.target.texture);
+            // update output connection
+            this.output.setValue(this.target.texture);
+
+            this.needsUpdate = false;
+        }
 
         return this;
     }

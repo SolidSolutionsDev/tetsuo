@@ -13,6 +13,8 @@ export interface THREENodeOptions extends NodeOptions {
      * Whether to create orbit controls for the scene camera
      */
     orbitControls?: boolean;
+
+    manualRender?: boolean;
 }
 
 /**
@@ -47,6 +49,16 @@ export class THREENode extends Node {
      */
     target: THREE.WebGLRenderTarget;
 
+    /**
+     * Whether to render this node only when needsUpdate is true
+     */
+    manualRender?: boolean;
+
+    /**
+     * Whether to rerender this node on the next pass (for manual render)
+     */
+    needsUpdate: boolean = true;
+
     constructor(id: string, nodeRenderer: NodeRenderer, options?: THREENodeOptions) {
         super(id, options);
 
@@ -72,6 +84,8 @@ export class THREENode extends Node {
                 this.nodeRenderer.viewport.height
             );
         }
+
+        this.manualRender = options?.manualRender;
     }
 
     /**
@@ -88,16 +102,22 @@ export class THREENode extends Node {
      * Renders the node to an output connection
      */
     render() {
-        let renderer = this.nodeRenderer.renderer;
+        if (!this.manualRender || this.needsUpdate) {
+            let renderer = this.nodeRenderer.renderer;
 
-        renderer.setRenderTarget(this.target);
-        renderer.clear(true, true, true);
-        renderer.render(this.scene, this.camera);
+            renderer.setRenderTarget(this.target);
+            renderer.clear(true, true, true);
+            renderer.render(this.scene, this.camera);
 
-        // update output connection
-        this.output.setValue(
-            this.depthBuffer ? { diffuse: this.target.texture, depth: this.target.depthTexture } : this.target.texture
-        );
+            // update output connection
+            this.output.setValue(
+                this.depthBuffer
+                    ? { diffuse: this.target.texture, depth: this.target.depthTexture }
+                    : this.target.texture
+            );
+
+            this.needsUpdate = false;
+        }
 
         return this;
     }
