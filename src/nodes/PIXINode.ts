@@ -4,7 +4,20 @@ import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 
 export interface PIXINodeOptions extends NodeOptions {
+    /**
+     * Whether to render this node only when needsUpdate is true
+     */
     manualRender?: boolean;
+
+    /**
+     * Force width of the renderer
+     */
+    width?: number;
+
+    /**
+     * Force height of the renderer
+     */
+    height?: number;
 }
 
 /**
@@ -36,6 +49,11 @@ export class PIXINode extends Node {
      */
     needsUpdate: boolean = true;
 
+    /**
+     * Whether the size for the internal renderer is fixed (passed to the constructor)
+     */
+    fixedSize: boolean = false;
+
     constructor(id: string, nodeRenderer: NodeRenderer, options?: PIXINodeOptions) {
         super(id, options);
 
@@ -43,10 +61,14 @@ export class PIXINode extends Node {
 
         PIXI.utils.skipHello();
 
+        this.fixedSize = !!(options?.width || options?.height);
+
+        this.manualRender = options?.manualRender;
+
         this.app = new PIXI.Application({
-            width: this.nodeRenderer.viewport.width,
-            height: this.nodeRenderer.viewport.height,
-            resizeTo: this.nodeRenderer.viewport.domElement,
+            width: options?.width || this.nodeRenderer.viewport.width,
+            height: options?.height || this.nodeRenderer.viewport.height,
+            resizeTo: this.fixedSize ? undefined : this.nodeRenderer.viewport.domElement,
             autoStart: false,
             transparent: true,
             antialias: true,
@@ -55,8 +77,6 @@ export class PIXINode extends Node {
         this.texture = new THREE.CanvasTexture(this.app.view);
         this.texture.minFilter = THREE.LinearFilter;
         this.texture.magFilter = THREE.LinearFilter;
-
-        this.manualRender = options?.manualRender;
     }
 
     /**

@@ -16,6 +16,7 @@ export const ShadedObject = (shaderOptions: {
     points?: boolean;
     blending?: THREE.Blending;
     transparent?: boolean;
+    depthTest?: boolean;
     uniforms?: { [key: string]: { value: any; gui?: boolean } };
 }) => {
     let mergedUniforms = THREE.UniformsUtils.merge([
@@ -34,6 +35,7 @@ export const ShadedObject = (shaderOptions: {
         uniforms: mergedUniforms,
         transparent: true && !!shaderOptions.transparent,
         blending: shaderOptions.blending || THREE.AdditiveBlending,
+        depthTest: !!shaderOptions.depthTest,
         lights: true,
     });
 

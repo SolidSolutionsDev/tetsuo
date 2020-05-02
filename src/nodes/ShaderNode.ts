@@ -8,8 +8,19 @@ const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/defaultPost.frag");
 
 export interface ShaderNodeOptions extends NodeOptions {
+    /**
+     * GLSL code for the vertex shader of this node
+     */
     vertexShader?: string;
+
+    /**
+     * GLSL code for the fragment shader of this node
+     */
     fragmentShader?: string;
+
+    /**
+     * Whether to only render this node when needsUpdate is true
+     */
     manualRender?: boolean;
 }
 

@@ -2,24 +2,9 @@ import { Node } from "./Node";
 
 export class NodeGraph {
     /**
-     * List of nodes in the graph
-     */
-    nodes: { [key: string]: Node } = {};
-
-    /**
      * Root node
      */
     root: Node | null = null;
-
-    /**
-     * Adds a new node to the graph
-     *
-     * @param node
-     */
-    addNode(node: Node) {
-        this.nodes[node.id] = node;
-        return this;
-    }
 
     /**
      * Sets a node as the root of the graph
