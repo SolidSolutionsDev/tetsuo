@@ -69,7 +69,10 @@ export class THREENode extends Node {
         this.camera.position.z = 4;
 
         this.nodeRenderer = nodeRenderer;
-        this.target = new THREE.WebGLRenderTarget(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
+        this.target = new THREE.WebGLRenderTarget(
+            this.nodeRenderer.viewport.width,
+            this.nodeRenderer.viewport.height
+        );
 
         if (options && options.orbitControls) {
             this.controls = new OrbitControls(this.camera, this.nodeRenderer.viewport.domElement);

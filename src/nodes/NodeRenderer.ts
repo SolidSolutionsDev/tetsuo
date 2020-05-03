@@ -65,7 +65,8 @@ export class NodeRenderer {
         options = options || {};
         if (options.antialias === undefined) options.antialias = true;
         if (options.alpha === undefined) options.alpha = true;
-        let viewport: HTMLElement | null = options.viewportElement || document.getElementById("viewport");
+        let viewport: HTMLElement | null =
+            options.viewportElement || document.getElementById("viewport");
 
         if (!viewport) {
             throw Error("viewport element not found");

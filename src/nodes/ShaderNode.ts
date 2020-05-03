@@ -88,7 +88,10 @@ export class ShaderNode extends Node {
         this.fragmentShader = options.fragmentShader || defaultFragmentShader;
 
         this.nodeRenderer = nodeRenderer;
-        this.target = new THREE.WebGLRenderTarget(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
+        this.target = new THREE.WebGLRenderTarget(
+            this.nodeRenderer.viewport.width,
+            this.nodeRenderer.viewport.height
+        );
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 100);
@@ -138,7 +141,11 @@ export class ShaderNode extends Node {
 
         // update default uniforms
         this.uniforms["iTime"].value = time;
-        this.uniforms["iResolution"].value.set(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height, 1);
+        this.uniforms["iResolution"].value.set(
+            this.nodeRenderer.viewport.width,
+            this.nodeRenderer.viewport.height,
+            1
+        );
 
         // update node connection uniforms
         for (let key in this.inputs) {

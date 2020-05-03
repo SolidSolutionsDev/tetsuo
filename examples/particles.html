@@ -52,7 +52,11 @@
                 const pGeo = new THREE.Geometry();
                 for (let i = 0; i < psCount; i++) {
                     let p = {
-                        position: new THREE.Vector3(Math.random() * 4 - 2, Math.random() * 3.5, Math.random() * 4 - 2),
+                        position: new THREE.Vector3(
+                            Math.random() * 4 - 2,
+                            Math.random() * 3.5,
+                            Math.random() * 4 - 2
+                        ),
                     };
 
                     ps.push(p);

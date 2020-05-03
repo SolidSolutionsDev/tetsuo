@@ -27,7 +27,10 @@
                 let cubeScene = new TETSUO.THREENode("cubeScene", scene.renderer);
 
                 // add a cube to the scene
-                let cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial());
+                let cube = new THREE.Mesh(
+                    new THREE.BoxGeometry(2, 2, 2),
+                    new THREE.MeshStandardMaterial()
+                );
                 cubeScene.add(cube);
 
                 // rotate cube when scene updates

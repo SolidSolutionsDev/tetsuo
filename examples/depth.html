@@ -39,7 +39,11 @@
                 let material = new THREE.MeshBasicMaterial({ color: "#ff0000" });
                 for (var i = 0; i < 50; i++) {
                     let cube = new THREE.Mesh(geometry, material);
-                    cube.position.set(Math.random() * 10 - 5, Math.random() * 2 - 1, Math.random() * 20 - 20);
+                    cube.position.set(
+                        Math.random() * 10 - 5,
+                        Math.random() * 2 - 1,
+                        Math.random() * 20 - 20
+                    );
                     cube.rotation.set(Math.random(), Math.random(), Math.random());
                     cubes.push(cube);
                     node.add(cube);
@@ -58,22 +62,22 @@
                         TETSUO.Shaders.depth,
 
                         /* glsl */ `
-                // output of the three js scene when depthBuffer option is true
-                struct DiffuseAndDepth {
-                    sampler2D diffuse;
-                    sampler2D depth;
-                };
-        
-                varying vec2 vUv;
-                uniform DiffuseAndDepth td;
-        
-                void main() {
-                    float depth = readDepth(td.depth, vUv);
-        
-                    gl_FragColor.rgb = 1. - vec3( depth );
-                    gl_FragColor.a = 1.;
-                }
-            `,
+                            // output of the three js scene when depthBuffer option is true
+                            struct DiffuseAndDepth {
+                                sampler2D diffuse;
+                                sampler2D depth;
+                            };
+                    
+                            varying vec2 vUv;
+                            uniform DiffuseAndDepth td;
+                    
+                            void main() {
+                                float depth = readDepth(td.depth, vUv);
+                    
+                                gl_FragColor.rgb = 1. - vec3( depth );
+                                gl_FragColor.a = 1.;
+                            }
+                        `,
                     ].join("\n"),
                 });
 
