@@ -18,6 +18,7 @@ export const ShadedObject = (shaderOptions: {
     transparent?: boolean;
     depthTest?: boolean;
     uniforms?: { [key: string]: { value: any; gui?: boolean } };
+    side?: THREE.Side;
 }) => {
     let mergedUniforms = THREE.UniformsUtils.merge([
         // three js scene uniforms
@@ -33,10 +34,11 @@ export const ShadedObject = (shaderOptions: {
         vertexShader: shaderOptions.vertexShader || defaultVertexShader,
         fragmentShader: shaderOptions.fragmentShader || defaultFragmentShader,
         uniforms: mergedUniforms,
-        transparent: true && !!shaderOptions.transparent,
-        blending: shaderOptions.blending || THREE.AdditiveBlending,
-        depthTest: !!shaderOptions.depthTest,
+        transparent: shaderOptions.transparent !== undefined ? shaderOptions.transparent : true,
+        blending: shaderOptions.blending || THREE.NormalBlending,
+        depthTest: shaderOptions.depthTest !== undefined ? shaderOptions.depthTest : true,
         lights: true,
+        side: shaderOptions.side || THREE.FrontSide,
     });
 
     return shaderOptions.points
