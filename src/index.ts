@@ -11,6 +11,7 @@ import { THREENode } from "./nodes/THREENode";
 import { PIXINode } from "./nodes/PIXINode";
 import { UniformNode } from "./nodes/UniformNode";
 import { TextureNode } from "./nodes/TextureNode";
+import { MeshNode } from "./nodes/MeshNode";
 import { Connection } from "./nodes/Connection";
 import * as Utils from "./utils";
 import Loader from "./Loader";
@@ -30,6 +31,7 @@ const TETSUO = {
     PIXINode,
     UniformNode,
     TextureNode,
+    MeshNode,
     Utils,
     Loader,
 };

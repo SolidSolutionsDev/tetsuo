@@ -21,7 +21,7 @@ export class Node {
     /**
      * Callback when the renderer updates this node
      */
-    protected _onUpdate: ((time: number) => void) | null = null;
+    protected _onUpdate: ((time: number, ...args: any) => void) | null = null;
 
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
