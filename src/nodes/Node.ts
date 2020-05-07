@@ -1,6 +1,16 @@
 import { Connection } from "./Connection";
 
-export interface NodeOptions {}
+export interface NodeOptions {
+    /**
+     * Callback when the renderer initializes this node
+     */
+    onPrepare?: (...args: any) => void;
+
+    /**
+     * Callback when the renderer updates this node
+     */
+    onUpdate?: (time: number, ...args: any) => void;
+}
 
 export class Node {
     /**
@@ -23,8 +33,16 @@ export class Node {
      */
     protected _onUpdate: ((time: number, ...args: any) => void) | null = null;
 
+    /**
+     * Callback when the renderer initializes this node
+     */
+    protected _onPrepare: ((...args: any) => void) | null = null;
+
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
+
+        this._onPrepare = options?.onPrepare || null;
+        this._onUpdate = options?.onUpdate || null;
     }
 
     /**
@@ -53,6 +71,16 @@ export class Node {
     }
 
     /**
+     * Sets a callback when the renderer prepares this node
+     *
+     * @param fn
+     */
+    onPrepare(fn: () => void) {
+        this._onPrepare = fn;
+        return this;
+    }
+
+    /**
      * Sets a callback when the renderer updates this node
      *
      * @param fn
@@ -66,6 +94,7 @@ export class Node {
      * Initializes the node for rendering
      */
     prepare() {
+        this._onPrepare && this._onPrepare();
         return this;
     }
 

@@ -105,6 +105,8 @@ export class ShaderNode extends Node {
      * Prepares the shader for rendering
      */
     prepare() {
+        super.prepare();
+
         // (re)initialize shader uniforms
         let uniforms: { [key: string]: IUniform } = {
             ...defaultUniforms,

@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import { IUniform } from "three";
-import { Node } from "./Node";
+import { Node, NodeOptions } from "./Node";
 import { defaultUniforms } from "../uniforms";
 import { THREENode } from "./THREENode";
 
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/default.frag");
 
-export interface MeshNodeOptions {
+export interface MeshNodeOptions extends NodeOptions {
     /**
      * THREE.js geometry for this mesh
      */
@@ -123,6 +123,13 @@ export class MeshNode extends Node {
         // update the output of the node
         this.output.setValue(this.mesh);
 
+        this._onPrepare && this._onPrepare(this.mesh);
+
+        return this;
+    }
+
+    onPrepare(fn: (mesh: THREE.Mesh) => void) {
+        this._onPrepare = fn;
         return this;
     }
 
