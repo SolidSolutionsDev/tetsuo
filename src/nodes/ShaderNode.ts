@@ -4,6 +4,7 @@ import { NodeRenderer } from "./NodeRenderer";
 import defaultUniforms from "../shaders/defaultUniforms";
 import { IUniform, WebGLRenderTarget } from "three";
 import Profiler from "../core/Profiler";
+import TETSUO from "..";
 
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/defaultPost.frag");
@@ -199,6 +200,18 @@ export class ShaderNode extends Node {
     resize() {
         this.target.setSize(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
 
+        return this;
+    }
+
+    /**
+     * Wrapper over UniformNode creation to reduce boilerplate
+     */
+    uniform(uniformID: string, value: any, alias?: string, hide: boolean = false) {
+        let node = new TETSUO.UniformNode(uniformID, {
+            value,
+            gui: { alias: alias || uniformID, hide },
+        });
+        this.addInput(node);
         return this;
     }
 }
