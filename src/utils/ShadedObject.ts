@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import defaultUniforms from "../shaders/defaultUniforms";
 
-const defaultVertexShader = require("./shaders/default.vert");
-const defaultFragmentShader = require("./shaders/default.frag");
+const defaultVertexShader = require("../shaders/default.vert");
+const defaultFragmentShader = require("../shaders/default.frag");
 
 /**
  * Mesh with shaders initializer

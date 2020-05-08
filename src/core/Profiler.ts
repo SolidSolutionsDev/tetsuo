@@ -23,6 +23,10 @@ export interface ProfilerNodeConfig {
 class Profiler {
     nodes: { [key: string]: ProfilerNodeConfig } = {};
 
+    constructor() {
+        setInterval(() => console.log(this.nodes), 1000);
+    }
+
     register(node: Node) {
         this.nodes[node.id] = {
             id: node.id,
