@@ -81,7 +81,12 @@ export class ShaderNode extends Node {
      */
     needsUpdate: boolean = true;
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: ShaderNodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: ShaderNodeOptions,
+        prepare: boolean = true
+    ) {
         super(id, options);
 
         options = options || {};
@@ -99,7 +104,7 @@ export class ShaderNode extends Node {
 
         this.manualRender = options?.manualRender;
 
-        this.prepare();
+        prepare && this.prepare();
     }
 
     /**

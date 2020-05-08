@@ -16,6 +16,7 @@ import { Connection } from "./nodes/Connection";
 import * as Utils from "./utils/utils";
 import Loader from "./core/Loader";
 import Profiler from "./core/Profiler";
+import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
 
 const TETSUO = {
     Scene,
@@ -36,6 +37,7 @@ const TETSUO = {
     Utils,
     Loader,
     Profiler,
+    AnaglyphNode,
 };
 
 (window as any)["TETSUO"] = TETSUO;

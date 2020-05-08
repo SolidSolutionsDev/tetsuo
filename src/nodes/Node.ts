@@ -50,8 +50,8 @@ export class Node {
      *
      * @param node
      */
-    connectTo(node: Node) {
-        node.addInput(this);
+    connectTo(node: Node, inputName?: string) {
+        node.addInput(this, inputName);
         return this;
     }
 
