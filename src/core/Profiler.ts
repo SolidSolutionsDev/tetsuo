@@ -20,23 +20,20 @@ export interface ProfilerNodeConfig {
     time: number;
 }
 
-class Profiler {
+export class Profiler {
     nodes: { [key: string]: ProfilerNodeConfig } = {};
 
-    constructor() {
-        setInterval(() => console.log(this.nodes), 1000);
-    }
-
     register(node: Node) {
-        this.nodes[node.id] = {
-            id: node.id,
+        this.nodes[node.profilerId] = {
+            id: node.profilerId,
             color: uniqueColor(),
             time: 0,
         };
     }
 
     update(node: Node, time: number) {
-        this.nodes[node.id].time = time;
+        if (!this.nodes[node.profilerId]) return;
+        this.nodes[node.profilerId].time = time;
     }
 }
 

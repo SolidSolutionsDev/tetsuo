@@ -15,6 +15,7 @@ import { MeshNode } from "./nodes/MeshNode";
 import { Connection } from "./nodes/Connection";
 import * as Utils from "./utils/utils";
 import Loader from "./core/Loader";
+import Profiler from "./core/Profiler";
 
 const TETSUO = {
     Scene,
@@ -34,6 +35,7 @@ const TETSUO = {
     MeshNode,
     Utils,
     Loader,
+    Profiler,
 };
 
 (window as any)["TETSUO"] = TETSUO;
