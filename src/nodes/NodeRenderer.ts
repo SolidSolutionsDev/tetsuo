@@ -128,10 +128,7 @@ export class NodeRenderer {
      */
     connectToScreen(node: Node) {
         if (this.nodeGraph.root) {
-            // change node ID to match the uniform in the root node fragment shader
-            node.id = "tDiffuse";
-
-            node.connectTo(this.nodeGraph.root);
+            this.nodeGraph.root.addInput(node, "tDiffuse");
         }
     }
 

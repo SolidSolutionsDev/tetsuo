@@ -24,16 +24,16 @@ export class Profiler {
     nodes: { [key: string]: ProfilerNodeConfig } = {};
 
     register(node: Node) {
-        this.nodes[node.profilerId] = {
-            id: node.profilerId,
+        this.nodes[node.id] = {
+            id: node.id,
             color: uniqueColor(),
             time: 0,
         };
     }
 
     update(node: Node, time: number) {
-        if (!this.nodes[node.profilerId]) return;
-        this.nodes[node.profilerId].time = time;
+        if (!this.nodes[node.id]) return;
+        this.nodes[node.id].time = time;
     }
 }
 

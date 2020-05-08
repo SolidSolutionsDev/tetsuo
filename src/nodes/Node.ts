@@ -19,11 +19,6 @@ export class Node {
     id: string;
 
     /**
-     * Node ID to be presented in profiler
-     */
-    profilerId: string;
-
-    /**
      * List of nodes that connect to this node
      */
     inputs: { [key: string]: Connection } = {};
@@ -45,7 +40,6 @@ export class Node {
 
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
-        this.profilerId = id;
 
         this._onPrepare = options?.onPrepare || null;
         this._onUpdate = options?.onUpdate || null;
@@ -66,9 +60,9 @@ export class Node {
      *
      * @param node
      */
-    addInput(node: Node) {
+    addInput(node: Node, inputName?: string) {
         node.output.addTo(this);
-        this.inputs[node.id] = node.output;
+        this.inputs[inputName || node.id] = node.output;
 
         // reinitialize the node
         this.prepare();
