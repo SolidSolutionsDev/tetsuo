@@ -17,6 +17,7 @@ import * as Utils from "./utils/utils";
 import Loader from "./core/Loader";
 import Profiler from "./core/Profiler";
 import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
+import { BloomNode } from "./nodes/effects/BloomNode";
 
 const TETSUO = {
     Scene,
@@ -38,6 +39,7 @@ const TETSUO = {
     Loader,
     Profiler,
     AnaglyphNode,
+    BloomNode,
 };
 
 (window as any)["TETSUO"] = TETSUO;

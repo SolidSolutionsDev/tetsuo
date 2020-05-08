@@ -10,11 +10,15 @@ export interface AnaglyphNodeOptions extends ShaderNodeOptions {
 }
 
 export class AnaglyphNode extends ShaderNode {
+    options: AnaglyphNodeOptions;
+
     constructor(id: string, nodeRenderer: NodeRenderer, options?: AnaglyphNodeOptions) {
         super(id, nodeRenderer, options, false);
 
+        this.options = options || {};
+
         this.fragmentShader = [
-            Shaders.color,
+            Shaders.filters,
             /* glsl */ `
                 varying vec2 vUv;
                 uniform float iTime;
@@ -28,7 +32,14 @@ export class AnaglyphNode extends ShaderNode {
         ].join("\n");
 
         this.prepare();
+    }
 
-        this.uniforms["amount"] = { value: options?.amount || 0.015 };
+    prepare() {
+        super.prepare();
+
+        // setup uniform default values
+        this.uniforms["amount"] = { value: this.options.amount || 0.015 };
+
+        return this;
     }
 }

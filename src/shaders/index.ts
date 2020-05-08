@@ -11,5 +11,5 @@ export const Shaders = {
     move: require("./lib/move.glsl"),
     sdf: require("./lib/sdf.glsl"),
     worley: require("./lib/worley.glsl"),
-    color: require("./lib/color.glsl"),
+    filters: require("./lib/filters.glsl"),
 };
