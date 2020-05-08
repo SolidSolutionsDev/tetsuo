@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
+import Profiler from "../core/Profiler";
 
 export interface THREENodeOptions extends NodeOptions {
     /**
@@ -89,6 +90,8 @@ export class THREENode extends Node {
         }
 
         this.manualRender = options?.manualRender;
+
+        Profiler.register(this);
     }
 
     /**
@@ -105,6 +108,8 @@ export class THREENode extends Node {
      * Renders the node to an output connection
      */
     render() {
+        let initTime = performance.now();
+
         if (!this.manualRender || this.needsUpdate) {
             let renderer = this.nodeRenderer.renderer;
 
@@ -121,6 +126,10 @@ export class THREENode extends Node {
 
             this.needsUpdate = false;
         }
+
+        let finalTime = performance.now();
+
+        Profiler.update(this, finalTime - initTime);
 
         return this;
     }

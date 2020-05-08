@@ -1,8 +1,9 @@
 import * as THREE from "three";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
-import { defaultUniforms } from "../uniforms";
+import defaultUniforms from "../shaders/defaultUniforms";
 import { IUniform, WebGLRenderTarget } from "three";
+import Profiler from "../core/Profiler";
 
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/defaultPost.frag");
@@ -107,6 +108,8 @@ export class ShaderNode extends Node {
     prepare() {
         super.prepare();
 
+        Profiler.register(this);
+
         // (re)initialize shader uniforms
         let uniforms: { [key: string]: IUniform } = {
             ...defaultUniforms,
@@ -162,6 +165,8 @@ export class ShaderNode extends Node {
      * Renders shader
      */
     render() {
+        let initTime = performance.now();
+
         if (!this.manualRender || this.needsUpdate) {
             let renderer = this.nodeRenderer.renderer;
 
@@ -175,6 +180,10 @@ export class ShaderNode extends Node {
 
             this.needsUpdate = false;
         }
+
+        let finalTime = performance.now();
+
+        Profiler.update(this, finalTime - initTime);
 
         return this;
     }

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { IUniform } from "three";
 import { Node, NodeOptions } from "./Node";
-import { defaultUniforms } from "../uniforms";
+import defaultUniforms from "../shaders/defaultUniforms";
 import { THREENode } from "./THREENode";
 
 const defaultVertexShader = require("../shaders/default.vert");

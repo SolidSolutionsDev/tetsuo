@@ -1,8 +1,8 @@
-import { Viewport } from "./Viewport";
-import { Scene } from "./Scene";
-import { Clock } from "./Clock";
+import { Viewport } from "./core/Viewport";
+import { Scene } from "./core/Scene";
+import { Clock } from "./core/Clock";
 import { Shaders } from "./shaders";
-import { ShadedObject } from "./ShadedObject";
+import { ShadedObject } from "./utils/ShadedObject";
 import { NodeRenderer } from "./nodes/NodeRenderer";
 import { NodeGraph } from "./nodes/NodeGraph";
 import { Node } from "./nodes/Node";
@@ -13,8 +13,8 @@ import { UniformNode } from "./nodes/UniformNode";
 import { TextureNode } from "./nodes/TextureNode";
 import { MeshNode } from "./nodes/MeshNode";
 import { Connection } from "./nodes/Connection";
-import * as Utils from "./utils";
-import Loader from "./Loader";
+import * as Utils from "./utils/utils";
+import Loader from "./core/Loader";
 
 const TETSUO = {
     Scene,

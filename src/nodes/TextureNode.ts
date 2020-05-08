@@ -1,5 +1,5 @@
 import { Node, NodeOptions } from "./Node";
-import Loader from "../Loader";
+import Loader from "../core/Loader";
 
 export interface TextureNodeOptions extends NodeOptions {
     /**

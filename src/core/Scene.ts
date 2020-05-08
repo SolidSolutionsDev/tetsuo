@@ -1,9 +1,9 @@
 import Stats from "stats.js";
 import { Clock } from "./Clock";
-import { NodeRenderer } from "./nodes/NodeRenderer";
-import { Node } from "./nodes/Node";
+import { NodeRenderer } from "../nodes/NodeRenderer";
+import { Node } from "../nodes/Node";
 import dat from "dat.gui";
-import { THREENode } from "./nodes/THREENode";
+import { THREENode } from "../nodes/THREENode";
 
 /**
  * Scene initialization options

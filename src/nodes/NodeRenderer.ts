@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Viewport } from "../Viewport";
+import { Viewport } from "../core/Viewport";
 import { NodeGraph } from "./NodeGraph";
 import { Node } from "./Node";
 import { ShaderNode } from "./ShaderNode";

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { defaultUniforms } from "./uniforms";
+import defaultUniforms from "../shaders/defaultUniforms";
 
 const defaultVertexShader = require("./shaders/default.vert");
 const defaultFragmentShader = require("./shaders/default.frag");

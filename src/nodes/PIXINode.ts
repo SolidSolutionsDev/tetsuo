@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
+import Profiler from "../core/Profiler";
 
 export interface PIXINodeOptions extends NodeOptions {
     /**
@@ -77,6 +78,8 @@ export class PIXINode extends Node {
         this.texture = new THREE.CanvasTexture(this.app.view);
         this.texture.minFilter = THREE.LinearFilter;
         this.texture.magFilter = THREE.LinearFilter;
+
+        Profiler.register(this);
     }
 
     /**
@@ -92,6 +95,8 @@ export class PIXINode extends Node {
      * Renders the node to an output connection
      */
     render() {
+        let initTime = performance.now();
+
         if (!this.manualRender || this.needsUpdate) {
             this.app.render();
             this.texture.needsUpdate = true;
@@ -99,6 +104,10 @@ export class PIXINode extends Node {
 
             this.needsUpdate = false;
         }
+
+        let finalTime = performance.now();
+
+        Profiler.update(this, finalTime - initTime);
 
         return this;
     }
