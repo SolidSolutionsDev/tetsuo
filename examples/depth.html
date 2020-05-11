@@ -72,7 +72,7 @@
                             uniform DiffuseAndDepth td;
                     
                             void main() {
-                                float depth = readDepth(td.depth, vUv);
+                                float depth = readDepth(td.depth, vUv, 0.1, 50.);
                     
                                 gl_FragColor.rgb = 1. - vec3( depth );
                                 gl_FragColor.a = 1.;

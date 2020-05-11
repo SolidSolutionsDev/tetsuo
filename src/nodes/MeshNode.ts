@@ -142,13 +142,16 @@ export class MeshNode extends Node {
         // pass the mesh to the update function for easy updating of values
         this._onUpdate && this._onUpdate(time, this.mesh);
 
-        // update default uniforms
-        this.uniforms["iTime"].value = time;
+        if (this.uniforms) {
+            // update default uniforms
+            this.uniforms["iTime"].value = time;
 
-        // update node connection uniforms
-        for (let key in this.inputs) {
-            if (!this.uniforms[key]) this.uniforms[key] = { value: this.inputs[key].getValue() };
-            else this.uniforms[key].value = this.inputs[key].getValue();
+            // update node connection uniforms
+            for (let key in this.inputs) {
+                if (!this.uniforms[key])
+                    this.uniforms[key] = { value: this.inputs[key].getValue() };
+                else this.uniforms[key].value = this.inputs[key].getValue();
+            }
         }
 
         return this;

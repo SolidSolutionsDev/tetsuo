@@ -16,6 +16,11 @@ export interface THREENodeOptions extends NodeOptions {
     orbitControls?: boolean;
 
     manualRender?: boolean;
+
+    camera?: {
+        near?: number;
+        far?: number;
+    };
 }
 
 /**
@@ -66,7 +71,12 @@ export class THREENode extends Node {
         this.scene = new THREE.Scene();
 
         // TODO add camera configuration as node input
-        this.camera = new THREE.PerspectiveCamera(45, nodeRenderer.viewport.ratio, 0.1, 50);
+        this.camera = new THREE.PerspectiveCamera(
+            45,
+            nodeRenderer.viewport.ratio,
+            options?.camera?.near || 0.1,
+            options?.camera?.far || 50
+        );
         this.camera.position.z = 4;
 
         this.nodeRenderer = nodeRenderer;
