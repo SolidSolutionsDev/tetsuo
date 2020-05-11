@@ -18,8 +18,10 @@ export interface THREENodeOptions extends NodeOptions {
     manualRender?: boolean;
 
     camera?: {
+        position?: THREE.Vector3;
         near?: number;
         far?: number;
+        fov?: number;
     };
 }
 
@@ -72,12 +74,13 @@ export class THREENode extends Node {
 
         // TODO add camera configuration as node input
         this.camera = new THREE.PerspectiveCamera(
-            45,
+            options?.camera?.fov || 45,
             nodeRenderer.viewport.ratio,
             options?.camera?.near || 0.1,
             options?.camera?.far || 50
         );
-        this.camera.position.z = 4;
+
+        options?.camera?.position && this.camera.position.copy(options.camera.position);
 
         this.nodeRenderer = nodeRenderer;
         this.target = new THREE.WebGLRenderTarget(
