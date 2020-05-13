@@ -19,6 +19,7 @@ import Profiler from "./core/Profiler";
 import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
 import { BloomNode } from "./nodes/effects/BloomNode";
 import { DisplaceGlitchNode } from "./nodes/effects/DisplaceGlitchNode";
+import { FogNode } from "./nodes/effects/FogNode";
 
 const TETSUO = {
     Scene,
@@ -42,6 +43,7 @@ const TETSUO = {
     AnaglyphNode,
     BloomNode,
     DisplaceGlitchNode,
+    FogNode,
 };
 
 (window as any)["TETSUO"] = TETSUO;
