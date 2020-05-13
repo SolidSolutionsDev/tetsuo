@@ -1,3 +1,6 @@
+import defaultUniforms from "./defaultUniforms";
+import { compile } from "./compile";
+
 export const Shaders = {
     defaultFrag: require("./default.frag"),
     defaultPostFrag: require("./defaultPost.frag"),
@@ -12,4 +15,6 @@ export const Shaders = {
     sdf: require("./lib/sdf.glsl"),
     worley: require("./lib/worley.glsl"),
     filters: require("./lib/filters.glsl"),
+    defaultUniforms,
+    compile,
 };

@@ -22,6 +22,7 @@ import { DisplaceGlitchNode } from "./nodes/effects/DisplaceGlitchNode";
 import { FogNode } from "./nodes/effects/FogNode";
 import { BoxBlurNode } from "./nodes/effects/BoxBlurNode";
 import { DOFNode } from "./nodes/effects/DOFNode";
+import { ShaderMaterial } from "./utils/ShaderMaterial";
 
 const TETSUO = {
     Scene,
@@ -29,6 +30,7 @@ const TETSUO = {
     Clock,
     Shaders,
     ShadedObject,
+    ShaderMaterial,
     NodeRenderer,
     NodeGraph,
     Node,
