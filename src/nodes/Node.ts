@@ -31,18 +31,18 @@ export class Node {
     /**
      * Callback when the renderer updates this node
      */
-    protected _onUpdate: ((time: number, ...args: any) => void) | null = null;
+    protected _onUpdate: ((time: number, ...args: any) => void)[];
 
     /**
      * Callback when the renderer initializes this node
      */
-    protected _onPrepare: ((...args: any) => void) | null = null;
+    protected _onPrepare: ((...args: any) => void)[];
 
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
 
-        this._onPrepare = options?.onPrepare || null;
-        this._onUpdate = options?.onUpdate || null;
+        this._onPrepare = options?.onPrepare ? [options.onPrepare] : [];
+        this._onUpdate = options?.onUpdate ? [options?.onUpdate] : [];
     }
 
     /**
@@ -76,7 +76,7 @@ export class Node {
      * @param fn
      */
     onPrepare(fn: () => void) {
-        this._onPrepare = fn;
+        this._onPrepare.push(fn);
         return this;
     }
 
@@ -86,7 +86,7 @@ export class Node {
      * @param fn
      */
     onUpdate(fn: (time: number) => void) {
-        this._onUpdate = fn;
+        this._onUpdate.push(fn);
         return this;
     }
 
@@ -94,7 +94,7 @@ export class Node {
      * Initializes the node for rendering
      */
     prepare() {
-        this._onPrepare && this._onPrepare();
+        this._onPrepare && this._onPrepare.forEach((fn) => fn());
         return this;
     }
 
@@ -104,7 +104,7 @@ export class Node {
      * @param time
      */
     update(time: number) {
-        this._onUpdate && this._onUpdate(time);
+        this._onUpdate && this._onUpdate.forEach((fn) => fn(time));
         return this;
     }
 

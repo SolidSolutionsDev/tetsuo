@@ -123,24 +123,24 @@ export class MeshNode extends Node {
         // update the output of the node
         this.output.setValue(this.mesh);
 
-        this._onPrepare && this._onPrepare(this.mesh);
+        this._onPrepare && this._onPrepare.forEach((fn) => fn(this.mesh));
 
         return this;
     }
 
     onPrepare(fn: (mesh: THREE.Mesh) => void) {
-        this._onPrepare = fn;
+        this._onPrepare.push(fn);
         return this;
     }
 
     onUpdate(fn: (time: number, mesh: THREE.Mesh) => void) {
-        this._onUpdate = fn;
+        this._onUpdate.push(fn);
         return this;
     }
 
     update(time: number) {
         // pass the mesh to the update function for easy updating of values
-        this._onUpdate && this._onUpdate(time, this.mesh);
+        this._onUpdate && this._onUpdate.forEach((fn) => fn(time, this.mesh));
 
         if (this.uniforms) {
             // update default uniforms
