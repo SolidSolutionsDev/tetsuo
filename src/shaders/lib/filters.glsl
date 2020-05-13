@@ -7,6 +7,21 @@ vec4 anaglyph(sampler2D tex, vec2 p, float k) {
     );
 }
 
+vec4 boxblur(sampler2D tex, vec2 texSize, vec2 p, float separation) {
+    vec4 result = vec4(0.);
+
+    for (float i = -2.; i <= 2.; i++) {
+        for (float j = -2.; j <= 2.; j++) {
+            result.rgb += texture2D(tex, (p * texSize + vec2(i, j) * separation) / texSize).rgb;
+        }
+    }
+
+    result.rgb /= 25.;
+    result.a = 1.;
+
+    return result;
+}
+
 
 vec4 bloom(sampler2D tex, vec2 texSize, vec2 p, float separation, float threshold, float amount) {
     vec4 result = vec4(0.);
@@ -25,7 +40,7 @@ vec4 bloom(sampler2D tex, vec2 texSize, vec2 p, float separation, float threshol
         }
     }
 
-    result.rgb /= (2. * 2. + 1.) * (2. * 2. + 1.);
+    result.rgb /=  25.;
     result.a = 1.;
 
     return texture2D(tex, p) + result * amount;

@@ -20,6 +20,8 @@ import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
 import { BloomNode } from "./nodes/effects/BloomNode";
 import { DisplaceGlitchNode } from "./nodes/effects/DisplaceGlitchNode";
 import { FogNode } from "./nodes/effects/FogNode";
+import { BoxBlurNode } from "./nodes/effects/BoxBlurNode";
+import { DOFNode } from "./nodes/effects/DOFNode";
 
 const TETSUO = {
     Scene,
@@ -44,6 +46,8 @@ const TETSUO = {
     BloomNode,
     DisplaceGlitchNode,
     FogNode,
+    BoxBlurNode,
+    DOFNode,
 };
 
 (window as any)["TETSUO"] = TETSUO;
