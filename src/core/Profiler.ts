@@ -1,18 +1,5 @@
 import { Node } from "../nodes/Node";
-
-let uniqueColors: string[] = [];
-
-let uniqueColor = () => {
-    let color = "#" + (((1 << 24) * Math.random()) | 0).toString(16);
-
-    while (uniqueColors.includes(color)) {
-        color = "#" + (((1 << 24) * Math.random()) | 0).toString(16);
-    }
-
-    uniqueColors.push(color);
-
-    return color;
-};
+import { uniqueColor } from "../utils/utils";
 
 export interface ProfilerNodeConfig {
     id: string;
