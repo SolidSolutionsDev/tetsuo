@@ -23,33 +23,46 @@ import { FogNode } from "./nodes/effects/FogNode";
 import { BoxBlurNode } from "./nodes/effects/BoxBlurNode";
 import { DOFNode } from "./nodes/effects/DOFNode";
 import { ShaderMaterial } from "./utils/ShaderMaterial";
+import { OverlayNode } from "./nodes/effects/OverlayNode";
 
 const TETSUO = {
+    // core
     Scene,
     Viewport,
     Clock,
-    Shaders,
+    Loader,
+    Profiler,
+
+    // utils
+    Utils,
     ShadedObject,
     ShaderMaterial,
+
+    // shader lib
+    Shaders,
+
+    // node structure classes
     NodeRenderer,
     NodeGraph,
     Node,
     Connection,
+
+    // base nodes
     ShaderNode,
     THREENode,
     PIXINode,
     UniformNode,
     TextureNode,
     MeshNode,
-    Utils,
-    Loader,
-    Profiler,
+
+    // effect nodes
     AnaglyphNode,
     BloomNode,
     DisplaceGlitchNode,
     FogNode,
     BoxBlurNode,
     DOFNode,
+    OverlayNode,
 };
 
 (window as any)["TETSUO"] = TETSUO;
