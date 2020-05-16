@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <style>
+            body,
+            html {
+                margin: 0;
+                background: black;
+            }
+
+            #viewport {
+                width: 1280px;
+                height: 720px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="viewport"></div>
+
+        <script src="../node_modules/three/build/three.min.js"></script>
+        <script src="../dist/tetsuo.min.js"></script>
+
+        <script>
+            TETSUO.Utils.ready(() => {
+                let scene = new THREE.Scene();
+                let camera = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
+                camera.position.z = 2;
+
+                let renderer = new TETSUO.NodeRenderer();
+
+                let box = new THREE.Mesh(
+                    new THREE.BoxGeometry(1, 1, 1),
+                    new THREE.MeshNormalMaterial()
+                );
+
+                box.position.set(0, 0, 0);
+
+                scene.add(box);
+
+                let three = new TETSUO.THREENode("three", renderer, {
+                    scene,
+                    camera,
+                });
+
+                renderer.connectToScreen(three);
+
+                function tick() {
+                    let time = performance.now() / 1000;
+
+                    box.rotation.set(Math.sin(time), Math.cos(time), 0);
+
+                    renderer.update(time);
+                    renderer.render();
+
+                    requestAnimationFrame(tick);
+                }
+
+                requestAnimationFrame(tick);
+            });
+        </script>
+    </body>
+</html>

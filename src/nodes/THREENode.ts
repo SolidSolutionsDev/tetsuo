@@ -15,9 +15,25 @@ export interface THREENodeOptions extends NodeOptions {
      */
     orbitControls?: boolean;
 
+    /**
+     * Whether to only render this node when needsUpdate flag is true
+     */
     manualRender?: boolean;
 
-    camera?: {
+    /**
+     * External THREE scene to use in this node
+     */
+    scene?: THREE.Scene;
+
+    /**
+     * External THREE camera to use in this node
+     */
+    camera?: THREE.PerspectiveCamera;
+
+    /**
+     * Camera settings to apply to this node's camera
+     */
+    cameraSettings?: {
         position?: THREE.Vector3;
         near?: number;
         far?: number;
@@ -44,6 +60,9 @@ export class THREENode extends Node {
      */
     camera: THREE.PerspectiveCamera;
 
+    /**
+     * Camera orbit controls for debug
+     */
     controls?: OrbitControls;
 
     /**
@@ -70,17 +89,19 @@ export class THREENode extends Node {
     constructor(id: string, nodeRenderer: NodeRenderer, options?: THREENodeOptions) {
         super(id, options);
 
-        this.scene = new THREE.Scene();
+        this.scene = options?.scene || new THREE.Scene();
 
-        // TODO add camera configuration as node input
-        this.camera = new THREE.PerspectiveCamera(
-            options?.camera?.fov || 45,
-            nodeRenderer.viewport.ratio,
-            options?.camera?.near || 0.1,
-            options?.camera?.far || 50
-        );
+        this.camera =
+            options?.camera ||
+            new THREE.PerspectiveCamera(
+                options?.cameraSettings?.fov || 45,
+                nodeRenderer.viewport.ratio,
+                options?.cameraSettings?.near || 0.1,
+                options?.cameraSettings?.far || 50
+            );
 
-        options?.camera?.position && this.camera.position.copy(options.camera.position);
+        options?.cameraSettings?.position &&
+            this.camera.position.copy(options.cameraSettings.position);
 
         this.nodeRenderer = nodeRenderer;
         this.target = new THREE.WebGLRenderTarget(
