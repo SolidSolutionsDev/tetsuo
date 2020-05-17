@@ -21,33 +21,73 @@
         <script src="../dist/tetsuo.min.js"></script>
 
         <script>
-            TETSUO.Utils.ready(() => {
-                let scene = new THREE.Scene();
-                let camera = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
-                camera.position.z = 2;
+            var sceneOne, sceneTwo, cameraOne, cameraTwo, box, ball, node;
 
-                let renderer = new TETSUO.NodeRenderer();
+            function createSceneOne() {
+                sceneOne = new THREE.Scene();
+                cameraOne = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
+                cameraOne.position.z = 4;
 
-                let box = new THREE.Mesh(
+                box = new THREE.Mesh(
                     new THREE.BoxGeometry(1, 1, 1),
                     new THREE.MeshNormalMaterial()
                 );
 
-                box.position.set(0, 0, 0);
+                sceneOne.add(box);
+            }
 
-                scene.add(box);
+            function createSceneTwo() {
+                sceneTwo = new THREE.Scene();
+                cameraTwo = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
+                cameraTwo.position.z = 4;
 
-                let three = new TETSUO.THREENode("three", renderer, {
-                    scene,
-                    camera,
-                });
+                ball = new THREE.Mesh(
+                    new THREE.SphereGeometry(1, 20, 20),
+                    new THREE.MeshNormalMaterial()
+                );
 
-                renderer.connectToScreen(three);
+                sceneTwo.add(ball);
+            }
+
+            function switchToSceneOne() {
+                node.scene = sceneOne;
+                node.camera = cameraOne;
+            }
+
+            function switchToSceneTwo() {
+                node.scene = sceneTwo;
+                node.camera = cameraTwo;
+            }
+
+            function updateSceneOne(time) {
+                box.rotation.set(Math.sin(time), Math.cos(time), 0);
+            }
+
+            function updateSceneTwo(time) {
+                cameraTwo.position.z = 4 + Math.sin(time);
+                ball.position.set(Math.sin(time), Math.cos(time), 0);
+            }
+
+            TETSUO.Utils.ready(() => {
+                let renderer = new TETSUO.NodeRenderer();
+
+                createSceneOne();
+                createSceneTwo();
+
+                node = new TETSUO.THREENode("three", renderer, { sceneOne, cameraOne });
+
+                renderer.connectToScreen(node);
+
+                let onSceneOne = true;
+                setInterval(() => {
+                    onSceneOne = !onSceneOne;
+                    onSceneOne ? switchToSceneOne() : switchToSceneTwo();
+                }, 2000);
 
                 function tick() {
-                    let time = performance.now() / 1000;
+                    time = performance.now() / 1000;
 
-                    box.rotation.set(Math.sin(time), Math.cos(time), 0);
+                    onSceneOne ? updateSceneOne(time) : updateSceneTwo(time);
 
                     renderer.update(time);
                     renderer.render();
@@ -55,7 +95,7 @@
                     requestAnimationFrame(tick);
                 }
 
-                requestAnimationFrame(tick);
+                tick();
             });
         </script>
     </body>
