@@ -39,3 +39,7 @@ export function uniqueColor() {
 export function hexStringToNum(str: string) {
     return parseInt(str.replace("#", "0x"), 16);
 }
+
+export function randomInInterval(lo: number, hi: number) {
+    return Math.random() * (hi - lo + 1) + lo;
+}

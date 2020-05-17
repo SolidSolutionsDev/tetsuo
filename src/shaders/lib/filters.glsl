@@ -26,8 +26,8 @@ vec4 boxblur(sampler2D tex, vec2 texSize, vec2 p, float separation) {
 vec4 bloom(sampler2D tex, vec2 texSize, vec2 p, float separation, float threshold, float amount) {
     vec4 result = vec4(0.);
 
-    for (float i = -2.; i <= 2.; i++) {
-        for (float j = -2.; j <= 2.; j++) {
+    for (float i = -5.; i <= 5.; i++) {
+        for (float j = -5.; j <= 5.; j++) {
             vec4 color = vec4(0.);
             vec4 t = texture2D(tex, (p * texSize + vec2(i, j) * separation) / texSize);
             float g = max(t.r, max(t.g, t.b));
@@ -40,10 +40,10 @@ vec4 bloom(sampler2D tex, vec2 texSize, vec2 p, float separation, float threshol
         }
     }
 
-    result.rgb /=  25.;
-    result.a = 1.;
+    result.rgb /= pow(5. * 2. + 1., 2.);
+    result.a = texture2D(tex, p).a;
 
-    return texture2D(tex, p) + result * amount;
+    return vec4((texture2D(tex, p).rgb + result.rgb) * amount, texture2D(tex, p).a);
 }
 
 vec2 curve(vec2 p) {
