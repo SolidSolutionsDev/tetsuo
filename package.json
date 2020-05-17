@@ -34,7 +34,7 @@
         "build:dev": "cross-env NODE_ENV=development webpack",
         "watch": "yarn build:dev --watch",
         "build:prod": "cross-env NODE_ENV=production webpack",
-        "serve": "live-server --no-browser --watch=dist,examples,dev",
+        "serve": "live-server --no-browser --watch=dist,examples,dev,tetsuo-experiments",
         "test": "jest --detectOpenHandles --colors",
         "test:watch": "yarn test --watch",
         "update-experiments": "yarn build:dev && cp dist/tetsuo.min.js tetsuo-experiments/lib && cp node_modules/three/build/three.min.js tetsuo-experiments/lib && cp node_modules/pixi.js/dist/pixi.min.js tetsuo-experiments/lib"

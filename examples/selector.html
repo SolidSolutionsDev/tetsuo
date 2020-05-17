@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <style>
+            body,
+            html {
+                margin: 0;
+                background: black;
+            }
+
+            #viewport {
+                width: 1280px;
+                height: 720px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="viewport"></div>
+
+        <script src="../node_modules/three/build/three.min.js"></script>
+        <script src="../dist/tetsuo.min.js"></script>
+
+        <script>
+            TETSUO.Utils.ready(() => {
+                let scene = new TETSUO.Scene({ dev: true, autoStart: true });
+
+                let three = new TETSUO.THREENode("three", scene.renderer);
+
+                let box = new THREE.Mesh(
+                    new THREE.BoxGeometry(1, 1, 1),
+                    new THREE.MeshNormalMaterial()
+                );
+                box.position.z = -4;
+
+                three.add(box);
+
+                three.onUpdate((time) => box.rotation.set(Math.sin(time), Math.cos(time), 0));
+
+                let ana = new TETSUO.AnaglyphNode("ana", scene.renderer).addInput(
+                    three,
+                    "inputTex"
+                );
+
+                let inputOne = ana;
+
+                let blur = new TETSUO.BoxBlurNode("blur", scene.renderer).addInput(
+                    three,
+                    "inputTex"
+                );
+
+                let inputTwo = blur;
+
+                let selector = new TETSUO.SelectorNode()
+                    .addInput(inputOne, "one")
+                    .addInput(inputTwo, "two");
+
+                selector.set("one");
+                let onOne = true;
+                setInterval(() => {
+                    onOne = !onOne;
+                    selector.set(onOne ? "one" : "two");
+                }, 2000);
+
+                scene.connectToScreen(selector);
+                scene.renderer.update(0);
+            });
+        </script>
+    </body>
+</html>

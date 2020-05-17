@@ -7,7 +7,7 @@ export class Connection {
     /**
      * Node where the value comes from
      */
-    from: Node | null = null;
+    from: Node;
 
     /**
      * Nodes where the value goes to
@@ -19,10 +19,8 @@ export class Connection {
      */
     value: any = null;
 
-    constructor(fromNode?: Node) {
-        if (fromNode) {
-            this.from = fromNode;
-        }
+    constructor(fromNode: Node) {
+        this.from = fromNode;
     }
 
     /**

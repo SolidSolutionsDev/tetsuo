@@ -24,6 +24,7 @@ import { BoxBlurNode } from "./nodes/effects/BoxBlurNode";
 import { DOFNode } from "./nodes/effects/DOFNode";
 import { ShaderMaterial } from "./utils/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
+import { SelectorNode } from "./nodes/SelectorNode";
 
 const TETSUO = {
     // core
@@ -54,6 +55,7 @@ const TETSUO = {
     UniformNode,
     TextureNode,
     MeshNode,
+    SelectorNode,
 
     // effect nodes
     AnaglyphNode,

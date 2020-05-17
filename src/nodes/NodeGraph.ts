@@ -30,7 +30,7 @@ export class NodeGraph {
             } else return;
         }
 
-        if (visited.includes(node.id)) return;
+        if (visited.includes(node.id) || !node.enabled) return;
         visited.push(node.id);
 
         for (let key in node.inputs) {

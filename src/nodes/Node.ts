@@ -29,6 +29,12 @@ export class Node {
     output: Connection = new Connection(this);
 
     /**
+     * Whether this node is enabled to be traversed for rendering
+     * If false the node graph will ignore it and its children
+     */
+    enabled: boolean = true;
+
+    /**
      * Callback when the renderer updates this node
      */
     protected _onUpdate: ((time: number, ...args: any) => void)[];
