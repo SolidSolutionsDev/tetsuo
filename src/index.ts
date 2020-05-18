@@ -25,7 +25,7 @@ import { DOFNode } from "./nodes/effects/DOFNode";
 import { ShaderMaterial } from "./utils/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
 import { SelectorNode } from "./nodes/SelectorNode";
-import { Premade } from "./nodes/premade";
+import { Premade } from "./premade";
 
 const TETSUO = {
     // core
