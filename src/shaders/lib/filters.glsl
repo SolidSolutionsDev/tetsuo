@@ -55,3 +55,11 @@ vec2 curve(vec2 p) {
 	p =  p * 0.92 + 0.04;
 	return p;
 }
+
+vec2 tunnel(vec2 p, float k) {
+    float a = atan(p.y, p.x);
+    float r = length(p);
+    vec2 _uv = vec2( 0.3/r + 0.2 * k, a / 3.1415927 );
+    vec2 uv2 = vec2( _uv.x, atan(p.y,abs(p.x))/3.1415927 );
+    return uv2;
+}
