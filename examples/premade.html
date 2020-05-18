@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <style>
+            body,
+            html {
+                margin: 0;
+                background: black;
+            }
+
+            #viewport {
+                width: 1280px;
+                height: 720px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="viewport"></div>
+
+        <script src="../node_modules/three/build/three.min.js"></script>
+        <script src="../dist/tetsuo.min.js"></script>
+
+        <script>
+            let scene = new TETSUO.Scene({ dev: true, autoStart: true });
+
+            let three = new TETSUO.THREENode("three", scene.renderer, {
+                cameraSettings: { far: 1000 },
+            });
+
+            let cylinder = new TETSUO.Premade.Cylinder();
+            cylinder.prepare();
+            three.onUpdate((time) => cylinder.update(time));
+
+            let cylinderMesh = cylinder.getMesh();
+            cylinderMesh.position.z = -12;
+            cylinderMesh.position.y = -1.5;
+            three.add(cylinderMesh);
+
+            scene.connectToScreen(three);
+        </script>
+    </body>
+</html>
