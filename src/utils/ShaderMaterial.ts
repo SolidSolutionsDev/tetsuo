@@ -10,7 +10,6 @@ const defaultFragmentShader = require("../shaders/default.frag");
  * @param shaderOptions
  */
 export const ShaderMaterial = (shaderOptions: {
-    geometry: THREE.Geometry;
     vertexShader?: string;
     fragmentShader?: string;
     points?: boolean;

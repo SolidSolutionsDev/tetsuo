@@ -24,17 +24,33 @@
             let scene = new TETSUO.Scene({ dev: true, autoStart: true });
 
             let three = new TETSUO.THREENode("three", scene.renderer, {
-                cameraSettings: { far: 1000 },
+                cameraSettings: { far: 1000, fov: 40 },
             });
 
             let cylinder = new TETSUO.Premade.Cylinder();
             cylinder.prepare();
-            three.onUpdate((time) => cylinder.update(time));
-
             let cylinderMesh = cylinder.getMesh();
-            cylinderMesh.position.z = -12;
-            cylinderMesh.position.y = -1.5;
+            cylinder.mesh.position.set(-3, -1.5, -12);
             three.add(cylinderMesh);
+
+            let light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(20, 20, 20);
+            three.add(light);
+
+            let face = new TETSUO.Premade.Face({
+                geometryPath: "./res/face.json",
+            });
+            face.prepare().then((mesh) => {
+                mesh.position.z = -5;
+                mesh.position.x = 1;
+                mesh.rotation.x = Math.PI;
+                three.add(mesh);
+            });
+
+            three.onUpdate((time) => {
+                cylinder.update(time);
+                face.update(time);
+            });
 
             scene.connectToScreen(three);
         </script>
