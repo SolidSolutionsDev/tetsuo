@@ -100,33 +100,37 @@ export class Cylinder implements PremadeMesh {
      * Builds the mesh
      */
     prepare() {
-        // create slices
-        let geo = new THREE.CylinderGeometry(1, 1, this.sliceHeight, this.sliceSegments);
-        let material = new THREE.MeshNormalMaterial();
-        for (let i = 0; i < this.sliceCount; i++) {
-            let slice = new THREE.Mesh(geo, material);
-            slice.position.y = i * (this.sliceHeight + this.sliceSpacing);
-            slice.rotation.y = i / 20;
-            this.slices.push(slice);
-            this.mesh.add(slice);
-        }
+        return new Promise<THREE.Group>((resolve, reject) => {
+            // create slices
+            let geo = new THREE.CylinderGeometry(1, 1, this.sliceHeight, this.sliceSegments);
+            let material = new THREE.MeshNormalMaterial();
+            for (let i = 0; i < this.sliceCount; i++) {
+                let slice = new THREE.Mesh(geo, material);
+                slice.position.y = i * (this.sliceHeight + this.sliceSpacing);
+                slice.rotation.y = i / 20;
+                this.slices.push(slice);
+                this.mesh.add(slice);
+            }
 
-        // create particles
-        let particleGeo = new THREE.Geometry();
-        for (let i = 0; i < this.particleCount; i++) {
-            let particle = {
-                position: new THREE.Vector3(
-                    Math.random() * 4 - 2,
-                    Math.random() * 3.5,
-                    Math.random() * 4 - 2
-                ),
-            };
-            particleGeo.vertices.push(particle.position);
-            this.particles.push(particle);
-        }
-        let particleMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
-        this.particleMesh = new THREE.Points(particleGeo, particleMaterial);
-        this.mesh.add(this.particleMesh);
+            // create particles
+            let particleGeo = new THREE.Geometry();
+            for (let i = 0; i < this.particleCount; i++) {
+                let particle = {
+                    position: new THREE.Vector3(
+                        Math.random() * 4 - 2,
+                        Math.random() * 3.5,
+                        Math.random() * 4 - 2
+                    ),
+                };
+                particleGeo.vertices.push(particle.position);
+                this.particles.push(particle);
+            }
+            let particleMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+            this.particleMesh = new THREE.Points(particleGeo, particleMaterial);
+            this.mesh.add(this.particleMesh);
+
+            resolve(this.mesh);
+        });
     }
 
     /**

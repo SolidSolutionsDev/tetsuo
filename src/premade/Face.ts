@@ -49,7 +49,7 @@ export class Face implements PremadeMesh {
      * Builds the mesh
      */
     prepare() {
-        return new Promise((resolve, reject) => {
+        return new Promise<THREE.Mesh>((resolve, reject) => {
             Loader.loadGeometry(this.geometryPath, (geometry: any) => {
                 let material = ShaderMaterial({
                     side: THREE.DoubleSide,

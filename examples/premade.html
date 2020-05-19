@@ -28,10 +28,10 @@
             });
 
             let cylinder = new TETSUO.Premade.Cylinder();
-            cylinder.prepare();
-            let cylinderMesh = cylinder.getMesh();
-            cylinder.mesh.position.set(-3, -1.5, -12);
-            three.add(cylinderMesh);
+            cylinder.prepare().then((mesh) => {
+                mesh.position.set(-3, -1.5, -12);
+                three.add(mesh);
+            });
 
             let light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(20, 20, 20);
