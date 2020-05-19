@@ -95,7 +95,7 @@ export class THREENode extends Node {
             options?.camera ||
             new THREE.PerspectiveCamera(
                 options?.cameraSettings?.fov || 45,
-                nodeRenderer.viewport.ratio,
+                nodeRenderer.width / nodeRenderer.height,
                 options?.cameraSettings?.near || 0.1,
                 options?.cameraSettings?.far || 50
             );
@@ -105,11 +105,11 @@ export class THREENode extends Node {
 
         this.nodeRenderer = nodeRenderer;
         this.target = new THREE.WebGLRenderTarget(
-            this.nodeRenderer.viewport.width,
-            this.nodeRenderer.viewport.height
+            this.nodeRenderer.width,
+            this.nodeRenderer.height
         );
 
-        if (options && options.orbitControls) {
+        if (options && options.orbitControls && this.nodeRenderer.viewport) {
             this.controls = new OrbitControls(this.camera, this.nodeRenderer.viewport.domElement);
         }
 
@@ -118,8 +118,8 @@ export class THREENode extends Node {
         if (this.depthBuffer) {
             this.output.value = { diffuse: null, depth: null };
             this.target.depthTexture = new THREE.DepthTexture(
-                this.nodeRenderer.viewport.width,
-                this.nodeRenderer.viewport.height
+                this.nodeRenderer.width,
+                this.nodeRenderer.height
             );
         }
 
@@ -172,9 +172,9 @@ export class THREENode extends Node {
      * Handles renderer resize
      */
     resize() {
-        this.camera.aspect = this.nodeRenderer.viewport.ratio;
+        this.camera.aspect = this.nodeRenderer.width / this.nodeRenderer.height;
         this.camera.updateProjectionMatrix();
-        this.target.setSize(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
+        this.target.setSize(this.nodeRenderer.width, this.nodeRenderer.height);
 
         return this;
     }

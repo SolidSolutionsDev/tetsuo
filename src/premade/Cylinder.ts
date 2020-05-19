@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { PremadeMesh } from "./PremadeMesh";
+import { Premade } from "./Premade";
 
 export interface CylinderOptions {
     /**
@@ -40,7 +40,7 @@ export interface CylinderUpdateOptions {
     particleRotationAmount?: number;
 }
 
-export class Cylinder implements PremadeMesh {
+export class Cylinder implements Premade {
     /**
      * Output mesh for external use
      */

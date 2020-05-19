@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { PremadeMesh } from "./PremadeMesh";
+import { Premade } from "./Premade";
 import { ShaderMaterial } from "../utils/ShaderMaterial";
 import Loader from "../core/Loader";
 
@@ -22,7 +22,7 @@ export interface FaceUpdateOptions {
     color: THREE.Vector3;
 }
 
-export class Face implements PremadeMesh {
+export class Face implements Premade {
     /**
      * Path to the mesh geometry
      */

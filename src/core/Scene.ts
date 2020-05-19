@@ -79,7 +79,7 @@ export class Scene {
 
             // add a stats element to the viewport for tracking fps
             this.stats = new Stats();
-            this.renderer.viewport.domElement.appendChild(this.stats.dom);
+            this.renderer.viewport && this.renderer.viewport.domElement.appendChild(this.stats.dom);
         }
 
         // if autoStart variable is true, start animating the scene right away

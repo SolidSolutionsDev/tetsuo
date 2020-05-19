@@ -96,8 +96,8 @@ export class ShaderNode extends Node {
 
         this.nodeRenderer = nodeRenderer;
         this.target = new THREE.WebGLRenderTarget(
-            this.nodeRenderer.viewport.width,
-            this.nodeRenderer.viewport.height
+            this.nodeRenderer.width,
+            this.nodeRenderer.height
         );
 
         this.scene = new THREE.Scene();
@@ -153,8 +153,8 @@ export class ShaderNode extends Node {
         // update default uniforms
         this.uniforms["iTime"].value = time;
         this.uniforms["iResolution"].value.set(
-            this.nodeRenderer.viewport.width,
-            this.nodeRenderer.viewport.height,
+            this.nodeRenderer.width,
+            this.nodeRenderer.height,
             1
         );
 
@@ -198,7 +198,7 @@ export class ShaderNode extends Node {
      * Handles renderer resize
      */
     resize() {
-        this.target.setSize(this.nodeRenderer.viewport.width, this.nodeRenderer.viewport.height);
+        this.target.setSize(this.nodeRenderer.width, this.nodeRenderer.height);
 
         return this;
     }
