@@ -31,6 +31,11 @@
                 let node = new TETSUO.THREENode("td", scene.renderer, {
                     // passing this option enables depth texture rendering
                     depthBuffer: true,
+                    orbitControls: true,
+
+                    cameraSettings: {
+                        position: new THREE.Vector3(0, 0, 10),
+                    },
                 });
 
                 // initialize the scene with some spinning cubes
@@ -62,18 +67,13 @@
                         TETSUO.Shaders.depth,
 
                         /* glsl */ `
-                            // output of the three js scene when depthBuffer option is true
-                            struct DiffuseAndDepth {
-                                sampler2D diffuse;
-                                sampler2D depth;
-                            };
-                    
                             varying vec2 vUv;
+                            // output of a THREENode with depthBuffer = true is a struct with two textures
                             uniform DiffuseAndDepth td;
-                    
+
                             void main() {
                                 float depth = readDepth(td.depth, vUv, 0.1, 50.);
-                    
+
                                 gl_FragColor.rgb = 1. - vec3( depth );
                                 gl_FragColor.a = 1.;
                             }

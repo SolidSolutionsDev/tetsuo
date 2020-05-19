@@ -29,9 +29,10 @@
 
                 // add an object
                 let object = new THREE.Mesh(
-                    new THREE.SphereGeometry(20, 20, 20),
+                    new THREE.SphereGeometry(1, 30, 30),
                     new THREE.MeshLambertMaterial({ color: 0xff0000 })
                 );
+                object.position.z = -5;
                 node.add(object);
 
                 // add a light
@@ -39,7 +40,7 @@
 
                 // start animation loop
                 scene.animate((time) => {
-                    object.position.set(Math.sin(time) * 10, Math.cos(time) * 10, 0);
+                    object.position.set(Math.sin(time), Math.cos(time), object.position.z);
                 });
             });
         </script>
