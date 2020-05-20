@@ -9,6 +9,7 @@ export interface NodeRendererOptions {
      * Element where the renderer will drop his canvas
      */
     viewportElement?: HTMLElement;
+    noViewport?: boolean;
 
     /**
      * Whether to use antialias when rendering
@@ -83,9 +84,10 @@ export class NodeRenderer {
         this.height = options?.height || 0;
 
         let viewport: HTMLElement | null = null;
-        if (options.viewportElement) {
+
+        if (!options.noViewport && options.viewportElement) {
             viewport = options.viewportElement;
-        } else if (document.getElementById("viewport")) {
+        } else if (!options.noViewport && document.getElementById("viewport")) {
             viewport = document.getElementById("viewport");
         }
 
@@ -103,11 +105,20 @@ export class NodeRenderer {
             throw new Error("Node renderer - Fixed size set to true but no width/height defined");
         }
 
+        let canvas;
+        if (options.noViewport) {
+            canvas = document.createElement("canvas");
+            canvas.style.display = "none";
+            document.body.appendChild(canvas);
+        } else {
+            canvas = this.viewport?.canvas;
+        }
+
         // initialize renderer
         this.renderer = new THREE.WebGLRenderer({
             antialias: options.antialias,
             alpha: options.alpha,
-            canvas: this.viewport?.canvas,
+            canvas,
         });
 
         // set renderer size depending on size options
@@ -142,8 +153,8 @@ export class NodeRenderer {
      *
      * @param time
      */
-    update(time: number) {
-        this.nodeGraph.traverse((node) => node.update(time));
+    update(time: number, fromNode?: Node) {
+        this.nodeGraph.traverse((node) => node.update(time), fromNode);
     }
 
     /**
@@ -203,15 +214,13 @@ export class NodeRenderer {
             this.nodeGraph.traverse((node) => node.render());
 
             // render the result to screen
-            if (this.viewport) {
-                let map = this.nodeGraph.root.output.getValue() as THREE.Texture;
-                this.quad.material = new THREE.MeshBasicMaterial({
-                    map,
-                });
-                this.renderer.setRenderTarget(null);
-                this.renderer.clear(true, true, true);
-                this.renderer.render(this.scene, this.camera);
-            }
+            let map = this.nodeGraph.root.output.getValue() as THREE.Texture;
+            this.quad.material = new THREE.MeshBasicMaterial({
+                map,
+            });
+            this.renderer.setRenderTarget(null);
+            this.renderer.clear(true, true, true);
+            this.renderer.render(this.scene, this.camera);
         }
     }
 }

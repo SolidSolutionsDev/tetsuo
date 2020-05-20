@@ -5,7 +5,9 @@ export interface Premade {
     getMesh?: () => PremadeMeshTypes;
 
     texture?: THREE.Texture;
-    getTexture?: () => THREE.Texture;
+    quad?: THREE.Mesh;
+    getTexture?: () => THREE.Texture | undefined;
+    getQuad?: () => THREE.Mesh | undefined;
 
     prepare: (options: any) => Promise<any>;
     update: (time: number, updateOptions?: any) => void;
