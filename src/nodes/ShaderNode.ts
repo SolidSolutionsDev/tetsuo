@@ -24,6 +24,8 @@ export interface ShaderNodeOptions extends NodeOptions {
      * Whether to only render this node when needsUpdate is true
      */
     manualRender?: boolean;
+
+    uniforms?: { [key: string]: IUniform };
 }
 
 /**
@@ -56,6 +58,11 @@ export class ShaderNode extends Node {
      * Shader's fragment code
      */
     fragmentShader: string = defaultFragmentShader;
+
+    /**
+     * Uniforms passed to constructor as option
+     */
+    customUniforms?: { [key: string]: IUniform } = {};
 
     /**
      * Shader uniforms
@@ -105,6 +112,8 @@ export class ShaderNode extends Node {
 
         this.manualRender = options?.manualRender;
 
+        this.customUniforms = options.uniforms;
+
         prepare && this.prepare();
     }
 
@@ -119,6 +128,7 @@ export class ShaderNode extends Node {
         // (re)initialize shader uniforms
         let uniforms: { [key: string]: IUniform } = {
             ...defaultUniforms,
+            ...this.customUniforms,
         };
         for (let key in this.inputs) {
             if (!uniforms[key]) uniforms[key] = { value: this.inputs[key].getValue() };

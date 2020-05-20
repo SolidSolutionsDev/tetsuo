@@ -1,18 +1,29 @@
 import * as THREE from "three";
 import { Premade } from "./Premade";
 import { NodeRenderer } from "../nodes/NodeRenderer";
+import { PIXINode } from "../nodes/PIXINode";
+import { ShaderNode } from "../nodes/ShaderNode";
+import { ShaderMaterial } from "three";
+import { Shaders } from "../shaders";
 
-export interface TestScreenOptions {}
+export interface TextScreenOptions {
+    width: number;
+    height: number;
+    renderer?: NodeRenderer;
+}
 
-export interface TestScreenUpdateOptions {}
+export interface TextScreenUpdateOptions {}
 
-export class TestScreen implements Premade {
+export class TextScreen implements Premade {
     renderer: NodeRenderer;
 
     texture: THREE.Texture;
 
-    constructor(options?: TestScreenOptions) {
-        this.renderer = new NodeRenderer();
+    output: any;
+
+    constructor(options: TextScreenOptions) {
+        this.renderer = options.renderer || new NodeRenderer();
+
         this.texture = new THREE.Texture();
     }
 
@@ -29,7 +40,7 @@ export class TestScreen implements Premade {
      * @param time - Current animation time
      * @param updateOptions - Update options to override defaults
      */
-    update(time: number, updateOptions?: TestScreenUpdateOptions) {}
+    update(time: number, updateOptions?: TextScreenUpdateOptions) {}
 
     /**
      * Retrieves the output texture for external use

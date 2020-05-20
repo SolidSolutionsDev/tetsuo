@@ -20,7 +20,7 @@ export interface NodeRendererOptions {
      */
     alpha?: boolean;
 
-    fixedSize?: number;
+    fixedSize?: boolean;
     width?: number;
     height?: number;
     autoClear?: boolean;
@@ -82,8 +82,12 @@ export class NodeRenderer {
         this.width = options?.width || 0;
         this.height = options?.height || 0;
 
-        let viewport: HTMLElement | null =
-            options.viewportElement || document.getElementById("viewport");
+        let viewport: HTMLElement | null = null;
+        if (options.viewportElement) {
+            viewport = options.viewportElement;
+        } else if (document.getElementById("viewport")) {
+            viewport = document.getElementById("viewport");
+        }
 
         // if no viewport found, fixed size is mandatory
         if (!viewport) {
@@ -95,7 +99,7 @@ export class NodeRenderer {
         }
 
         // check for size options if needed
-        if ((this.fixedSize && (!options.width || !options.height)) || !this.viewport) {
+        if (this.fixedSize && (!options.width || !options.height) && !this.viewport) {
             throw new Error("Node renderer - Fixed size set to true but no width/height defined");
         }
 
