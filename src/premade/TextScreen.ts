@@ -5,7 +5,6 @@ import { PIXINode } from "../nodes/PIXINode";
 import { ShaderNode } from "../nodes/ShaderNode";
 import { Shaders } from "../shaders";
 import { Node } from "../nodes/Node";
-import { BloomNode } from "../nodes/effects/BloomNode";
 import { UniformNode } from "../nodes/UniformNode";
 
 export interface TextScreenOptions {
@@ -21,6 +20,14 @@ export interface TextScreenOptions {
 }
 
 export interface TextScreenUpdateOptions {}
+
+export type EventSubscriber = (eventType: string, eventData: any) => void;
+
+export enum EventTypes {
+    newTextAnimation = "newTextAnimation",
+    newCharacter = "newCharacter",
+    textAnimationOver = "textAnimationOver",
+}
 
 export class TextScreen implements Premade {
     protected _renderer: NodeRenderer;
@@ -43,6 +50,8 @@ export class TextScreen implements Premade {
     protected _background?: PIXI.Graphics;
     protected _text?: PIXI.Container;
     protected _textEntries: PIXI.Text[] = [];
+
+    protected _subscribers: EventSubscriber[] = [];
 
     constructor(options: TextScreenOptions) {
         this._width = options.width;
@@ -140,11 +149,15 @@ export class TextScreen implements Premade {
         if (text) text.text = block;
         let startTime = performance.now();
 
+        let trigger = this.trigger;
+        trigger(EventTypes.newTextAnimation, {});
+
         return function updateTextAnimation(forceEnd?: boolean) {
             if (text) {
                 if (forceEnd) {
                     text.text = textContent;
                     callback && callback();
+                    trigger(EventTypes.textAnimationOver, {});
                     return true;
                 } else {
                     framesPerChar = framesPerChar || 20;
@@ -154,9 +167,14 @@ export class TextScreen implements Premade {
                     if (charAmount >= textContent.length) {
                         text.text = textContent;
                         callback && callback();
+                        trigger(EventTypes.textAnimationOver, {});
                         return true;
                     } else {
-                        text.text = textContent.slice(0, charAmount) + block;
+                        if (text.text !== textContent.slice(0, charAmount) + block) {
+                            text.text = textContent.slice(0, charAmount) + block;
+
+                            trigger(EventTypes.newTextAnimation, {});
+                        }
                         return false;
                     }
                 }
@@ -257,5 +275,13 @@ export class TextScreen implements Premade {
      */
     getTexture() {
         return this.texture;
+    }
+
+    subscribe(subscriber: EventSubscriber) {
+        this._subscribers.push(subscriber);
+    }
+
+    trigger(eventType: string, eventData: any) {
+        this._subscribers.forEach((subscriber) => subscriber(eventType, eventData));
     }
 }

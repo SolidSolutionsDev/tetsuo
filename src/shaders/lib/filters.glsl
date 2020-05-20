@@ -43,7 +43,7 @@ vec4 bloom(sampler2D tex, vec2 texSize, vec2 p, float separation, float threshol
     result.rgb /= pow(5. * 2. + 1., 2.);
     result.a = texture2D(tex, p).a;
 
-    return vec4((texture2D(tex, p).rgb + result.rgb) * amount, texture2D(tex, p).a);
+    return vec4((texture2D(tex, p).rgb + result.rgb * amount), texture2D(tex, p).a);
 }
 
 vec2 curve(vec2 p) {
