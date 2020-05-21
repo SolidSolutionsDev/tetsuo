@@ -16,7 +16,7 @@ export interface TextScreenOptions {
     paddingBottom?: number;
     paddingLeft?: number;
     defaultTextStyle?: PIXI.TextStyle;
-    spaceBetweenLines?: number;
+    spaceBetweenEntries?: number;
 }
 
 export interface TextScreenUpdateOptions {}
@@ -29,11 +29,21 @@ export enum EventTypes {
     textAnimationOver = "textAnimationOver",
 }
 
+export type TextAnimation = (deltaTime: number, forceEnd?: boolean) => boolean;
+
+export interface Question {
+    selected: string;
+    container: PIXI.Container;
+    answers: { id: string; container: PIXI.Container; selector: PIXI.Graphics }[];
+}
+
 export class TextScreen implements Premade {
     protected _renderer: NodeRenderer;
 
     texture?: THREE.Texture;
     quad?: THREE.Mesh;
+
+    protected _elapsedTime: number = 0;
 
     protected _outputNode?: Node;
 
@@ -45,11 +55,17 @@ export class TextScreen implements Premade {
     protected _paddingBottom: number;
     protected _paddingLeft: number;
     protected _defaultTextStyle: any;
-    protected _spaceBetweenLines: number;
+    protected _spaceBetweenEntries: number;
+
+    protected _currentAnimation?: TextAnimation;
+    protected _currentQuestion?: Question;
 
     protected _background?: PIXI.Graphics;
-    protected _text?: PIXI.Container;
-    protected _textEntries: PIXI.Text[] = [];
+    protected _foreground?: PIXI.Container;
+
+    protected _entries: (PIXI.Container | PIXI.Text | PIXI.Graphics)[] = [];
+    //protected _currentAnimation?: () => boolean;
+    //protected _currentQuestion?: any;
 
     protected _subscribers: EventSubscriber[] = [];
 
@@ -62,7 +78,7 @@ export class TextScreen implements Premade {
         this._marginLeft = options.marginLeft || 240;
         this._paddingBottom = options.paddingBottom || 50;
         this._paddingLeft = options.paddingLeft || 50;
-        this._spaceBetweenLines = options.spaceBetweenLines || 20;
+        this._spaceBetweenEntries = options.spaceBetweenEntries || 20;
         this._defaultTextStyle = options.defaultTextStyle || {
             fontFamily: "Courier New",
             fontSize: 22,
@@ -93,10 +109,10 @@ export class TextScreen implements Premade {
         this._background.position.set(this._width / 2, this._height / 2);
     }
 
-    _generateText() {
-        this._text = new PIXI.Container();
-        this._text.position.x = this._marginLeft + this._paddingLeft;
-        this._text.position.y = this._marginTop + this._paddingBottom;
+    _generateForeground() {
+        this._foreground = new PIXI.Container();
+        this._foreground.position.x = this._marginLeft + this._paddingLeft;
+        this._foreground.position.y = this._marginTop + this._paddingBottom;
 
         let g = new PIXI.Graphics();
         g.beginFill(0xff0000);
@@ -108,80 +124,156 @@ export class TextScreen implements Premade {
         );
         g.endFill();
         g.alpha = 0;
-        this._text.addChild(g);
+        this._foreground.addChild(g);
     }
 
-    _addTextLine(textContent: string, textStyle?: any) {
-        if (!this._text) return;
+    _addEntry(newEntry: PIXI.Container | PIXI.Text | PIXI.Graphics, height?: number) {
+        if (!this._foreground) return;
 
-        this._text.position.x = this._marginLeft + this._paddingLeft;
-        this._text.position.y = this._marginTop + this._paddingBottom;
+        height = height || newEntry.height;
 
-        let text = new PIXI.Text(textContent, { ...this._defaultTextStyle, ...textStyle });
-        text.position.y = this._text.height - text.height;
+        newEntry.position.y = this._foreground.height - height;
 
-        for (let i = this._textEntries.length - 1; i >= 0; i--) {
-            let entry = this._textEntries[i];
+        for (let i = this._entries.length - 1; i >= 0; i--) {
+            let entry = this._entries[i];
 
-            entry.position.y -= text.height + this._spaceBetweenLines;
+            entry.position.y -= height + this._spaceBetweenEntries;
 
             if (entry.position.y < 0) {
-                this._textEntries.splice(i, 1);
-                this._text && this._text.removeChild(entry);
+                this._entries.splice(i, 1);
+                this._foreground && this._foreground.removeChild(entry);
             }
         }
 
-        this._textEntries.push(text);
+        this._entries.push(newEntry);
+        this._foreground.addChild(newEntry);
 
-        this._text.addChild(text);
-
-        return text;
+        return newEntry;
     }
 
-    _addTextAnimation(
+    _addText(
         textContent: string,
         textStyle?: any,
-        framesPerChar?: number,
+        options?: { framesPerChar: number },
         callback?: () => any
     ) {
-        let text = this._addTextLine(textContent, textStyle);
         let block = "█";
-        if (text) text.text = block;
-        let startTime = performance.now();
 
-        let trigger = this.trigger;
-        trigger(EventTypes.newTextAnimation, {});
+        let text = new PIXI.Text(textContent, { ...this._defaultTextStyle, ...textStyle });
+        let height = text.height;
 
-        return function updateTextAnimation(forceEnd?: boolean) {
-            if (text) {
-                if (forceEnd) {
-                    text.text = textContent;
-                    callback && callback();
-                    trigger(EventTypes.textAnimationOver, {});
-                    return true;
-                } else {
-                    framesPerChar = framesPerChar || 20;
-                    let elapsed = performance.now() - startTime;
-                    let charAmount = Math.floor(elapsed / framesPerChar);
+        text.text = block;
 
-                    if (charAmount >= textContent.length) {
-                        text.text = textContent;
-                        callback && callback();
-                        trigger(EventTypes.textAnimationOver, {});
-                        return true;
-                    } else {
-                        if (text.text !== textContent.slice(0, charAmount) + block) {
-                            text.text = textContent.slice(0, charAmount) + block;
+        this._addEntry(text, height);
 
-                            trigger(EventTypes.newTextAnimation, {});
-                        }
-                        return false;
-                    }
-                }
+        let elapsedTime = 0;
+        let framesPerChar = options?.framesPerChar || 60;
+
+        this._trigger(EventTypes.newTextAnimation, {});
+
+        let animation: TextAnimation = (timeDelta: number, forceEnd?: boolean) => {
+            if (forceEnd) {
+                text.text = textContent;
+                setImmediate(() => callback && callback());
+                return true;
             }
 
-            return true;
+            elapsedTime += timeDelta;
+            let elapsedChars = Math.floor(elapsedTime / framesPerChar);
+
+            if (elapsedChars < textContent.length) {
+                if (text.text !== textContent.slice(0, elapsedChars) + block) {
+                    text.text = textContent.slice(0, elapsedChars) + block;
+                    this._trigger(EventTypes.newCharacter, {});
+                }
+                return false;
+            } else {
+                text.text = textContent;
+                setImmediate(() => callback && callback());
+                this._trigger(EventTypes.textAnimationOver, {});
+                return true;
+            }
         };
+
+        this._currentAnimation = animation;
+
+        return animation;
+    }
+
+    _addQuestion(
+        questionText: string,
+        answers: { id: string; textContent: string; textStyle?: any }[],
+        options?: any
+    ) {
+        this._addText(
+            questionText,
+            { ...this._defaultTextStyle, ...options?.questionStyle },
+            undefined,
+            () => {
+                let selected = answers[0].id;
+
+                let question: Question = {
+                    selected,
+                    container: new PIXI.Container(),
+                    answers: [],
+                };
+
+                for (let i = 0; i < answers.length; i++) {
+                    let answerContainer = new PIXI.Container();
+
+                    let spaceBetweenAnswers =
+                        options?.spaceBetweenAnswers || this._spaceBetweenEntries;
+
+                    let answerText = new PIXI.Text(answers[i].textContent, {
+                        ...this._defaultTextStyle,
+                        ...answers[i].textStyle,
+                    });
+                    answerText.position.set(40, 10);
+                    answerContainer.addChild(answerText);
+
+                    let answerSelector = new PIXI.Graphics();
+                    answerSelector.beginFill(
+                        answers[i].textStyle?.fill ||
+                            options?.questionStyle?.fill ||
+                            this._defaultTextStyle.fill
+                    );
+                    answerSelector.drawRect(0, 0, 10, 10);
+                    answerSelector.endFill();
+                    answerSelector.position.set(10, 5 + answerText.height / 2);
+                    answerSelector.visible = i == 0;
+                    answerContainer.addChild(answerSelector);
+
+                    question.answers.push({
+                        id: answers[i].id,
+                        container: answerContainer,
+                        selector: answerSelector,
+                    });
+
+                    if (i > 0) {
+                        answerContainer.position.y =
+                            spaceBetweenAnswers +
+                            question.answers[i - 1].container.position.y +
+                            question.answers[i - 1].container.height;
+
+                        console.log(answerContainer.position.y);
+                    }
+
+                    question.container.addChild(answerContainer);
+                }
+
+                this._currentQuestion = question;
+
+                this._addEntry(question.container);
+            }
+        );
+    }
+
+    _selectAnswer(answerId: string) {
+        if (this._currentQuestion) {
+            this._currentQuestion.answers.forEach(
+                (answer) => (answer.selector.visible = answerId === answer.id)
+            );
+        }
     }
 
     /**
@@ -194,8 +286,8 @@ export class TextScreen implements Premade {
             this._generateBackground();
             this._background && pixi.add(this._background);
 
-            this._generateText();
-            this._text && pixi.add(this._text);
+            this._generateForeground();
+            this._foreground && pixi.add(this._foreground);
 
             let crt = new ShaderNode("crt", this._renderer, {
                 fragmentShader: Shaders.compile(
@@ -257,8 +349,13 @@ export class TextScreen implements Premade {
      * @param time - Current animation time
      * @param updateOptions - Update options to override defaults
      */
-    update(time: number, updateOptions?: TextScreenUpdateOptions) {
-        this._render(time);
+    update(deltaTime: number, updateOptions?: TextScreenUpdateOptions) {
+        if (!this._currentAnimation || this._currentAnimation(deltaTime)) {
+            this._currentAnimation = undefined;
+        }
+
+        this._elapsedTime += deltaTime;
+        this._render(this._elapsedTime / 1000);
     }
 
     _render(time: number) {
@@ -281,7 +378,7 @@ export class TextScreen implements Premade {
         this._subscribers.push(subscriber);
     }
 
-    trigger(eventType: string, eventData: any) {
+    _trigger(eventType: string, eventData: any) {
         this._subscribers.forEach((subscriber) => subscriber(eventType, eventData));
     }
 }
