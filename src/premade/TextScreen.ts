@@ -8,14 +8,50 @@ import { Node } from "../nodes/Node";
 import { UniformNode } from "../nodes/UniformNode";
 
 export interface TextScreenOptions {
+    /**
+     * Width of the text screen
+     */
     width: number;
+
+    /**
+     * Height of the text screen
+     */
     height: number;
+
+    /**
+     * Background color of the text screen
+     */
     backgroundColor?: number;
+
+    /**
+     * Distance from the top/bottom of the viewport to the top of the screen
+     */
     marginTop?: number;
+
+    /**
+     * Distance from the sides of the viewport to the sides of the screen
+     */
     marginLeft?: number;
+
+    /**
+     * Distance from the bottom of the screen to the bottom of the text
+     */
     paddingBottom?: number;
+
+    /**
+     * Distance from the side of the screen to the side of the text
+     */
     paddingLeft?: number;
+
+    /**
+     * Default text style to pass to all created text
+     * Each text request can override properties from this style
+     */
     defaultTextStyle?: PIXI.TextStyle;
+
+    /**
+     * Space between text entries
+     */
     spaceBetweenEntries?: number;
 }
 
@@ -23,10 +59,39 @@ export interface TextScreenUpdateOptions {}
 
 export type EventSubscriber = (eventType: string, eventData: any) => void;
 
+/**
+ * Enum of all the events the text screen can fire
+ */
 export enum EventTypes {
+    /**
+     * When a new text line has been added to the screen
+     */
     newTextAnimation = "newTextAnimation",
+
+    /**
+     * When a new character has been typed in the text animation
+     */
     newCharacter = "newCharacter",
+
+    /**
+     * When the animation of a new text line is over
+     */
     textAnimationOver = "textAnimationOver",
+
+    /**
+     * When a new question is added to the screen
+     */
+    newQuestion = "newQuestion",
+
+    /**
+     * When an answer from the list is selected
+     */
+    answerSelected = "answerSelected",
+
+    /**
+     * When the answer that's currently selected is confirmed (end of question)
+     */
+    answerConfirmed = "answerConfirmed",
 }
 
 export type TextAnimation = (deltaTime: number, forceEnd?: boolean) => boolean;
@@ -38,15 +103,19 @@ export interface Question {
 }
 
 export class TextScreen implements Premade {
-    protected _renderer: NodeRenderer;
-
+    /**
+     * Output texture to which the text screen is rendered
+     */
     texture?: THREE.Texture;
+
+    /**
+     * Output quad which shader material holds the render of the screen
+     */
     quad?: THREE.Mesh;
 
+    protected _renderer: NodeRenderer;
     protected _elapsedTime: number = 0;
-
     protected _outputNode?: Node;
-
     protected _width: number;
     protected _height: number;
     protected _backgroundColor: number;
@@ -56,36 +125,31 @@ export class TextScreen implements Premade {
     protected _paddingLeft: number;
     protected _defaultTextStyle: any;
     protected _spaceBetweenEntries: number;
-
-    protected _currentAnimation?: TextAnimation;
-    protected _currentQuestion?: Question;
-
     protected _background?: PIXI.Graphics;
     protected _foreground?: PIXI.Container;
-
     protected _entries: (PIXI.Container | PIXI.Text | PIXI.Graphics)[] = [];
-    //protected _currentAnimation?: () => boolean;
-    //protected _currentQuestion?: any;
-
+    protected _currentAnimation?: TextAnimation;
+    protected _currentQuestion?: Question;
     protected _subscribers: EventSubscriber[] = [];
 
     constructor(options: TextScreenOptions) {
+        // set default values
         this._width = options.width;
         this._height = options.height;
-
         this._backgroundColor = options.backgroundColor || 0x002c2c;
         this._marginTop = options.marginTop || 90;
         this._marginLeft = options.marginLeft || 240;
         this._paddingBottom = options.paddingBottom || 50;
         this._paddingLeft = options.paddingLeft || 50;
         this._spaceBetweenEntries = options.spaceBetweenEntries || 20;
-        this._defaultTextStyle = options.defaultTextStyle || {
+        this._defaultTextStyle = {
             fontFamily: "Courier New",
             fontSize: 22,
             fontWeight: "bold",
             wordWrap: true,
             wordWrapWidth: this._width - 2 * this._marginLeft - 2 * this._paddingLeft,
             fill: 0x3cdc7c,
+            ...options.defaultTextStyle,
         };
 
         this._renderer = new NodeRenderer({
@@ -95,6 +159,9 @@ export class TextScreen implements Premade {
         });
     }
 
+    /**
+     * Generates a background graphic
+     */
     _generateBackground() {
         this._background = new PIXI.Graphics();
 
@@ -109,11 +176,15 @@ export class TextScreen implements Premade {
         this._background.position.set(this._width / 2, this._height / 2);
     }
 
+    /**
+     * Generates the foreground container that will hold the text
+     */
     _generateForeground() {
         this._foreground = new PIXI.Container();
         this._foreground.position.x = this._marginLeft + this._paddingLeft;
         this._foreground.position.y = this._marginTop + this._paddingBottom;
 
+        // this graphic needs to be added to give width & height to the foreground container
         let g = new PIXI.Graphics();
         g.beginFill(0xff0000);
         g.drawRect(
@@ -127,18 +198,28 @@ export class TextScreen implements Premade {
         this._foreground.addChild(g);
     }
 
+    /**
+     * Adds an entry to the foreground, moving previous entries up and removing any entry that is out of bounds
+     *
+     * @param newEntry
+     * @param height
+     */
     _addEntry(newEntry: PIXI.Container | PIXI.Text | PIXI.Graphics, height?: number) {
         if (!this._foreground) return;
 
         height = height || newEntry.height;
 
+        // place new entry at the bottom of the foreground
         newEntry.position.y = this._foreground.height - height;
 
         for (let i = this._entries.length - 1; i >= 0; i--) {
             let entry = this._entries[i];
 
+            // move other entries up
             entry.position.y -= height + this._spaceBetweenEntries;
 
+            // if entry is out of bounds, remove it from the foreground
+            // TODO fade entries out
             if (entry.position.y < 0) {
                 this._entries.splice(i, 1);
                 this._foreground && this._foreground.removeChild(entry);
@@ -151,7 +232,15 @@ export class TextScreen implements Premade {
         return newEntry;
     }
 
-    _addText(
+    /**
+     * Adds a new text line animation to the screen
+     *
+     * @param textContent - Text of the line
+     * @param textStyle - Style of the text font
+     * @param options - Extra animation options
+     * @param callback - Callback when animation finishes
+     */
+    addText(
         textContent: string,
         textStyle?: any,
         options?: { framesPerChar: number },
@@ -169,10 +258,12 @@ export class TextScreen implements Premade {
         let elapsedTime = 0;
         let framesPerChar = options?.framesPerChar || 60;
 
-        this._trigger(EventTypes.newTextAnimation, {});
+        this._trigger(EventTypes.newTextAnimation, { textContent, textStyle, options });
 
         let animation: TextAnimation = (timeDelta: number, forceEnd?: boolean) => {
+            // animation is forcefully ended
             if (forceEnd) {
+                // display all text and callback
                 text.text = textContent;
                 setImmediate(() => callback && callback());
                 return true;
@@ -181,14 +272,23 @@ export class TextScreen implements Premade {
             elapsedTime += timeDelta;
             let elapsedChars = Math.floor(elapsedTime / framesPerChar);
 
+            // if animation isn't over
             if (elapsedChars < textContent.length) {
+                // if a new character was added to the screen
                 if (text.text !== textContent.slice(0, elapsedChars) + block) {
                     text.text = textContent.slice(0, elapsedChars) + block;
-                    this._trigger(EventTypes.newCharacter, {});
+                    this._trigger(EventTypes.newCharacter, {
+                        character: text.text[elapsedChars - 1],
+                    });
                 }
                 return false;
-            } else {
+            }
+            // if animation is over
+            else {
                 text.text = textContent;
+                this._trigger(EventTypes.newCharacter, {
+                    character: text.text[text.text.length - 1],
+                });
                 setImmediate(() => callback && callback());
                 this._trigger(EventTypes.textAnimationOver, {});
                 return true;
@@ -200,15 +300,27 @@ export class TextScreen implements Premade {
         return animation;
     }
 
-    _addQuestion(
+    /**
+     * Adds a question animation to the screen
+     *
+     * @param questionText - Text of the question line
+     * @param answers - List of answers to be presented
+     * @param options - Extra animation options
+     */
+    addQuestion(
         questionText: string,
         answers: { id: string; textContent: string; textStyle?: any }[],
         options?: any
     ) {
-        this._addText(
+        this._trigger(EventTypes.newQuestion, { questionText, answers, options });
+
+        // first ask the question
+        this.addText(
             questionText,
             { ...this._defaultTextStyle, ...options?.questionStyle },
             undefined,
+
+            // when it finishes animating display the answers
             () => {
                 let selected = answers[0].id;
 
@@ -250,12 +362,11 @@ export class TextScreen implements Premade {
                     });
 
                     if (i > 0) {
+                        // position answer according to previous answer position
                         answerContainer.position.y =
                             spaceBetweenAnswers +
                             question.answers[i - 1].container.position.y +
                             question.answers[i - 1].container.height;
-
-                        console.log(answerContainer.position.y);
                     }
 
                     question.container.addChild(answerContainer);
@@ -268,12 +379,29 @@ export class TextScreen implements Premade {
         );
     }
 
-    _selectAnswer(answerId: string) {
+    /**
+     * Selects an answer from the list of the current question's answers
+     *
+     * @param answerId
+     */
+    selectAnswer(answerId: string) {
         if (this._currentQuestion) {
             this._currentQuestion.answers.forEach(
                 (answer) => (answer.selector.visible = answerId === answer.id)
             );
+
+            this._currentQuestion.selected = answerId;
+
+            this._trigger(EventTypes.answerSelected, { answerId });
         }
+    }
+
+    /**
+     * Confirms the currently selected answer
+     */
+    confirmAnswer() {
+        this._trigger(EventTypes.answerConfirmed, { answerId: this._currentQuestion?.selected });
+        this._currentQuestion = undefined;
     }
 
     /**
@@ -358,6 +486,11 @@ export class TextScreen implements Premade {
         this._render(this._elapsedTime / 1000);
     }
 
+    /**
+     * Renders the screen
+     *
+     * @param time
+     */
     _render(time: number) {
         if (!this._outputNode) return;
         this._renderer.update(time);
@@ -374,10 +507,28 @@ export class TextScreen implements Premade {
         return this.texture;
     }
 
+    /**
+     * Retrieves the output quad for external use
+     */
+    getQuad() {
+        return this.quad;
+    }
+
+    /**
+     * Subscribes to text screen events
+     *
+     * @param subscriber
+     */
     subscribe(subscriber: EventSubscriber) {
         this._subscribers.push(subscriber);
     }
 
+    /**
+     * Triggers a text screen event
+     *
+     * @param eventType
+     * @param eventData
+     */
     _trigger(eventType: string, eventData: any) {
         this._subscribers.forEach((subscriber) => subscriber(eventType, eventData));
     }
