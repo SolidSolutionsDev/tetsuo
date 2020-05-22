@@ -271,6 +271,12 @@ export class TextScreen implements Premade {
 
         this._trigger(EventTypes.newTextAnimation, { textContent, textStyle, options });
 
+        // check if theres a previous animation running and finish it
+        if (this._currentAnimation) {
+            this._currentAnimation(0, true);
+            this._currentAnimation = undefined;
+        }
+
         let animation: TextAnimation = (timeDelta: number, forceEnd?: boolean) => {
             // animation is forcefully ended
             if (forceEnd) {
