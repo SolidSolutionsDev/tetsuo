@@ -26,6 +26,7 @@ import { ShaderMaterial } from "./utils/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
 import { SelectorNode } from "./nodes/SelectorNode";
 import { Premade } from "./premade";
+import { GroupNode } from "./nodes/GroupNode";
 
 const TETSUO = {
     // core
@@ -56,6 +57,7 @@ const TETSUO = {
     UniformNode,
     TextureNode,
     MeshNode,
+    GroupNode,
     SelectorNode,
 
     // effect nodes

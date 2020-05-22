@@ -472,6 +472,7 @@ export class TextScreen implements Premade {
                 .addInput(
                     new UniformNode("texSize", {
                         value: new THREE.Vector2(this._width, this._height),
+                        gui: { hide: true },
                     })
                 );
 

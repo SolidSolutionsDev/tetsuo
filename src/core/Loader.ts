@@ -14,9 +14,12 @@ export class Loader {
      */
     protected _geometryLoader: THREE.BufferGeometryLoader;
 
+    protected _objectLoader: THREE.ObjectLoader;
+
     constructor() {
         this._textureLoader = new THREE.TextureLoader();
         this._geometryLoader = new THREE.BufferGeometryLoader();
+        this._objectLoader = new THREE.ObjectLoader();
     }
 
     /**
@@ -27,6 +30,10 @@ export class Loader {
      */
     loadTexture(url: string, onLoad?: (texture: THREE.Texture) => void) {
         return this._textureLoader.load(url, onLoad);
+    }
+
+    loadObject(url: string, onLoad?: (obj: any) => void) {
+        return this._objectLoader.load(url, onLoad);
     }
 
     /**
