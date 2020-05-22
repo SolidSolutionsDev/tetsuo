@@ -233,6 +233,17 @@ export class TextScreen implements Premade {
     }
 
     /**
+     * Deletes all entries
+     */
+    clear() {
+        for (let i = this._entries.length - 1; i >= 0; i--) {
+            let entry = this._entries[i];
+            this._entries.splice(i, 1);
+            this._foreground && this._foreground.removeChild(entry);
+        }
+    }
+
+    /**
      * Adds a new text line animation to the screen
      *
      * @param textContent - Text of the line
