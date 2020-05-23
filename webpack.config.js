@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -40,6 +41,10 @@ module.exports = {
         ],
     },
     plugins: [
+        new BundleAnalyzerPlugin({
+            analyzerMode: isDev ? "server" : "disabled",
+            openAnalyzer: false,
+        }),
         new webpack.DefinePlugin({
             MODE: JSON.stringify(isDev ? "development" : "production"),
             NODE_ENV: JSON.stringify(process.env.NODE_ENV),
