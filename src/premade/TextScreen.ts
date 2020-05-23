@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as PIXI from "pixi.js";
 import { Premade } from "./Premade";
 import { NodeRenderer } from "../nodes/NodeRenderer";
 import { PIXINode } from "../nodes/PIXINode";

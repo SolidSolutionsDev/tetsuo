@@ -10,6 +10,10 @@ module.exports = {
     output: {
         path: __dirname + "/dist",
         filename: "tetsuo.min.js",
+
+        library: "beta",
+        libraryTarget: "umd",
+        globalObject: "typeof self !== 'undefined' ? self : this",
     },
     devtool: isDev ? "source-map" : undefined,
     resolve: {
@@ -41,14 +45,14 @@ module.exports = {
         ],
     },
     plugins: [
-        new BundleAnalyzerPlugin({
-            analyzerMode: isDev ? "server" : "disabled",
-            openAnalyzer: false,
-        }),
         new webpack.DefinePlugin({
             MODE: JSON.stringify(isDev ? "development" : "production"),
             NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         }),
         new CleanWebpackPlugin(),
+        new BundleAnalyzerPlugin({
+            analyzerMode: isDev ? "server" : "disabled",
+            openAnalyzer: false,
+        }),
     ],
 };

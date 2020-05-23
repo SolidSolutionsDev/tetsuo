@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as PIXI from "pixi.js";
 import { Premade } from "./Premade";
 import { NodeRenderer } from "../nodes/NodeRenderer";
 import { PIXINode } from "../nodes/PIXINode";
@@ -6,8 +7,6 @@ import { ShaderNode } from "../nodes/ShaderNode";
 import { Shaders } from "../shaders";
 import { Node } from "../nodes/Node";
 import { UniformNode } from "../nodes/UniformNode";
-import { BoxBlurNode } from "../nodes/effects/BoxBlurNode";
-import { OverlayNode } from "../nodes/effects/OverlayNode";
 
 export interface TimeCounterOptions {
     /**
