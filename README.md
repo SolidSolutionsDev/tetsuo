@@ -6,13 +6,13 @@ graphics prototyping framework (WIP)
 
 ## install dependencies
 
-`yarn install`
+`npm install`
 
 ## build tetsuo
 
-`yarn build:dev`
-`yarn build:prod`
+`npm run build:dev`
+`npm run build:prod`
 
 ## run examples
 
-`yarn serve` then access http://localhost:8080/examples
+`npm run serve` then access http://localhost:8080/examples

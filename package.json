@@ -11,7 +11,8 @@
         "typescript": "^3.8.3"
     },
     "peerDependencies": {
-        "three": "^0.112.1"
+        "pixi.js": "^5.2.3",
+        "three": "^0.115.0"
     },
     "devDependencies": {
         "@babel/core": "^7.8.0",
@@ -37,6 +38,10 @@
         "build:prod": "cross-env NODE_ENV=production webpack",
         "serve": "live-server --no-browser --watch=dist,examples,dev",
         "test": "jest --detectOpenHandles --colors",
-        "test:watch": "yarn test --watch"
+        "test:watch": "yarn test --watch",
+        "publish:patch": "npm version patch && npm build:prod && npm publish",
+        "publish:minor": "npm version minor && npm build:prod && npm publish",
+        "publish:major": "npm version major && npm build:prod && npm publish",
+        "pub": "npm run publish:patch"
     }
 }
