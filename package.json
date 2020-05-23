@@ -39,9 +39,9 @@
         "serve": "live-server --no-browser --watch=dist,examples,dev",
         "test": "jest --detectOpenHandles --colors",
         "test:watch": "yarn test --watch",
-        "publish:patch": "npm version patch && npm build:prod && npm publish",
-        "publish:minor": "npm version minor && npm build:prod && npm publish",
-        "publish:major": "npm version major && npm build:prod && npm publish",
+        "publish:patch": "npm version patch && git push && npm run build:prod && npm publish",
+        "publish:minor": "npm version minor && git push && npm run build:prod && npm publish",
+        "publish:major": "npm version major && git push && npm run build:prod && npm publish",
         "pub": "npm run publish:patch"
     }
 }
