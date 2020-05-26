@@ -39,6 +39,8 @@ export interface THREENodeOptions extends NodeOptions {
         far?: number;
         fov?: number;
     };
+
+    masks?: string[];
 }
 
 /**
@@ -86,6 +88,12 @@ export class THREENode extends Node {
      */
     needsUpdate: boolean = true;
 
+    masks?: {
+        id: number;
+        name: string;
+        target: THREE.WebGLRenderTarget;
+    };
+
     constructor(id: string, nodeRenderer: NodeRenderer, options?: THREENodeOptions) {
         super(id, options);
 
@@ -108,6 +116,9 @@ export class THREENode extends Node {
             this.nodeRenderer.width,
             this.nodeRenderer.height
         );
+
+        if (options && options.masks) {
+        }
 
         if (options && options.orbitControls && this.nodeRenderer.viewport) {
             this.controls = new OrbitControls(this.camera, this.nodeRenderer.viewport.domElement);
@@ -133,8 +144,19 @@ export class THREENode extends Node {
      *
      * @param object
      */
-    add(object: any) {
+    add(object: any, masks?: string[]) {
         this.scene.add(object);
+
+        if (object.isMesh) {
+            object.masks = masks;
+        } else if (object.isGroup) {
+            object.children.forEach((child: any) => {
+                if (child.isMesh) {
+                    child.masks = masks;
+                }
+            });
+        }
+
         return this;
     }
 
