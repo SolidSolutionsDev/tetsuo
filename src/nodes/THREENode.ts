@@ -3,6 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 import Profiler from "../core/Profiler";
+import { UnmaskedMaterial, MaskedMaterial } from "../utils/maskMaterials";
 
 export interface THREENodeOptions extends NodeOptions {
     /**
@@ -88,10 +89,14 @@ export class THREENode extends Node {
      */
     needsUpdate: boolean = true;
 
+    objects: any[] = [];
+
     masks?: {
-        id: number;
-        name: string;
-        target: THREE.WebGLRenderTarget;
+        [maskKey: string]: {
+            id: number;
+            name: string;
+            target: THREE.WebGLRenderTarget;
+        };
     };
 
     constructor(id: string, nodeRenderer: NodeRenderer, options?: THREENodeOptions) {
@@ -117,7 +122,25 @@ export class THREENode extends Node {
             this.nodeRenderer.height
         );
 
-        if (options && options.masks) {
+        this.output.value = null;
+
+        if (options?.masks) {
+            if (!this.output.value) this.output.value = {};
+
+            options.masks.forEach((mask, index) => {
+                if (!this.masks) this.masks = {};
+
+                this.masks[mask] = {
+                    id: index,
+                    name: mask,
+                    target: new THREE.WebGLRenderTarget(
+                        this.nodeRenderer.width,
+                        this.nodeRenderer.height
+                    ),
+                };
+
+                this.output.value[mask] = null;
+            });
         }
 
         if (options && options.orbitControls && this.nodeRenderer.viewport) {
@@ -127,7 +150,10 @@ export class THREENode extends Node {
         // if depth texture is active, create it and setup the output
         this.depthBuffer = !!options && !!options.depthBuffer;
         if (this.depthBuffer) {
-            this.output.value = { diffuse: null, depth: null };
+            if (!this.output.value) this.output.value = {};
+            this.output.value.diffuse = null;
+            this.output.value.depth = null;
+
             this.target.depthTexture = new THREE.DepthTexture(
                 this.nodeRenderer.width,
                 this.nodeRenderer.height
@@ -146,6 +172,8 @@ export class THREENode extends Node {
      */
     add(object: any, masks?: string[]) {
         this.scene.add(object);
+
+        this.objects.push(object);
 
         if (object.isMesh) {
             object.masks = masks;
@@ -169,15 +197,51 @@ export class THREENode extends Node {
         if (!this.manualRender || this.needsUpdate) {
             let renderer = this.nodeRenderer.renderer;
 
+            let output: any = null;
+
+            let preMaskMaterials: any = {};
+            if (this.masks) {
+                output = {};
+
+                Object.keys(this.masks).forEach((maskKey) => {
+                    if (!this.masks) return;
+
+                    let mask = this.masks[maskKey];
+
+                    this.objects.forEach((object) => {
+                        preMaskMaterials[object.uuid] = object.material;
+
+                        if (object.masks && object.masks.includes(maskKey)) {
+                            object.material = UnmaskedMaterial;
+                        } else {
+                            object.material = MaskedMaterial;
+                        }
+                    });
+
+                    renderer.setRenderTarget(mask.target);
+                    renderer.clear(true, true, true);
+                    renderer.render(this.scene, this.camera);
+
+                    output[maskKey] = mask.target.texture;
+                });
+
+                this.objects.forEach((object) => {
+                    object.material = preMaskMaterials[object.uuid];
+                });
+            }
+
             renderer.setRenderTarget(this.target);
             renderer.clear(true, true, true);
             renderer.render(this.scene, this.camera);
 
             // update output connection
+            if (this.depthBuffer) {
+                if (!output) output = {};
+                output["depth"] = this.target.depthTexture;
+            }
+
             this.output.setValue(
-                this.depthBuffer
-                    ? { diffuse: this.target.texture, depth: this.target.depthTexture }
-                    : this.target.texture
+                output ? { ...output, diffuse: this.target.texture } : this.target.texture
             );
 
             this.needsUpdate = false;

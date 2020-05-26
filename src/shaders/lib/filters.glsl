@@ -46,6 +46,31 @@ vec4 bloom(sampler2D tex, vec2 texSize, vec2 p, float separation, float threshol
     return vec4((texture2D(tex, p).rgb + result.rgb * amount), texture2D(tex, p).a);
 }
 
+vec4 maskBloom(sampler2D tex, vec2 texSize, vec2 p, float separation, float threshold, float amount, sampler2D mask) {
+    vec4 result = vec4(0.);
+
+    for (float i = -5.; i <= 5.; i++) {
+        for (float j = -5.; j <= 5.; j++) {
+            vec4 color = vec4(0.);
+            vec4 t = texture2D(tex, (p * texSize + vec2(i, j) * separation) / texSize);
+            vec4 m = texture2D(mask, (p * texSize + vec2(i, j) * separation) / texSize);
+
+            float g = max(t.r, max(t.g, t.b));
+
+            if (g > threshold && m.r > 0.) {
+                color = t;
+            }
+
+            result.rgb += color.rgb;
+        }
+    }
+
+    result.rgb /= pow(5. * 2. + 1., 2.);
+    result.a = texture2D(tex, p).a;
+
+    return vec4((texture2D(tex, p).rgb + result.rgb * amount), texture2D(tex, p).a);
+}
+
 vec2 curve(vec2 p) {
     p = (p - 0.5) * 2.0;
 	p *= 1.1;	
