@@ -25,7 +25,6 @@ import { DOFNode } from "./nodes/effects/DOFNode";
 import { ShaderMaterial } from "./utils/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
 import { SelectorNode } from "./nodes/SelectorNode";
-import { Premade } from "./premade";
 import { GroupNode } from "./nodes/GroupNode";
 
 const TETSUO = {
@@ -68,9 +67,6 @@ const TETSUO = {
     BoxBlurNode,
     DOFNode,
     OverlayNode,
-
-    // premades
-    Premade,
 };
 
 (window as any)["TETSUO"] = TETSUO;
