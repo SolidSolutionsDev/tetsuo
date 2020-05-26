@@ -67,8 +67,8 @@ export class PIXINode extends Node {
         this.fixedSize = !!(options?.width || options?.height);
 
         this.app = new PIXI.Application({
-            width: options?.width || this.nodeRenderer.viewport.width,
-            height: options?.height || this.nodeRenderer.viewport.height,
+            width: options?.width || this.nodeRenderer.width,
+            height: options?.height || this.nodeRenderer.height,
             resizeTo:
                 this.fixedSize || !this.nodeRenderer.viewport
                     ? undefined

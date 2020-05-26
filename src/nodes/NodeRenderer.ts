@@ -9,6 +9,7 @@ export interface NodeRendererOptions {
      * Element where the renderer will drop his canvas
      */
     viewportElement?: HTMLElement;
+    noViewport?: boolean;
 
     /**
      * Whether to use antialias when rendering
@@ -19,6 +20,11 @@ export interface NodeRendererOptions {
      * Whether renderer background is transparent
      */
     alpha?: boolean;
+
+    fixedSize?: boolean;
+    width?: number;
+    height?: number;
+    autoClear?: boolean;
 }
 
 /**
@@ -28,7 +34,7 @@ export class NodeRenderer {
     /**
      * Viewport element handler
      */
-    viewport: Viewport;
+    viewport?: Viewport;
 
     /**
      * Internal WebGL renderer
@@ -60,32 +66,75 @@ export class NodeRenderer {
      */
     material: THREE.MeshBasicMaterial;
 
+    /**
+     * Whether the size for the renderer is fixed
+     */
+    fixedSize: boolean = false;
+    width: number;
+    height: number;
+
     constructor(options?: NodeRendererOptions) {
         // initialize default options
         options = options || {};
         if (options.antialias === undefined) options.antialias = true;
         if (options.alpha === undefined) options.alpha = true;
-        let viewport: HTMLElement | null =
-            options.viewportElement || document.getElementById("viewport");
 
-        if (!viewport) {
-            throw Error("viewport element not found");
+        this.fixedSize = !!options?.fixedSize;
+        this.width = options?.width || 0;
+        this.height = options?.height || 0;
+
+        let viewport: HTMLElement | null = null;
+
+        if (!options.noViewport && options.viewportElement) {
+            viewport = options.viewportElement;
+        } else if (!options.noViewport && document.getElementById("viewport")) {
+            viewport = document.getElementById("viewport");
         }
 
-        // initialize viewport handler
-        this.viewport = new Viewport(viewport);
-        this.viewport.createResizeListener(() => this.onResize());
+        // if no viewport found, fixed size is mandatory
+        if (!viewport) {
+            this.fixedSize = true;
+        } else {
+            // initialize viewport handler
+            this.viewport = new Viewport(viewport);
+            this.viewport.createResizeListener(() => this.onResize());
+        }
+
+        // check for size options if needed
+        if (this.fixedSize && (!options.width || !options.height) && !this.viewport) {
+            throw new Error("Node renderer - Fixed size set to true but no width/height defined");
+        }
+
+        let canvas;
+        if (options.noViewport) {
+            canvas = document.createElement("canvas");
+            canvas.style.display = "none";
+            document.body.appendChild(canvas);
+        } else {
+            canvas = this.viewport?.canvas;
+        }
 
         // initialize renderer
         this.renderer = new THREE.WebGLRenderer({
             antialias: options.antialias,
             alpha: options.alpha,
-            canvas: this.viewport.canvas,
+            canvas,
         });
-        this.renderer.setSize(this.viewport.width, this.viewport.height);
+
+        // set renderer size depending on size options
+        if (this.fixedSize && options.width && options.height) {
+            this.renderer.setSize(options.width, options.height);
+            this.width = options.width;
+            this.height = options.height;
+        } else if (this.viewport) {
+            this.renderer.setSize(this.viewport.width, this.viewport.height);
+            this.width = this.viewport.width;
+            this.height = this.viewport.height;
+        }
+
         this.renderer.setClearColor(0x000000, 0);
         this.renderer.sortObjects = true;
-        this.renderer.autoClear = false;
+        this.renderer.autoClear = !!options?.autoClear;
 
         // initialize node graph and create the root node
         this.nodeGraph = new NodeGraph();
@@ -104,15 +153,37 @@ export class NodeRenderer {
      *
      * @param time
      */
-    update(time: number) {
-        this.nodeGraph.traverse((node) => node.update(time));
+    update(time: number, fromNode?: Node) {
+        this.nodeGraph.traverse((node) => node.update(time), fromNode);
+    }
+
+    /**
+     * Change size of renderer
+     *
+     * @param width
+     * @param height
+     */
+    setSize(width: number, height: number) {
+        if (this.fixedSize) {
+            this.width = width;
+            this.height = height;
+
+            this.onResize();
+        }
     }
 
     /**
      * Handles renderer resize
      */
     onResize() {
-        this.renderer.setSize(this.viewport.width, this.viewport.height);
+        // set renderer size depending on size options
+        if (this.fixedSize && this.width && this.height) {
+            this.renderer.setSize(this.width, this.height);
+        } else if (this.viewport) {
+            this.renderer.setSize(this.viewport.width, this.viewport.height);
+            this.width = this.viewport.width;
+            this.height = this.viewport.height;
+        }
 
         // resize each node
         this.nodeGraph.traverse((node) => node.resize());
@@ -135,8 +206,10 @@ export class NodeRenderer {
     /**
      * Renders the node graph onto the screen
      */
-    render() {
-        if (this.nodeGraph.root) {
+    render(fromNode?: Node) {
+        if (fromNode) {
+            this.nodeGraph.traverse((node) => node.render(), fromNode);
+        } else if (this.nodeGraph.root) {
             // traverse the node graph and render each node
             this.nodeGraph.traverse((node) => node.render());
 
