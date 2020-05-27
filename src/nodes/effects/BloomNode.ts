@@ -24,6 +24,11 @@ export interface BloomNodeOptions extends ShaderNodeOptions {
      * Default bloom amount setting
      */
     amount?: number;
+
+    /**
+     * Whether to use a mask texture
+     */
+    mask?: boolean;
 }
 
 export class BloomNode extends ShaderNode {
@@ -39,16 +44,32 @@ export class BloomNode extends ShaderNode {
             /* glsl */ `
                 varying vec2 vUv;
                 uniform float iTime;
-                uniform sampler2D inputTex;
                 uniform vec2 texSize;
                 uniform float separation;
                 uniform float threshold;
                 uniform float amount;
-
-                void main() {
-                    gl_FragColor = bloom(inputTex, texSize, vUv, separation, threshold, amount);
-                }
             `,
+
+            !this.options.mask
+                ? /* glsl */ `
+                        uniform sampler2D inputTex;
+
+                        void main() {
+                            gl_FragColor = bloom(inputTex, texSize, vUv, separation, threshold, amount);
+                        }
+                    `
+                : /* glsl */ `
+                        struct maskBloomTexs {
+                            sampler2D bloomMask;
+                            sampler2D diffuse;
+                        };
+
+                        uniform maskBloomTexs inputTex;
+
+                        void main() {
+                            gl_FragColor = maskBloom(inputTex.diffuse, texSize, vUv, separation, threshold, amount, inputTex.bloomMask);
+                        }
+                    `,
         ].join("\n");
 
         this.prepare();
