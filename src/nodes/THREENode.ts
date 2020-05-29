@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonControls";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 import Profiler from "../core/Profiler";
@@ -15,6 +16,11 @@ export interface THREENodeOptions extends NodeOptions {
      * Whether to create orbit controls for the scene camera
      */
     orbitControls?: boolean;
+
+    /**
+     * Whether to create orbit controls for the scene camera
+     */
+    firstPersonControls?: boolean;
 
     /**
      * Whether to only render this node when needsUpdate flag is true
@@ -66,7 +72,7 @@ export class THREENode extends Node {
     /**
      * Camera orbit controls for debug
      */
-    controls?: OrbitControls;
+    controls?: OrbitControls | FirstPersonControls;
 
     /**
      * Whether this node will render and output a depth texture
@@ -143,8 +149,17 @@ export class THREENode extends Node {
             });
         }
 
-        if (options && options.orbitControls && this.nodeRenderer.viewport) {
-            this.controls = new OrbitControls(this.camera, this.nodeRenderer.viewport.domElement);
+        if (options && this.nodeRenderer.viewport) {
+            if (options.orbitControls)
+                this.controls = new OrbitControls(
+                    this.camera,
+                    this.nodeRenderer.viewport.domElement
+                );
+            else if (options.firstPersonControls)
+                this.controls = new FirstPersonControls(
+                    this.camera,
+                    this.nodeRenderer.viewport.domElement
+                );
         }
 
         // if depth texture is active, create it and setup the output
