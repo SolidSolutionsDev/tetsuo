@@ -57,7 +57,7 @@ export class GroupNode extends Node {
         return this;
     }
 
-    onUpdate(fn: (time: number, mesh: THREE.Mesh) => void) {
+    onUpdate(fn: (totalTime: number, deltaTime: number, group: THREE.Group) => void) {
         this._onUpdate.push(fn);
         return this;
     }

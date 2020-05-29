@@ -157,11 +157,11 @@ export class ShaderNode extends Node {
      *
      * @param time - Current clock time
      */
-    update(time: number) {
-        super.update(time);
+    update(totalTime: number, deltaTime: number) {
+        super.update(totalTime, deltaTime);
 
         // update default uniforms
-        this.uniforms["iTime"].value = time;
+        this.uniforms["iTime"].value = totalTime;
         this.uniforms["iResolution"].value.set(
             this.nodeRenderer.width,
             this.nodeRenderer.height,

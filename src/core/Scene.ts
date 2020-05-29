@@ -92,7 +92,7 @@ export class Scene {
      *
      * @param onTick - Callback when animation ticks
      */
-    animate(onTick?: (time?: number) => void) {
+    animate(onTick?: (totalTime?: number, deltaTime?: number) => void) {
         if (this.dev) {
             // start counting fps time for this frame
             this.stats && this.stats.begin();
@@ -106,13 +106,13 @@ export class Scene {
         }
 
         // move clock along
-        this.clock.tick();
+        let delta = this.clock.tick();
 
         // callback
-        onTick && onTick(this.clock.getElapsedTime());
+        onTick && onTick(this.clock.getElapsedTime(), delta);
 
         // update all nodes in the render
-        this.renderer.update(this.clock.getElapsedTime());
+        this.renderer.update(this.clock.getElapsedTime(), delta);
 
         // render all nodes
         this.renderer.render();

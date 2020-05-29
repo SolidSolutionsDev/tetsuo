@@ -133,7 +133,7 @@ export class MeshNode extends Node {
         return this;
     }
 
-    onUpdate(fn: (time: number, mesh: THREE.Mesh) => void) {
+    onUpdate(fn: (totalTime: number, deltaTime: number, mesh: THREE.Mesh) => void) {
         this._onUpdate.push(fn);
         return this;
     }

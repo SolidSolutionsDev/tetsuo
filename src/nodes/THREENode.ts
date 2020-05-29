@@ -150,16 +150,22 @@ export class THREENode extends Node {
         }
 
         if (options && this.nodeRenderer.viewport) {
+            ~console.log(this.nodeRenderer.viewport.domElement);
+
             if (options.orbitControls)
                 this.controls = new OrbitControls(
                     this.camera,
                     this.nodeRenderer.viewport.domElement
                 );
-            else if (options.firstPersonControls)
+            else if (options.firstPersonControls) {
                 this.controls = new FirstPersonControls(
                     this.camera,
                     this.nodeRenderer.viewport.domElement
                 );
+
+                (this.controls as FirstPersonControls).movementSpeed = 10;
+                this.controls.lookSpeed = 0.1;
+            }
         }
 
         // if depth texture is active, create it and setup the output
@@ -200,6 +206,12 @@ export class THREENode extends Node {
             });
         }
 
+        return this;
+    }
+
+    update(totalTime: number, deltaTime: number) {
+        super.update(totalTime, deltaTime);
+        this.controls?.update(deltaTime);
         return this;
     }
 

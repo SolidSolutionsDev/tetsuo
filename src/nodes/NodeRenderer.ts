@@ -150,11 +150,9 @@ export class NodeRenderer {
 
     /**
      * Updates the renderer's nodes
-     *
-     * @param time
      */
-    update(time: number, fromNode?: Node) {
-        this.nodeGraph.traverse((node) => node.update(time), fromNode);
+    update(totalTime: number, deltaTime: number, fromNode?: Node) {
+        this.nodeGraph.traverse((node) => node.update(totalTime, deltaTime), fromNode);
     }
 
     /**

@@ -9,7 +9,7 @@ export interface NodeOptions {
     /**
      * Callback when the renderer updates this node
      */
-    onUpdate?: (time: number, ...args: any) => void;
+    onUpdate?: (time: number, deltaTime: number, ...args: any) => void;
 }
 
 export class Node {
@@ -91,7 +91,7 @@ export class Node {
      *
      * @param fn
      */
-    onUpdate(fn: (time: number) => void) {
+    onUpdate(fn: (time: number, deltaTime: number) => void) {
         this._onUpdate.push(fn);
         return this;
     }
@@ -109,8 +109,8 @@ export class Node {
      *
      * @param time
      */
-    update(time: number) {
-        this._onUpdate && this._onUpdate.forEach((fn) => fn(time));
+    update(totalTime: number, deltaTime: number) {
+        this._onUpdate && this._onUpdate.forEach((fn) => fn(totalTime, deltaTime));
         return this;
     }
 
