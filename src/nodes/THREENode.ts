@@ -150,8 +150,6 @@ export class THREENode extends Node {
         }
 
         if (options && this.nodeRenderer.viewport) {
-            ~console.log(this.nodeRenderer.viewport.domElement);
-
             if (options.orbitControls)
                 this.controls = new OrbitControls(
                     this.camera,
@@ -179,6 +177,15 @@ export class THREENode extends Node {
                 this.nodeRenderer.width,
                 this.nodeRenderer.height
             );
+
+            this.target.texture.format = THREE.RGBFormat;
+            this.target.texture.minFilter = THREE.NearestFilter;
+            this.target.texture.magFilter = THREE.NearestFilter;
+            this.target.texture.generateMipmaps = false;
+            this.target.stencilBuffer = false;
+            this.target.depthBuffer = true;
+            this.target.depthTexture.format = THREE.DepthFormat;
+            this.target.depthTexture.type = THREE.UnsignedShortType;
         }
 
         this.manualRender = options?.manualRender;
