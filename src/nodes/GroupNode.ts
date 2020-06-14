@@ -3,6 +3,7 @@ import { IUniform } from "three";
 import { Node, NodeOptions } from "./Node";
 import defaultUniforms from "../shaders/defaultUniforms";
 import { THREENode } from "./THREENode";
+import { Callback } from "../types/Callback";
 
 export interface GroupNodeOptions extends NodeOptions {
     group: THREE.Group;
@@ -56,14 +57,12 @@ export class GroupNode extends Node {
         return this;
     }
 
-    onPrepare(fn: (mesh: THREE.Mesh) => void) {
+    onPrepare(fn: Callback) {
         this._onPrepare.push(fn);
         return this;
     }
 
-    onUpdate(
-        fn: (totalTime: number, deltaTime: number, group: THREE.Group) => void
-    ) {
+    onUpdate(fn: Callback) {
         this._onUpdate.push(fn);
         return this;
     }

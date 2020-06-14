@@ -1,4 +1,5 @@
 import { Node, NodeOptions } from "./Node";
+import { Callback } from "../types/Callback";
 
 export interface UniformGuiOptions {
     /**
@@ -37,7 +38,7 @@ export interface UniformNodeOptions<T> extends NodeOptions {
     /**
      * Callback when value changes
      */
-    onChange?: (value?: any) => void;
+    onChange?: Callback;
 
     /**
      * dat.gui controller configuration
@@ -57,7 +58,7 @@ export class UniformNode<T> extends Node {
     /**
      * Callback when value changes
      */
-    onChange?: (value?: any) => void;
+    onChange?: Callback;
 
     constructor(id: string, options: UniformNodeOptions<T>) {
         super(id, options);

@@ -1,6 +1,7 @@
 import { Viewport } from "./core/Viewport";
 import { Scene } from "./core/Scene";
 import { Clock } from "./core/Clock";
+import { Timeline } from "./core/Timeline";
 import { Shaders } from "./shaders";
 import { ShadedObject } from "./utils/ShadedObject";
 import { NodeRenderer } from "./nodes/NodeRenderer";
@@ -32,6 +33,7 @@ const TETSUO = {
     Scene,
     Viewport,
     Clock,
+    Timeline,
     Loader,
     Profiler,
 

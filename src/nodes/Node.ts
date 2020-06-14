@@ -1,20 +1,21 @@
 import { Connection } from "./Connection";
+import { Callback } from "../types/Callback";
 
 export interface NodeOptions {
     /**
      * Callback when the renderer initializes this node
      */
-    onPrepare?: (...args: any) => void;
+    onPrepare?: Callback;
 
     /**
      * Callback when the renderer updates this node
      */
-    onUpdate?: (time: number, deltaTime: number, ...args: any) => void;
+    onUpdate?: Callback;
 
     /**
      * Callback when the renderer renders this node
      */
-    onRender?: (...args: any) => void;
+    onRender?: Callback;
 }
 
 export class Node {
@@ -42,17 +43,17 @@ export class Node {
     /**
      * Callback when the renderer updates this node
      */
-    protected _onUpdate: ((time: number, ...args: any) => void)[];
+    protected _onUpdate: Callback[];
 
     /**
      * Callback when the renderer initializes this node
      */
-    protected _onPrepare: ((...args: any) => void)[];
+    protected _onPrepare: Callback[];
 
     /**
      * Callback when the renderer renders this node
      */
-    protected _onRender: ((...args: any) => void)[];
+    protected _onRender: Callback[];
 
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
@@ -92,7 +93,7 @@ export class Node {
      *
      * @param fn
      */
-    onPrepare(fn: () => void) {
+    onPrepare(fn: Callback) {
         this._onPrepare.push(fn);
         return this;
     }
@@ -102,7 +103,7 @@ export class Node {
      *
      * @param fn
      */
-    onUpdate(fn: (time: number, deltaTime: number) => void) {
+    onUpdate(fn: Callback) {
         this._onUpdate.push(fn);
         return this;
     }
@@ -112,7 +113,7 @@ export class Node {
      *
      * @param fn
      */
-    onRender(fn: () => void) {
+    onRender(fn: Callback) {
         this._onRender.push(fn);
         return this;
     }

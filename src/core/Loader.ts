@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Callback } from "../types/Callback";
 
 /**
  * Wrapper singleton for all the relevant resource loaders
@@ -28,11 +29,11 @@ export class Loader {
      * @param url
      * @param onLoad
      */
-    loadTexture(url: string, onLoad?: (texture: THREE.Texture) => void) {
+    loadTexture(url: string, onLoad?: Callback) {
         return this._textureLoader.load(url, onLoad);
     }
 
-    loadObject(url: string, onLoad?: (obj: any) => void) {
+    loadObject(url: string, onLoad?: Callback) {
         return this._objectLoader.load(url, onLoad);
     }
 
@@ -42,12 +43,7 @@ export class Loader {
      * @param url
      * @param onLoad
      */
-    loadGeometry(
-        url: string,
-        onLoad: (
-            geometry: THREE.BufferGeometry | THREE.InstancedBufferGeometry
-        ) => void
-    ) {
+    loadGeometry(url: string, onLoad: Callback) {
         return this._geometryLoader.load(url, onLoad);
     }
 }
