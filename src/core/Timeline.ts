@@ -44,4 +44,11 @@ export class Timeline {
 
         this.onStop.forEach((fn) => fn());
     }
+
+    update() {
+        let delta = this.clock.tick();
+        let elapsed = this.clock.getElapsedTime();
+
+        this.onUpdate.forEach((fn) => fn(elapsed, delta));
+    }
 }

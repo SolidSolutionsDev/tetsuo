@@ -4,6 +4,7 @@ import { NodeRenderer } from "../nodes/NodeRenderer";
 import { Node } from "../nodes/Node";
 import dat from "dat.gui";
 import { THREENode } from "../nodes/THREENode";
+import { Callback } from "../types/Callback";
 
 /**
  * Scene initialization options
@@ -93,7 +94,7 @@ export class Scene {
      *
      * @param onTick - Callback when animation ticks
      */
-    animate(onTick?: (totalTime?: number, deltaTime?: number) => void) {
+    animate(onTick?: Callback) {
         if (this.dev) {
             // start counting fps time for this frame
             this.stats && this.stats.begin();
