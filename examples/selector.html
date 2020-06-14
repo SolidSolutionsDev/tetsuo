@@ -24,7 +24,7 @@
             TETSUO.Utils.ready(() => {
                 let scene = new TETSUO.Scene({ dev: true, autoStart: true });
 
-                let three = new TETSUO.THREENode("three", scene.renderer);
+                let three = new TETSUO.THREENode("three");
 
                 let box = new THREE.Mesh(
                     new THREE.BoxGeometry(1, 1, 1),

@@ -212,8 +212,14 @@ export class NodeRenderer {
     connectToScreen(node: Node) {
         if (this.nodeGraph.root) {
             this.nodeGraph.root.addInput(node, "tDiffuse");
+
+            // traverse all nodes and do an initial render
+            // this prevents first render bugs
             this.nodeGraph.traverse(
-                (n) => n.resize(this.width, this.height),
+                (n) => {
+                    n.resize(this.width, this.height);
+                    n.render(this);
+                },
                 undefined,
                 [],
                 true

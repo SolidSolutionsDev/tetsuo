@@ -24,10 +24,7 @@
 
                 // create a new three.js scene node
                 // this node renders a three.js scene to a texture
-                let cubeScene = new TETSUO.THREENode(
-                    "cubeScene",
-                    scene.renderer
-                );
+                let cubeScene = new TETSUO.THREENode("cubeScene");
 
                 // add a cube to the scene
                 let cube = new THREE.Mesh(
@@ -61,11 +58,8 @@
                 // shader nodes can receive the render of other nodes as texture uniforms
                 // this node will receive the cube scene render
                 // and three uniforms to control the color filter
-                let colorFilter = new TETSUO.ShaderNode(
-                    "colorFilter",
-                    scene.renderer,
-                    {
-                        fragmentShader: /* glsl */ `
+                let colorFilter = new TETSUO.ShaderNode("colorFilter", {
+                    fragmentShader: /* glsl */ `
                         varying vec2 vUv;
                         uniform sampler2D cubeScene;
                         uniform float r;
@@ -74,11 +68,10 @@
 
                         void main() {
                             vec4 t = texture2D(cubeScene, vUv);
-                            gl_FragColor = vec4(t.r * r, t.b * b, t.g * g, 1.);
+                            gl_FragColor = vec4(t.r * r, t.g * g, t.b * b, 1.);
                         }
                     `,
-                    }
-                );
+                });
 
                 // connect the output of cube scene to the color filter node
                 cubeScene.connectTo(colorFilter);

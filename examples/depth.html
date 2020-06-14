@@ -28,7 +28,7 @@
                 });
 
                 // create a three.js scene node
-                let node = new TETSUO.THREENode("td", scene.renderer, {
+                let node = new TETSUO.THREENode("td", {
                     // passing this option enables depth texture rendering
                     depthBuffer: true,
                     orbitControls: true,
@@ -67,7 +67,7 @@
                 );
 
                 // create a post processing shader to unpack the depth texture
-                let post = new TETSUO.ShaderNode("post", scene.renderer, {
+                let post = new TETSUO.ShaderNode("post", {
                     fragmentShader: [
                         // this contains the readDepth() function
                         TETSUO.Shaders.depth,
