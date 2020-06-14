@@ -5,6 +5,7 @@ import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 import Profiler from "../core/Profiler";
 import { UnmaskedMaterial, MaskedMaterial } from "../utils/maskMaterials";
+import { WebGLRenderer } from "three";
 
 export interface THREENodeOptions extends NodeOptions {
     /**
@@ -54,10 +55,8 @@ export interface THREENodeOptions extends NodeOptions {
  * THREE.js scene node
  */
 export class THREENode extends Node {
-    /**
-     * Renderer where this node will be included and rendered
-     */
-    nodeRenderer: NodeRenderer;
+    width: number = 0;
+    height: number = 0;
 
     /**
      * Internal three.js scene
@@ -105,11 +104,7 @@ export class THREENode extends Node {
         };
     };
 
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: THREENodeOptions
-    ) {
+    constructor(id: string, options?: THREENodeOptions) {
         super(id, options);
 
         this.scene = options?.scene || new THREE.Scene();
@@ -118,7 +113,7 @@ export class THREENode extends Node {
             options?.camera ||
             new THREE.PerspectiveCamera(
                 options?.cameraSettings?.fov || 45,
-                nodeRenderer.width / nodeRenderer.height,
+                this.width / this.height,
                 options?.cameraSettings?.near || 0.1,
                 options?.cameraSettings?.far || 50
             );
@@ -126,11 +121,7 @@ export class THREENode extends Node {
         options?.cameraSettings?.position &&
             this.camera.position.copy(options.cameraSettings.position);
 
-        this.nodeRenderer = nodeRenderer;
-        this.target = new THREE.WebGLRenderTarget(
-            this.nodeRenderer.width,
-            this.nodeRenderer.height
-        );
+        this.target = new THREE.WebGLRenderTarget(this.width, this.height);
 
         this.output.value = null;
 
@@ -144,8 +135,8 @@ export class THREENode extends Node {
                     id: index,
                     name: mask,
                     target: new THREE.WebGLRenderTarget(
-                        this.nodeRenderer.width,
-                        this.nodeRenderer.height
+                        this.width,
+                        this.height
                     ),
                 };
 
@@ -153,22 +144,22 @@ export class THREENode extends Node {
             });
         }
 
-        if (options && this.nodeRenderer.viewport) {
-            if (options.orbitControls)
-                this.controls = new OrbitControls(
-                    this.camera,
-                    this.nodeRenderer.viewport.domElement
-                );
-            else if (options.firstPersonControls) {
-                this.controls = new FirstPersonControls(
-                    this.camera,
-                    this.nodeRenderer.viewport.domElement
-                );
+        // if (options && this.nodeRenderer.viewport) {
+        //     if (options.orbitControls)
+        //         this.controls = new OrbitControls(
+        //             this.camera,
+        //             this.viewport.domElement
+        //         );
+        //     else if (options.firstPersonControls) {
+        //         this.controls = new FirstPersonControls(
+        //             this.camera,
+        //             this.nodeRenderer.viewport.domElement
+        //         );
 
-                (this.controls as FirstPersonControls).movementSpeed = 10;
-                this.controls.lookSpeed = 0.1;
-            }
-        }
+        //         (this.controls as FirstPersonControls).movementSpeed = 10;
+        //         this.controls.lookSpeed = 0.1;
+        //     }
+        // }
 
         // if depth texture is active, create it and setup the output
         this.depthBuffer = !!options && !!options.depthBuffer;
@@ -178,8 +169,8 @@ export class THREENode extends Node {
             this.output.value.depth = null;
 
             this.target.depthTexture = new THREE.DepthTexture(
-                this.nodeRenderer.width,
-                this.nodeRenderer.height
+                this.width,
+                this.height
             );
 
             this.target.texture.format = THREE.RGBFormat;
@@ -229,12 +220,10 @@ export class THREENode extends Node {
     /**
      * Renders the node to an output connection
      */
-    render() {
+    render(renderer: NodeRenderer) {
         let initTime = performance.now();
 
         if (!this.manualRender || this.needsUpdate) {
-            let renderer = this.nodeRenderer.renderer;
-
             let output: any = null;
 
             let preMaskMaterials: any = {};
@@ -256,9 +245,9 @@ export class THREENode extends Node {
                         }
                     });
 
-                    renderer.setRenderTarget(mask.target);
-                    renderer.clear(true, true, true);
-                    renderer.render(this.scene, this.camera);
+                    renderer.glRenderer.setRenderTarget(mask.target);
+                    renderer.glRenderer.clear(true, true, true);
+                    renderer.glRenderer.render(this.scene, this.camera);
 
                     output[maskKey] = mask.target.texture;
                 });
@@ -268,9 +257,9 @@ export class THREENode extends Node {
                 });
             }
 
-            renderer.setRenderTarget(this.target);
-            renderer.clear(true, true, true);
-            renderer.render(this.scene, this.camera);
+            renderer.glRenderer.setRenderTarget(this.target);
+            renderer.glRenderer.clear(true, true, true);
+            renderer.glRenderer.render(this.scene, this.camera);
 
             // update output connection
             if (this.depthBuffer) {
@@ -297,10 +286,12 @@ export class THREENode extends Node {
     /**
      * Handles renderer resize
      */
-    resize() {
-        this.camera.aspect = this.nodeRenderer.width / this.nodeRenderer.height;
+    resize(width: number, height: number) {
+        this.width = width;
+        this.height = height;
+        this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
-        this.target.setSize(this.nodeRenderer.width, this.nodeRenderer.height);
+        this.target.setSize(width, height);
 
         return this;
     }

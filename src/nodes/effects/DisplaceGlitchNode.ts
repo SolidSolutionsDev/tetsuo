@@ -29,12 +29,8 @@ export interface DisplaceGlitchNodeOptions extends ShaderNodeOptions {
 export class DisplaceGlitchNode extends ShaderNode {
     options: DisplaceGlitchNodeOptions;
 
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: DisplaceGlitchNodeOptions
-    ) {
-        super(id, nodeRenderer, options, false);
+    constructor(id: string, options?: DisplaceGlitchNodeOptions) {
+        super(id, options, false);
 
         this.options = options || {};
 

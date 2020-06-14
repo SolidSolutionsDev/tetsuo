@@ -19,12 +19,8 @@ export interface BoxBlurNodeOptions extends ShaderNodeOptions {
 export class BoxBlurNode extends ShaderNode {
     options: BoxBlurNodeOptions;
 
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: BoxBlurNodeOptions
-    ) {
-        super(id, nodeRenderer, options, false);
+    constructor(id: string, options?: BoxBlurNodeOptions) {
+        super(id, options, false);
 
         this.options = options || {};
 

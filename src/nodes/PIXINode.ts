@@ -19,16 +19,19 @@ export interface PIXINodeOptions extends NodeOptions {
      * Force height of the renderer
      */
     height?: number;
+
+    /**
+     * Element where the renderer will drop his canvas
+     */
+    viewportElement?: HTMLElement;
 }
 
 /**
  * pixi.js scene node
  */
 export class PIXINode extends Node {
-    /**
-     * Renderer where this node will be included and rendered
-     */
-    nodeRenderer: NodeRenderer;
+    width: number = 0;
+    height: number = 0;
 
     /**
      * Internal PIXI application
@@ -55,14 +58,8 @@ export class PIXINode extends Node {
      */
     fixedSize: boolean = false;
 
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: PIXINodeOptions
-    ) {
+    constructor(id: string, options?: PIXINodeOptions) {
         super(id, options);
-
-        this.nodeRenderer = nodeRenderer;
 
         PIXI.utils.skipHello();
 
@@ -70,13 +67,15 @@ export class PIXINode extends Node {
 
         this.fixedSize = !!(options?.width || options?.height);
 
+        this.width = options?.width || 0;
+        this.height = options?.height || 0;
+
         this.app = new PIXI.Application({
-            width: options?.width || this.nodeRenderer.width,
-            height: options?.height || this.nodeRenderer.height,
-            resizeTo:
-                this.fixedSize || !this.nodeRenderer.viewport
-                    ? undefined
-                    : this.nodeRenderer.viewport.domElement,
+            width: this.width,
+            height: this.height,
+            resizeTo: options?.viewportElement
+                ? undefined
+                : options?.viewportElement,
             autoStart: false,
             transparent: true,
             antialias: true,
@@ -122,7 +121,10 @@ export class PIXINode extends Node {
     /**
      * Handles renderer resize
      */
-    resize() {
+    resize(width: number, height: number) {
+        this.app.renderer.resize(width, height);
+        this.width = width;
+        this.height = height;
         this.app.resize();
         return this;
     }

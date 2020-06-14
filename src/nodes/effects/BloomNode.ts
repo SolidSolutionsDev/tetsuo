@@ -34,12 +34,8 @@ export interface BloomNodeOptions extends ShaderNodeOptions {
 export class BloomNode extends ShaderNode {
     options: BloomNodeOptions;
 
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: BloomNodeOptions
-    ) {
-        super(id, nodeRenderer, options, false);
+    constructor(id: string, options?: BloomNodeOptions) {
+        super(id, options, false);
 
         this.options = options || {};
 

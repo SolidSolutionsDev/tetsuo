@@ -12,12 +12,8 @@ export interface AnaglyphNodeOptions extends ShaderNodeOptions {
 export class AnaglyphNode extends ShaderNode {
     options: AnaglyphNodeOptions;
 
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: AnaglyphNodeOptions
-    ) {
-        super(id, nodeRenderer, options, false);
+    constructor(id: string, options?: AnaglyphNodeOptions) {
+        super(id, options, false);
 
         this.options = options || {};
 

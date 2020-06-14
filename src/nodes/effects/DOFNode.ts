@@ -29,12 +29,8 @@ export interface DOFNodeOptions extends ShaderNodeOptions {
 export class DOFNode extends ShaderNode {
     options: DOFNodeOptions;
 
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: DOFNodeOptions
-    ) {
-        super(id, nodeRenderer, options, false);
+    constructor(id: string, options?: DOFNodeOptions) {
+        super(id, options, false);
 
         this.options = options || {};
 

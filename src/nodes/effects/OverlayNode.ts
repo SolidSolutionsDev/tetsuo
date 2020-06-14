@@ -5,12 +5,8 @@ import { Shaders } from "../../shaders";
 export interface OverlayNodeOptions extends ShaderNodeOptions {}
 
 export class OverlayNode extends ShaderNode {
-    constructor(
-        id: string,
-        nodeRenderer: NodeRenderer,
-        options?: OverlayNodeOptions
-    ) {
-        super(id, nodeRenderer, options, false);
+    constructor(id: string, options?: OverlayNodeOptions) {
+        super(id, options, false);
 
         this.fragmentShader = [
             Shaders.filters,

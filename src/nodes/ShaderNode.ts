@@ -32,6 +32,9 @@ export interface ShaderNodeOptions extends NodeOptions {
  * Pixel shader node
  */
 export class ShaderNode extends Node {
+    width: number = 0;
+    height: number = 0;
+
     /**
      * Internal three.js scene
      * Used for rendering shader
@@ -70,11 +73,6 @@ export class ShaderNode extends Node {
     uniforms: { [key: string]: IUniform } = {};
 
     /**
-     * Renderer where this node will be included and rendered
-     */
-    nodeRenderer: NodeRenderer;
-
-    /**
      * Render target for this node
      */
     target: WebGLRenderTarget;
@@ -91,7 +89,6 @@ export class ShaderNode extends Node {
 
     constructor(
         id: string,
-        nodeRenderer: NodeRenderer,
         options?: ShaderNodeOptions,
         prepare: boolean = true
     ) {
@@ -101,11 +98,7 @@ export class ShaderNode extends Node {
         this.vertexShader = options.vertexShader || defaultVertexShader;
         this.fragmentShader = options.fragmentShader || defaultFragmentShader;
 
-        this.nodeRenderer = nodeRenderer;
-        this.target = new THREE.WebGLRenderTarget(
-            this.nodeRenderer.width,
-            this.nodeRenderer.height
-        );
+        this.target = new THREE.WebGLRenderTarget(this.width, this.height);
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 100);
@@ -163,11 +156,7 @@ export class ShaderNode extends Node {
 
         // update default uniforms
         this.uniforms["iTime"].value = totalTime;
-        this.uniforms["iResolution"].value.set(
-            this.nodeRenderer.width,
-            this.nodeRenderer.height,
-            1
-        );
+        this.uniforms["iResolution"].value.set(this.width, this.height, 1);
 
         // update node connection uniforms
         for (let key in this.inputs) {
@@ -182,18 +171,16 @@ export class ShaderNode extends Node {
     /**
      * Renders shader
      */
-    render() {
-        super.render();
+    render(renderer: NodeRenderer) {
+        super.render(renderer);
 
         let initTime = performance.now();
 
         if (!this.manualRender || this.needsUpdate) {
-            let renderer = this.nodeRenderer.renderer;
-
             // render to a render target
-            renderer.setRenderTarget(this.target);
-            renderer.clear(true, true, true);
-            renderer.render(this.scene, this.camera);
+            renderer.glRenderer.setRenderTarget(this.target);
+            renderer.glRenderer.clear(true, true, true);
+            renderer.glRenderer.render(this.scene, this.camera);
 
             // update output connection
             this.output.setValue(this.target.texture);
@@ -211,8 +198,11 @@ export class ShaderNode extends Node {
     /**
      * Handles renderer resize
      */
-    resize() {
-        this.target.setSize(this.nodeRenderer.width, this.nodeRenderer.height);
+    resize(width: number, height: number) {
+        this.width = width;
+        this.height = height;
+
+        this.target.setSize(this.width, this.height);
 
         return this;
     }

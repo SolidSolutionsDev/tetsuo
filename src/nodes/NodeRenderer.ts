@@ -39,7 +39,7 @@ export class NodeRenderer {
     /**
      * Internal WebGL renderer
      */
-    renderer: THREE.WebGLRenderer;
+    glRenderer: THREE.WebGLRenderer;
 
     /**
      * Graph of nodes attached to this renderer
@@ -121,7 +121,7 @@ export class NodeRenderer {
         }
 
         // initialize renderer
-        this.renderer = new THREE.WebGLRenderer({
+        this.glRenderer = new THREE.WebGLRenderer({
             antialias: options.antialias,
             alpha: options.alpha,
             canvas,
@@ -129,22 +129,22 @@ export class NodeRenderer {
 
         // set renderer size depending on size options
         if (this.fixedSize && options.width && options.height) {
-            this.renderer.setSize(options.width, options.height);
+            this.glRenderer.setSize(options.width, options.height);
             this.width = options.width;
             this.height = options.height;
         } else if (this.viewport) {
-            this.renderer.setSize(this.viewport.width, this.viewport.height);
+            this.glRenderer.setSize(this.viewport.width, this.viewport.height);
             this.width = this.viewport.width;
             this.height = this.viewport.height;
         }
 
-        this.renderer.setClearColor(0x000000, 0);
-        this.renderer.sortObjects = true;
-        this.renderer.autoClear = !!options?.autoClear;
+        this.glRenderer.setClearColor(0x000000, 0);
+        this.glRenderer.sortObjects = true;
+        this.glRenderer.autoClear = !!options?.autoClear;
 
         // initialize node graph and create the root node
         this.nodeGraph = new NodeGraph();
-        this.nodeGraph.setRootNode(new ShaderNode("root", this));
+        this.nodeGraph.setRootNode(new ShaderNode("root"));
 
         // setup rendering
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -157,9 +157,14 @@ export class NodeRenderer {
     /**
      * Updates the renderer's nodes
      */
-    update(totalTime: number, deltaTime: number, fromNode?: Node) {
+    update(
+        totalTime: number,
+        deltaTime: number,
+        frameCount?: number,
+        fromNode?: Node
+    ) {
         this.nodeGraph.traverse(
-            (node) => node.update(totalTime, deltaTime),
+            (node) => node.update(totalTime, deltaTime, frameCount),
             fromNode
         );
     }
@@ -185,15 +190,15 @@ export class NodeRenderer {
     onResize() {
         // set renderer size depending on size options
         if (this.fixedSize && this.width && this.height) {
-            this.renderer.setSize(this.width, this.height);
+            this.glRenderer.setSize(this.width, this.height);
         } else if (this.viewport) {
-            this.renderer.setSize(this.viewport.width, this.viewport.height);
+            this.glRenderer.setSize(this.viewport.width, this.viewport.height);
             this.width = this.viewport.width;
             this.height = this.viewport.height;
         }
 
         // resize each node
-        this.nodeGraph.traverse((node) => node.resize());
+        this.nodeGraph.traverse((node) => node.resize(this.width, this.height));
 
         // render everything with the new size
         this.render();
@@ -207,6 +212,12 @@ export class NodeRenderer {
     connectToScreen(node: Node) {
         if (this.nodeGraph.root) {
             this.nodeGraph.root.addInput(node, "tDiffuse");
+            this.nodeGraph.traverse(
+                (n) => n.resize(this.width, this.height),
+                undefined,
+                [],
+                true
+            );
         }
     }
 
@@ -215,19 +226,19 @@ export class NodeRenderer {
      */
     render(fromNode?: Node) {
         if (fromNode) {
-            this.nodeGraph.traverse((node) => node.render(), fromNode);
+            this.nodeGraph.traverse((node) => node.render(this), fromNode);
         } else if (this.nodeGraph.root) {
             // traverse the node graph and render each node
-            this.nodeGraph.traverse((node) => node.render());
+            this.nodeGraph.traverse((node) => node.render(this));
 
             // render the result to screen
             let map = this.nodeGraph.root.output.getValue() as THREE.Texture;
             this.quad.material = new THREE.MeshBasicMaterial({
                 map,
             });
-            this.renderer.setRenderTarget(null);
-            this.renderer.clear(true, true, true);
-            this.renderer.render(this.scene, this.camera);
+            this.glRenderer.setRenderTarget(null);
+            this.glRenderer.clear(true, true, true);
+            this.glRenderer.render(this.scene, this.camera);
         }
     }
 }

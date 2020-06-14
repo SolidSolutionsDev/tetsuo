@@ -1,5 +1,6 @@
 import { Connection } from "./Connection";
 import { Callback } from "../types/Callback";
+import { NodeRenderer } from "./NodeRenderer";
 
 export interface NodeOptions {
     /**
@@ -131,24 +132,26 @@ export class Node {
      *
      * @param time
      */
-    update(totalTime: number, deltaTime: number) {
+    update(totalTime: number, deltaTime: number, frameCount?: number) {
         this._onUpdate &&
-            this._onUpdate.forEach((fn) => fn(totalTime, deltaTime));
+            this._onUpdate.forEach((fn) =>
+                fn(totalTime, deltaTime, frameCount)
+            );
         return this;
     }
 
     /**
      * Renders the node
      */
-    render() {
-        this._onRender && this._onRender.forEach((fn) => fn());
+    render(renderer: NodeRenderer) {
+        this._onRender && this._onRender.forEach((fn) => fn(renderer));
         return this;
     }
 
     /**
      * Handles renderer resize
      */
-    resize() {
+    resize(width: number, height: number) {
         return this;
     }
 }
