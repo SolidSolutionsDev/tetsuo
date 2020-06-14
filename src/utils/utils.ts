@@ -1,3 +1,5 @@
+import { Callback } from "../types/Callback";
+
 /**
  * Listener for document ready state. http://youmightnotneedjquery.com/#ready
  *
@@ -42,4 +44,27 @@ export function hexStringToNum(str: string) {
 
 export function randomInInterval(lo: number, hi: number) {
     return Math.random() * (hi - lo + 1) + lo;
+}
+
+export function preparePage(
+    options: {
+        width?: number;
+        height?: number;
+        backgroundColor?: string;
+    },
+    onPrepared?: Callback
+) {
+    document.body.style.backgroundColor = options.backgroundColor || "black";
+    document.body.style.margin = "0px";
+    document.body.style.display = "flex";
+    document.body.style.justifyContent = "center";
+    document.body.style.alignItems = "center";
+
+    let viewport = document.createElement("div");
+    viewport.setAttribute("id", "viewport");
+    viewport.style.width = options.width ? options.width + "px" : "100vw";
+    viewport.style.height = options.height ? options.height + "px" : "100vh";
+    document.body.appendChild(viewport);
+
+    onPrepared && onPrepared();
 }
