@@ -40,7 +40,11 @@
 
                 // start animation loop
                 scene.animate((time) => {
-                    object.position.set(Math.sin(time), Math.cos(time), object.position.z);
+                    object.position.set(
+                        Math.sin(time),
+                        Math.cos(time),
+                        object.position.z
+                    );
                 });
             });
         </script>

@@ -131,7 +131,8 @@ export class ShaderNode extends Node {
             ...this.customUniforms,
         };
         for (let key in this.inputs) {
-            if (!uniforms[key]) uniforms[key] = { value: this.inputs[key].getValue() };
+            if (!uniforms[key])
+                uniforms[key] = { value: this.inputs[key].getValue() };
         }
 
         // apply shader to fullscreen quad
@@ -170,7 +171,8 @@ export class ShaderNode extends Node {
 
         // update node connection uniforms
         for (let key in this.inputs) {
-            if (!this.uniforms[key]) this.uniforms[key] = { value: this.inputs[key].getValue() };
+            if (!this.uniforms[key])
+                this.uniforms[key] = { value: this.inputs[key].getValue() };
             else this.uniforms[key].value = this.inputs[key].getValue();
         }
 
@@ -181,6 +183,8 @@ export class ShaderNode extends Node {
      * Renders shader
      */
     render() {
+        super.render();
+
         let initTime = performance.now();
 
         if (!this.manualRender || this.needsUpdate) {
@@ -216,7 +220,12 @@ export class ShaderNode extends Node {
     /**
      * Wrapper over UniformNode creation to reduce boilerplate
      */
-    uniform(uniformID: string, value: any, alias?: string, hide: boolean = false) {
+    uniform(
+        uniformID: string,
+        value: any,
+        alias?: string,
+        hide: boolean = false
+    ) {
         let node = new UniformNode(uniformID, {
             value,
             gui: { alias: alias || uniformID, hide },

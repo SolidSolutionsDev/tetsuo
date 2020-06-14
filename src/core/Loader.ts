@@ -44,7 +44,9 @@ export class Loader {
      */
     loadGeometry(
         url: string,
-        onLoad: (geometry: THREE.BufferGeometry | THREE.InstancedBufferGeometry) => void
+        onLoad: (
+            geometry: THREE.BufferGeometry | THREE.InstancedBufferGeometry
+        ) => void
     ) {
         return this._geometryLoader.load(url, onLoad);
     }

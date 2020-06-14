@@ -37,11 +37,15 @@ export class GroupNode extends Node {
         ]);
 
         for (let key in this.inputs) {
-            if (!uniforms[key]) uniforms[key] = { value: this.inputs[key].getValue() };
+            if (!uniforms[key])
+                uniforms[key] = { value: this.inputs[key].getValue() };
         }
 
         this.group.children
-            .filter((mesh) => (mesh as any).material && (mesh as any).material.uniforms)
+            .filter(
+                (mesh) =>
+                    (mesh as any).material && (mesh as any).material.uniforms
+            )
             .forEach((mesh) => ((mesh as any).material.uniforms = uniforms));
 
         // update the output of the node
@@ -57,7 +61,9 @@ export class GroupNode extends Node {
         return this;
     }
 
-    onUpdate(fn: (totalTime: number, deltaTime: number, group: THREE.Group) => void) {
+    onUpdate(
+        fn: (totalTime: number, deltaTime: number, group: THREE.Group) => void
+    ) {
         this._onUpdate.push(fn);
         return this;
     }
@@ -67,13 +73,17 @@ export class GroupNode extends Node {
         this._onUpdate && this._onUpdate.forEach((fn) => fn(time, this.group));
 
         this.group.children
-            .filter((mesh) => (mesh as any).material && (mesh as any).material.uniforms)
+            .filter(
+                (mesh) =>
+                    (mesh as any).material && (mesh as any).material.uniforms
+            )
             .forEach((mesh) => {
                 let uniforms = (mesh as any).material.uniforms;
                 uniforms["iTime"].value = time;
 
                 for (let key in this.inputs) {
-                    if (!uniforms[key]) uniforms[key] = { value: this.inputs[key].getValue() };
+                    if (!uniforms[key])
+                        uniforms[key] = { value: this.inputs[key].getValue() };
                     else uniforms[key].value = this.inputs[key].getValue();
                 }
             });

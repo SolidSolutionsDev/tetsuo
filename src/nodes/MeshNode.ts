@@ -98,7 +98,8 @@ export class MeshNode extends Node {
         ]);
 
         for (let key in this.inputs) {
-            if (!uniforms[key]) uniforms[key] = { value: this.inputs[key].getValue() };
+            if (!uniforms[key])
+                uniforms[key] = { value: this.inputs[key].getValue() };
         }
 
         // instanciate the mesh
@@ -106,13 +107,20 @@ export class MeshNode extends Node {
             this.geometry,
             this.material ||
                 new THREE.ShaderMaterial({
-                    vertexShader: this.options.vertexShader || defaultVertexShader,
-                    fragmentShader: this.options.fragmentShader || defaultFragmentShader,
+                    vertexShader:
+                        this.options.vertexShader || defaultVertexShader,
+                    fragmentShader:
+                        this.options.fragmentShader || defaultFragmentShader,
                     uniforms: uniforms,
                     transparent:
-                        this.options.transparent !== undefined ? this.options.transparent : true,
+                        this.options.transparent !== undefined
+                            ? this.options.transparent
+                            : true,
                     blending: this.options.blending || THREE.NormalBlending,
-                    depthTest: this.options.depthTest !== undefined ? this.options.depthTest : true,
+                    depthTest:
+                        this.options.depthTest !== undefined
+                            ? this.options.depthTest
+                            : true,
                     lights: true,
                     side: this.options.side || THREE.FrontSide,
                 })
@@ -133,7 +141,9 @@ export class MeshNode extends Node {
         return this;
     }
 
-    onUpdate(fn: (totalTime: number, deltaTime: number, mesh: THREE.Mesh) => void) {
+    onUpdate(
+        fn: (totalTime: number, deltaTime: number, mesh: THREE.Mesh) => void
+    ) {
         this._onUpdate.push(fn);
         return this;
     }

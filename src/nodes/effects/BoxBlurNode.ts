@@ -19,7 +19,11 @@ export interface BoxBlurNodeOptions extends ShaderNodeOptions {
 export class BoxBlurNode extends ShaderNode {
     options: BoxBlurNodeOptions;
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: BoxBlurNodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: BoxBlurNodeOptions
+    ) {
         super(id, nodeRenderer, options, false);
 
         this.options = options || {};
@@ -45,7 +49,9 @@ export class BoxBlurNode extends ShaderNode {
     prepare() {
         super.prepare();
 
-        this.uniforms["texSize"] = { value: this.options.texSize || new THREE.Vector2(1280, 720) };
+        this.uniforms["texSize"] = {
+            value: this.options.texSize || new THREE.Vector2(1280, 720),
+        };
         this.uniforms["separation"] = { value: this.options.separation || 6 };
 
         return this;

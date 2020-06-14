@@ -34,19 +34,21 @@
 
                 three.add(box);
 
-                three.onUpdate((time) => box.rotation.set(Math.sin(time), Math.cos(time), 0));
-
-                let ana = new TETSUO.AnaglyphNode("ana", scene.renderer).addInput(
-                    three,
-                    "inputTex"
+                three.onUpdate((time) =>
+                    box.rotation.set(Math.sin(time), Math.cos(time), 0)
                 );
+
+                let ana = new TETSUO.AnaglyphNode(
+                    "ana",
+                    scene.renderer
+                ).addInput(three, "inputTex");
 
                 let inputOne = ana;
 
-                let blur = new TETSUO.BoxBlurNode("blur", scene.renderer).addInput(
-                    three,
-                    "inputTex"
-                );
+                let blur = new TETSUO.BoxBlurNode(
+                    "blur",
+                    scene.renderer
+                ).addInput(three, "inputTex");
 
                 let inputTwo = blur;
 

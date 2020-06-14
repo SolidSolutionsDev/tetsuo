@@ -25,7 +25,12 @@
 
             function createSceneOne() {
                 sceneOne = new THREE.Scene();
-                cameraOne = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
+                cameraOne = new THREE.PerspectiveCamera(
+                    75,
+                    1280 / 720,
+                    0.1,
+                    1000
+                );
                 cameraOne.position.z = 4;
 
                 box = new THREE.Mesh(
@@ -38,7 +43,12 @@
 
             function createSceneTwo() {
                 sceneTwo = new THREE.Scene();
-                cameraTwo = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
+                cameraTwo = new THREE.PerspectiveCamera(
+                    75,
+                    1280 / 720,
+                    0.1,
+                    1000
+                );
                 cameraTwo.position.z = 4;
 
                 ball = new THREE.Mesh(
@@ -74,7 +84,10 @@
                 createSceneOne();
                 createSceneTwo();
 
-                node = new TETSUO.THREENode("three", renderer, { sceneOne, cameraOne });
+                node = new TETSUO.THREENode("three", renderer, {
+                    sceneOne,
+                    cameraOne,
+                });
 
                 renderer.connectToScreen(node);
 

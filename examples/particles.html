@@ -27,7 +27,9 @@
                     autoStart: true,
                 });
 
-                let three = new TETSUO.THREENode("three", scene.renderer, { orbitControls: true });
+                let three = new TETSUO.THREENode("three", scene.renderer, {
+                    orbitControls: true,
+                });
                 three.camera.position.set(0, 2, 10);
                 three.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -62,7 +64,10 @@
                     ps.push(p);
                     pGeo.vertices.push(p.position);
                 }
-                const pMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+                const pMat = new THREE.PointsMaterial({
+                    color: 0xffffff,
+                    size: 0.05,
+                });
                 let pMesh = new THREE.Points(pGeo, pMat);
                 three.add(pMesh);
 

@@ -34,7 +34,11 @@ export interface BloomNodeOptions extends ShaderNodeOptions {
 export class BloomNode extends ShaderNode {
     options: BloomNodeOptions;
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: BloomNodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: BloomNodeOptions
+    ) {
         super(id, nodeRenderer, options, false);
 
         this.options = options || {};
@@ -78,7 +82,9 @@ export class BloomNode extends ShaderNode {
     prepare() {
         super.prepare();
 
-        this.uniforms["texSize"] = { value: this.options.texSize || new THREE.Vector2(1280, 720) };
+        this.uniforms["texSize"] = {
+            value: this.options.texSize || new THREE.Vector2(1280, 720),
+        };
         this.uniforms["separation"] = { value: this.options.separation || 6 };
         this.uniforms["threshold"] = { value: this.options.threshold || 0.4 };
         this.uniforms["amount"] = { value: this.options.amount || 2 };

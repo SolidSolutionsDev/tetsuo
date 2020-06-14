@@ -34,14 +34,20 @@ export class Clock {
     start() {
         this.running = true;
         this.elapsedTime = 0;
-        this.startTime = (typeof performance === "undefined" ? Date : performance).now();
+        this.startTime = (typeof performance === "undefined"
+            ? Date
+            : performance
+        ).now();
     }
 
     /**
      * Pauses/unpauses the clock
      */
     pause() {
-        this.prevTime = (typeof performance === "undefined" ? Date : performance).now();
+        this.prevTime = (typeof performance === "undefined"
+            ? Date
+            : performance
+        ).now();
         this.running = !this.running;
     }
 
@@ -86,7 +92,10 @@ export class Clock {
         let diff = 0;
 
         if (this.running) {
-            var newTime = (typeof performance === "undefined" ? Date : performance).now();
+            var newTime = (typeof performance === "undefined"
+                ? Date
+                : performance
+            ).now();
 
             diff = (newTime - this.prevTime) / 1000;
             this.prevTime = newTime;

@@ -29,7 +29,11 @@ export interface DOFNodeOptions extends ShaderNodeOptions {
 export class DOFNode extends ShaderNode {
     options: DOFNodeOptions;
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: DOFNodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: DOFNodeOptions
+    ) {
         super(id, nodeRenderer, options, false);
 
         this.options = options || {};
@@ -62,7 +66,9 @@ export class DOFNode extends ShaderNode {
     prepare() {
         super.prepare();
 
-        this.uniforms["texSize"] = { value: this.options.texSize || new THREE.Vector2(1280, 720) };
+        this.uniforms["texSize"] = {
+            value: this.options.texSize || new THREE.Vector2(1280, 720),
+        };
         this.uniforms["separation"] = { value: this.options.separation || 6 };
         this.uniforms["near"] = { value: this.options.near || 0.1 };
         this.uniforms["far"] = { value: this.options.far || 100 };

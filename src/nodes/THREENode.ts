@@ -105,7 +105,11 @@ export class THREENode extends Node {
         };
     };
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: THREENodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: THREENodeOptions
+    ) {
         super(id, options);
 
         this.scene = options?.scene || new THREE.Scene();
@@ -275,7 +279,9 @@ export class THREENode extends Node {
             }
 
             this.output.setValue(
-                output ? { ...output, diffuse: this.target.texture } : this.target.texture
+                output
+                    ? { ...output, diffuse: this.target.texture }
+                    : this.target.texture
             );
 
             this.needsUpdate = false;

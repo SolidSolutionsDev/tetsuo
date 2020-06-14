@@ -28,14 +28,28 @@
                 let shader = new TETSUO.ShaderNode("shader", scene.renderer, {
                     fragmentShader,
                 })
-                    .addInput(new TETSUO.UniformNode("rotXAmount", { value: 1 }))
-                    .addInput(new TETSUO.UniformNode("rotYAmount", { value: 1 }))
-                    .addInput(new TETSUO.UniformNode("rotZAmount", { value: 1 }))
-                    .addInput(new TETSUO.UniformNode("sphereSize", { value: 1 }))
+                    .addInput(
+                        new TETSUO.UniformNode("rotXAmount", { value: 1 })
+                    )
+                    .addInput(
+                        new TETSUO.UniformNode("rotYAmount", { value: 1 })
+                    )
+                    .addInput(
+                        new TETSUO.UniformNode("rotZAmount", { value: 1 })
+                    )
+                    .addInput(
+                        new TETSUO.UniformNode("sphereSize", { value: 1 })
+                    )
                     .addInput(new TETSUO.UniformNode("cubeSize", { value: 1 }))
-                    .addInput(new TETSUO.UniformNode("normalAmount", { value: 0.5 }))
-                    .addInput(new TETSUO.UniformNode("diffuse1Amount", { value: 0.3 }))
-                    .addInput(new TETSUO.UniformNode("diffuse2Amount", { value: 0.2 }));
+                    .addInput(
+                        new TETSUO.UniformNode("normalAmount", { value: 0.5 })
+                    )
+                    .addInput(
+                        new TETSUO.UniformNode("diffuse1Amount", { value: 0.3 })
+                    )
+                    .addInput(
+                        new TETSUO.UniformNode("diffuse2Amount", { value: 0.2 })
+                    );
 
                 scene.connectToScreen(shader);
 

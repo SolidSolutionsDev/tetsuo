@@ -101,8 +101,14 @@ export class NodeRenderer {
         }
 
         // check for size options if needed
-        if (this.fixedSize && (!options.width || !options.height) && !this.viewport) {
-            throw new Error("Node renderer - Fixed size set to true but no width/height defined");
+        if (
+            this.fixedSize &&
+            (!options.width || !options.height) &&
+            !this.viewport
+        ) {
+            throw new Error(
+                "Node renderer - Fixed size set to true but no width/height defined"
+            );
         }
 
         let canvas;
@@ -152,7 +158,10 @@ export class NodeRenderer {
      * Updates the renderer's nodes
      */
     update(totalTime: number, deltaTime: number, fromNode?: Node) {
-        this.nodeGraph.traverse((node) => node.update(totalTime, deltaTime), fromNode);
+        this.nodeGraph.traverse(
+            (node) => node.update(totalTime, deltaTime),
+            fromNode
+        );
     }
 
     /**

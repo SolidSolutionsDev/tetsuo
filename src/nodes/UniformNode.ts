@@ -94,7 +94,13 @@ export class UniformNode<T> extends Node {
         options = options || {};
         let gui: dat.GUI = (window as any).TETSUO.gui;
         if (gui && !options.hide) {
-            gui.add(this, "value", options.minValue, options.maxValue, options.step)
+            gui.add(
+                this,
+                "value",
+                options.minValue,
+                options.maxValue,
+                options.step
+            )
                 .name(options.alias || this.id)
                 .onChange((value: T) => {
                     this.setValue(value);

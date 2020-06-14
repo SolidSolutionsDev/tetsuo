@@ -29,7 +29,11 @@ export interface DisplaceGlitchNodeOptions extends ShaderNodeOptions {
 export class DisplaceGlitchNode extends ShaderNode {
     options: DisplaceGlitchNodeOptions;
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: DisplaceGlitchNodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: DisplaceGlitchNodeOptions
+    ) {
         super(id, nodeRenderer, options, false);
 
         this.options = options || {};
@@ -68,8 +72,12 @@ export class DisplaceGlitchNode extends ShaderNode {
 
         this.uniforms["amount"] = { value: this.options.amount || 0.9 };
         this.uniforms["speed"] = { value: this.options.speed || 15 };
-        this.uniforms["verticalDivs"] = { value: this.options.verticalDivs || 50 };
-        this.uniforms["horizontalDivs"] = { value: this.options.horizontalDivs || 10 };
+        this.uniforms["verticalDivs"] = {
+            value: this.options.verticalDivs || 50,
+        };
+        this.uniforms["horizontalDivs"] = {
+            value: this.options.horizontalDivs || 10,
+        };
 
         return this;
     }

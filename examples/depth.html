@@ -41,7 +41,9 @@
                 // initialize the scene with some spinning cubes
                 let cubes = [];
                 let geometry = new THREE.BoxGeometry(1, 1, 1);
-                let material = new THREE.MeshBasicMaterial({ color: "#ff0000" });
+                let material = new THREE.MeshBasicMaterial({
+                    color: "#ff0000",
+                });
                 for (var i = 0; i < 50; i++) {
                     let cube = new THREE.Mesh(geometry, material);
                     cube.position.set(
@@ -49,7 +51,11 @@
                         Math.random() * 2 - 1,
                         Math.random() * 20 - 20
                     );
-                    cube.rotation.set(Math.random(), Math.random(), Math.random());
+                    cube.rotation.set(
+                        Math.random(),
+                        Math.random(),
+                        Math.random()
+                    );
                     cubes.push(cube);
                     node.add(cube);
                 }

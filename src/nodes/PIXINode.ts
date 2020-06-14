@@ -55,7 +55,11 @@ export class PIXINode extends Node {
      */
     fixedSize: boolean = false;
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: PIXINodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: PIXINodeOptions
+    ) {
         super(id, options);
 
         this.nodeRenderer = nodeRenderer;

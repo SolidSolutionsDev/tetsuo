@@ -19,7 +19,11 @@ export interface FogNodeOptions extends ShaderNodeOptions {
 export class FogNode extends ShaderNode {
     options: FogNodeOptions;
 
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: FogNodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: FogNodeOptions
+    ) {
         super(id, nodeRenderer, options, false);
 
         this.options = options || {};

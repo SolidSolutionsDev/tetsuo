@@ -21,6 +21,7 @@
         "dat.gui": "^0.7.6",
         "jest": "^25.4.0",
         "live-server": "^1.2.1",
+        "prettier": "2.0.5",
         "stats.js": "^0.17.0",
         "ts-jest": "^25.4.0",
         "ts-loader": "^7.0.5",

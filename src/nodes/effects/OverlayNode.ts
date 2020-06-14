@@ -5,7 +5,11 @@ import { Shaders } from "../../shaders";
 export interface OverlayNodeOptions extends ShaderNodeOptions {}
 
 export class OverlayNode extends ShaderNode {
-    constructor(id: string, nodeRenderer: NodeRenderer, options?: OverlayNodeOptions) {
+    constructor(
+        id: string,
+        nodeRenderer: NodeRenderer,
+        options?: OverlayNodeOptions
+    ) {
         super(id, nodeRenderer, options, false);
 
         this.fragmentShader = [
@@ -13,7 +17,7 @@ export class OverlayNode extends ShaderNode {
             /* glsl */ `
                 varying vec2 vUv;
 
-                uniform sampler2D bgTex;
+                uniform sampler2D bgTex; 
                 uniform sampler2D fgTex;
 
                 void main() {

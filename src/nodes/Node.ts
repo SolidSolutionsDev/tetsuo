@@ -10,6 +10,11 @@ export interface NodeOptions {
      * Callback when the renderer updates this node
      */
     onUpdate?: (time: number, deltaTime: number, ...args: any) => void;
+
+    /**
+     * Callback when the renderer renders this node
+     */
+    onRender?: (...args: any) => void;
 }
 
 export class Node {
@@ -44,11 +49,17 @@ export class Node {
      */
     protected _onPrepare: ((...args: any) => void)[];
 
+    /**
+     * Callback when the renderer renders this node
+     */
+    protected _onRender: ((...args: any) => void)[];
+
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
 
         this._onPrepare = options?.onPrepare ? [options.onPrepare] : [];
         this._onUpdate = options?.onUpdate ? [options?.onUpdate] : [];
+        this._onRender = options?.onRender ? [options?.onRender] : [];
     }
 
     /**
@@ -97,6 +108,16 @@ export class Node {
     }
 
     /**
+     * Sets a callback when the renderer updates this node
+     *
+     * @param fn
+     */
+    onRender(fn: () => void) {
+        this._onRender.push(fn);
+        return this;
+    }
+
+    /**
      * Initializes the node for rendering
      */
     prepare() {
@@ -110,7 +131,8 @@ export class Node {
      * @param time
      */
     update(totalTime: number, deltaTime: number) {
-        this._onUpdate && this._onUpdate.forEach((fn) => fn(totalTime, deltaTime));
+        this._onUpdate &&
+            this._onUpdate.forEach((fn) => fn(totalTime, deltaTime));
         return this;
     }
 
@@ -118,6 +140,7 @@ export class Node {
      * Renders the node
      */
     render() {
+        this._onRender && this._onRender.forEach((fn) => fn());
         return this;
     }
 

@@ -34,9 +34,15 @@ export const ShadedObject = (shaderOptions: {
         vertexShader: shaderOptions.vertexShader || defaultVertexShader,
         fragmentShader: shaderOptions.fragmentShader || defaultFragmentShader,
         uniforms: mergedUniforms,
-        transparent: shaderOptions.transparent !== undefined ? shaderOptions.transparent : true,
+        transparent:
+            shaderOptions.transparent !== undefined
+                ? shaderOptions.transparent
+                : true,
         blending: shaderOptions.blending || THREE.NormalBlending,
-        depthTest: shaderOptions.depthTest !== undefined ? shaderOptions.depthTest : true,
+        depthTest:
+            shaderOptions.depthTest !== undefined
+                ? shaderOptions.depthTest
+                : true,
         lights: true,
         side: shaderOptions.side || THREE.FrontSide,
     });

@@ -58,8 +58,14 @@
 
                 // start animation loop
                 scene.animate((time) => {
-                    object.position.set(Math.sin(time), Math.cos(time), object.position.z);
-                    document.getElementById("elapsed").innerHTML = scene.clock.getElapsedTime();
+                    object.position.set(
+                        Math.sin(time),
+                        Math.cos(time),
+                        object.position.z
+                    );
+                    document.getElementById(
+                        "elapsed"
+                    ).innerHTML = scene.clock.getElapsedTime();
                 });
 
                 // setup time jump methods

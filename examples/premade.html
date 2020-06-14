@@ -50,7 +50,11 @@
             three.onUpdate((time) => {
                 cylinder.update(time);
                 face.update(time, {
-                    color: new THREE.Vector3(Math.cos(time * 2), 1, Math.sin(time * 2)),
+                    color: new THREE.Vector3(
+                        Math.cos(time * 2),
+                        1,
+                        Math.sin(time * 2)
+                    ),
                 });
             });
 
