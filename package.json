@@ -8,10 +8,10 @@
     "dependencies": {
         "pixi.js": "^5.2.3",
         "three": "^0.115.0",
-        "typescript": "^3.8.3"
+        "typescript": "^3.9.5"
     },
     "devDependencies": {
-        "@babel/core": "^7.8.0",
+        "@babel/core": "^7.10.2",
         "@types/dat.gui": "^0.7.5",
         "@types/jest": "^25.2.1",
         "@types/stats.js": "^0.17.0",
@@ -23,7 +23,7 @@
         "live-server": "^1.2.1",
         "stats.js": "^0.17.0",
         "ts-jest": "^25.4.0",
-        "ts-loader": "^7.0.0",
+        "ts-loader": "^7.0.5",
         "webpack": "^4.41.5",
         "webpack-bundle-analyzer": "^3.8.0",
         "webpack-cli": "^3.3.10",
@@ -31,11 +31,11 @@
     },
     "scripts": {
         "build:dev": "cross-env NODE_ENV=development webpack",
-        "watch": "yarn build:dev --watch",
+        "watch": "npm run build:dev -- --watch",
         "build:prod": "cross-env NODE_ENV=production webpack",
         "serve": "live-server --no-browser --watch=dist,examples,dev",
         "test": "jest --detectOpenHandles --colors",
-        "test:watch": "yarn test --watch",
+        "test:watch": "npm run test -- --watch",
         "publish:patch": "npm version patch && git push && npm run build:prod && npm publish",
         "publish:minor": "npm version minor && git push && npm run build:prod && npm publish",
         "publish:major": "npm version major && git push && npm run build:prod && npm publish",
