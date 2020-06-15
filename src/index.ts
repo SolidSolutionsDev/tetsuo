@@ -26,14 +26,15 @@ import { ShaderMaterial } from "./utils/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
 import { SelectorNode } from "./nodes/SelectorNode";
 import { GroupNode } from "./nodes/GroupNode";
-import AssetLoader from "./core/AssetLoader";
+import Preloader from "./core/Preloader";
+import { Syncer } from "./utils/Syncer";
 
 const TETSUO = {
     // core
     Scene,
     Viewport,
     Clock,
-    AssetLoader,
+    Preloader,
     Loader,
     Profiler,
 
@@ -41,6 +42,7 @@ const TETSUO = {
     Utils,
     ShadedObject,
     ShaderMaterial,
+    Syncer,
 
     // shader lib
     Shaders,

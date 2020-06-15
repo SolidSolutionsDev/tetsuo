@@ -2,8 +2,8 @@ import Loader from "./Loader";
 
 let assets: { [key: string]: any } = {};
 
-const AssetLoader = {
-    preloadAssets: (manifestURL: string): Promise<any> =>
+const Preloader = {
+    loadManifest: (manifestURL: string): Promise<any> =>
         new Promise((resolve, reject) => {
             fetch(manifestURL)
                 .then((response) => response.json())
@@ -18,9 +18,11 @@ const AssetLoader = {
                 })
                 .catch((error) => reject(error));
         }),
+
+    getAssetById: (id: string) => assets[id],
 };
 
 export default {
-    ...AssetLoader,
+    ...Preloader,
     assets,
 };
