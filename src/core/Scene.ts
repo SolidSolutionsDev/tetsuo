@@ -68,7 +68,9 @@ export class Scene {
         });
 
         // initialize the clock
-        this.clock = new Clock();
+        this.clock = new Clock(autoStart, (elapsed, delta, frameCount) =>
+            this.animate(elapsed, delta, frameCount)
+        );
 
         // dev utils initialization
         this.dev = !!dev;
@@ -83,9 +85,6 @@ export class Scene {
             this.renderer.viewport &&
                 this.renderer.viewport.domElement.appendChild(this.stats.dom);
         }
-
-        // if autoStart variable is true, start animating the scene right away
-        autoStart && this.animate();
     }
 
     /**
@@ -94,7 +93,7 @@ export class Scene {
      *
      * @param onTick - Callback when animation ticks
      */
-    animate(onTick?: Callback) {
+    animate(elapsed: number, delta: number, frameCount: number) {
         if (this.dev) {
             // start counting fps time for this frame
             this.stats && this.stats.begin();
@@ -107,14 +106,8 @@ export class Scene {
             }
         }
 
-        // move clock along
-        let delta = this.clock.tick();
-
-        // callback
-        onTick && onTick(this.clock.getElapsedTime(), delta);
-
         // update all nodes in the render
-        this.renderer.update(this.clock.getElapsedTime(), delta);
+        this.renderer.update(elapsed, delta);
 
         // render all nodes
         this.renderer.render();
@@ -123,8 +116,6 @@ export class Scene {
             // finish counting fps time
             this.stats && this.stats.end();
         }
-
-        requestAnimationFrame(() => this.animate(onTick));
     }
 
     /**

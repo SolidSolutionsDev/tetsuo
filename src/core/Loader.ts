@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Callback } from "../types/Callback";
+import { Howl } from "howler";
 
 /**
  * Wrapper singleton for all the relevant resource loaders
@@ -45,6 +46,12 @@ export class Loader {
      */
     loadGeometry(url: string, onLoad: Callback) {
         return this._geometryLoader.load(url, onLoad);
+    }
+
+    loadAudio(url: string) {
+        return new Howl({
+            src: [url],
+        });
     }
 }
 

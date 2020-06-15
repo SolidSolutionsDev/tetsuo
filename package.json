@@ -6,6 +6,8 @@
     "types": "./dist/index.d.ts",
     "license": "MIT",
     "dependencies": {
+        "animejs": "^3.2.0",
+        "howler": "^2.2.0",
         "pixi.js": "^5.2.3",
         "three": "^0.115.0",
         "typescript": "^3.9.5"
@@ -13,6 +15,7 @@
     "devDependencies": {
         "@babel/core": "^7.10.2",
         "@types/dat.gui": "^0.7.5",
+        "@types/howler": "^2.2.0",
         "@types/jest": "^25.2.1",
         "@types/stats.js": "^0.17.0",
         "babel-loader": "^8.0.6",

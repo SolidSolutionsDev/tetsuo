@@ -1,7 +1,6 @@
 import { Viewport } from "./core/Viewport";
 import { Scene } from "./core/Scene";
 import { Clock } from "./core/Clock";
-import { Timeline } from "./core/Timeline";
 import { Shaders } from "./shaders";
 import { ShadedObject } from "./utils/ShadedObject";
 import { NodeRenderer } from "./nodes/NodeRenderer";
@@ -27,13 +26,14 @@ import { ShaderMaterial } from "./utils/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
 import { SelectorNode } from "./nodes/SelectorNode";
 import { GroupNode } from "./nodes/GroupNode";
+import AssetLoader from "./core/AssetLoader";
 
 const TETSUO = {
     // core
     Scene,
     Viewport,
     Clock,
-    Timeline,
+    AssetLoader,
     Loader,
     Profiler,
 

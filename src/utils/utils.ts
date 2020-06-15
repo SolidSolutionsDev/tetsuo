@@ -46,7 +46,7 @@ export function randomInInterval(lo: number, hi: number) {
     return Math.random() * (hi - lo + 1) + lo;
 }
 
-export function preparePage(
+export function prepareViewport(
     options: {
         width?: number;
         height?: number;
@@ -54,17 +54,55 @@ export function preparePage(
     },
     onPrepared?: Callback
 ) {
-    document.body.style.backgroundColor = options.backgroundColor || "black";
-    document.body.style.margin = "0px";
-    document.body.style.display = "flex";
-    document.body.style.justifyContent = "center";
-    document.body.style.alignItems = "center";
-
     let viewport = document.createElement("div");
-    viewport.setAttribute("id", "viewport");
-    viewport.style.width = options.width ? options.width + "px" : "100vw";
-    viewport.style.height = options.height ? options.height + "px" : "100vh";
     document.body.appendChild(viewport);
+    viewport.setAttribute("id", "viewport");
+
+    const style = document.createElement("style");
+    style.textContent = /* css */ `
+        html, body {
+            background-color: ${options.backgroundColor || "black"};
+            margin: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #viewport {
+            width: ${options.width ? options.width + "px" : "100vw"};
+            height: ${options.height ? options.height + "px" : "100vh"};
+        }
+    `;
+    document.head.append(style);
 
     onPrepared && onPrepared();
+}
+
+export function createStartButton(onClick?: Callback) {
+    let startButton = document.createElement("div");
+    startButton.setAttribute("id", "startButton");
+    startButton.textContent = "start";
+    startButton.onclick = () => {
+        onClick && onClick();
+        startButton.style.display = "none";
+    };
+    document.body.appendChild(startButton);
+
+    const style = document.createElement("style");
+    style.textContent = /* css */ `
+        #startButton {
+            position: absolute;
+            background-color: #1c1c1c;
+            padding: 1rem;
+            font-size: 2rem;
+            color: white;
+            font-family: monospace;
+        }
+
+        #startButton:hover {
+            background-color: #3c3c3c;
+            cursor: pointer;
+        }
+    `;
+    document.head.appendChild(style);
 }

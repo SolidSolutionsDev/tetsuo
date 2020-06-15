@@ -1,3 +1,5 @@
+import { Callback } from "../types/Callback";
+
 /**
  * Clock class to control time.
  * Inspired by THREE.Clock but with different operation.
@@ -20,11 +22,22 @@ export class Clock {
     elapsedTime: number = 0;
 
     /**
+     * Number of frames since clock started running
+     */
+    frameCount: number = 0;
+
+    /**
      * Whether the clock is running
      */
     running: boolean = false;
 
-    constructor(autoStart: boolean = true) {
+    /**
+     * Callback when clock ticks
+     */
+    onTick?: Callback;
+
+    constructor(autoStart: boolean = true, onTick?: Callback) {
+        this.onTick = onTick;
         autoStart && this.start();
     }
 
@@ -34,10 +47,13 @@ export class Clock {
     start() {
         this.running = true;
         this.elapsedTime = 0;
+        this.frameCount = 0;
         this.startTime = (typeof performance === "undefined"
             ? Date
             : performance
         ).now();
+
+        this.tick();
     }
 
     /**
@@ -101,8 +117,11 @@ export class Clock {
             this.prevTime = newTime;
 
             this.elapsedTime += diff;
-        }
+            this.frameCount += 1;
 
-        return diff;
+            this.onTick && this.onTick(this.elapsedTime, diff, this.frameCount);
+
+            requestAnimationFrame(this.tick.bind(this));
+        }
     }
 }
