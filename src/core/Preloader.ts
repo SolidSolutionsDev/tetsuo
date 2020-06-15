@@ -8,13 +8,23 @@ const Preloader = {
             fetch(manifestURL)
                 .then((response) => response.json())
                 .then((data) => {
+                    let itemCount = Object.keys(data).length;
+
+                    function itemDone() {
+                        itemCount--;
+                        if (itemCount <= 0) {
+                            resolve(assets);
+                        }
+                    }
+
                     Object.keys(data).forEach((key) => {
                         if (data[key].url.endsWith("mp3")) {
-                            assets[key] = Loader.loadAudio(data[key].url);
+                            Loader.loadAudio(data[key].url).then((audio) => {
+                                assets[key] = audio;
+                                itemDone();
+                            });
                         }
                     });
-
-                    resolve(assets);
                 })
                 .catch((error) => reject(error));
         }),

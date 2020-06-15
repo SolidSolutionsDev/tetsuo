@@ -48,9 +48,13 @@ export class Loader {
         return this._geometryLoader.load(url, onLoad);
     }
 
-    loadAudio(url: string) {
-        return new Howl({
-            src: [url],
+    loadAudio(url: string): Promise<Howl> {
+        return new Promise((resolve, reject) => {
+            let howl = new Howl({
+                src: [url],
+            });
+
+            howl.on("load", () => resolve(howl));
         });
     }
 }
