@@ -23,6 +23,14 @@ const Preloader = {
                                 assets[key] = audio;
                                 itemDone();
                             });
+                        } else if (data[key].url.endsWith("png")) {
+                            assets[key] = Loader.loadTexture(data[key].url);
+                            itemDone();
+                        } else if (data[key].url.endsWith(".geo.json")) {
+                            Loader.loadGeometry(data[key].url, (geo) => {
+                                assets[key] = geo;
+                                itemDone();
+                            });
                         }
                     });
                 })

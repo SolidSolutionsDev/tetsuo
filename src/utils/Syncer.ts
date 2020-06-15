@@ -2,24 +2,68 @@ import { Howl } from "howler";
 import { Callback } from "../types/Callback";
 
 export interface SyncerOptions {
+    /**
+     * BPM of the associated music track
+     */
     bpm: number;
+
+    /**
+     * Start delay until the first beat of the music
+     * Allows to skip non-rhythmic intros that don't match the music's BPM
+     */
     startDelay?: number;
+
+    /**
+     * Custom sections of the music for triggering events
+     */
     sections?: { id: string; time: number }[];
 }
 
 export class Syncer {
+    /**
+     * Audio controller of the associated music
+     */
     audio: Howl;
+
+    /**
+     * Music sync options
+     */
     options: SyncerOptions;
 
+    /**
+     * List of callbacks to call when music starts playing
+     */
     _onPlay: Callback[] = [];
+
+    /**
+     * List of callbacks to call when music finishes playing
+     */
     _onEnd: Callback[] = [];
 
+    /**
+     * List of callbacks to call when there's a beat on the music
+     * This is approximated using current seek point and passed bpm value
+     */
     _onBPM: Callback[] = [];
 
+    /**
+     * List of callbacks to call when music enters a custom section defined in the passed options
+     */
     _onSection: { id: string; callback: Callback; done: boolean }[] = [];
+
+    /**
+     * List of callbacks to call when music seek time passes a value
+     */
     _onTime: { time: number; callback: Callback; done: boolean }[] = [];
 
+    /**
+     * Last update call seek time value
+     */
     _lastSeek: number = 0;
+
+    /**
+     * Time until next bpm event
+     */
     _untilBPM: number = 0;
 
     constructor(audio: Howl, options: SyncerOptions) {
@@ -109,5 +153,9 @@ export class Syncer {
     onTime(event: { time: number; callback: Callback }) {
         this._onTime.push({ ...event, done: false });
         return this;
+    }
+
+    getUntilBPM() {
+        return this._untilBPM;
     }
 }
