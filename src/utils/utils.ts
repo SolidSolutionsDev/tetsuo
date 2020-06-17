@@ -47,7 +47,7 @@ export function randomInInterval(lo: number, hi: number) {
 }
 
 export function prepareViewport(
-    options: {
+    options?: {
         width?: number;
         height?: number;
         backgroundColor?: string;
@@ -61,7 +61,7 @@ export function prepareViewport(
     const style = document.createElement("style");
     style.textContent = /* css */ `
         html, body {
-            background-color: ${options.backgroundColor || "black"};
+            background-color: ${options?.backgroundColor || "black"};
             margin: 0px;
             display: flex;
             justify-content: center;
@@ -69,8 +69,8 @@ export function prepareViewport(
         }
 
         #viewport {
-            width: ${options.width ? options.width + "px" : "100vw"};
-            height: ${options.height ? options.height + "px" : "100vh"};
+            width: ${options?.width ? options.width + "px" : "100vw"};
+            height: ${options?.height ? options.height + "px" : "100vh"};
         }
     `;
     document.head.append(style);
