@@ -13,7 +13,7 @@ import { UniformNode } from "./nodes/UniformNode";
 import { TextureNode } from "./nodes/TextureNode";
 import { MeshNode } from "./nodes/MeshNode";
 import { Connection } from "./nodes/Connection";
-import * as Utils from "./utils/utils";
+import * as Utils from "./utils";
 import Loader from "./core/Loader";
 import Profiler from "./core/Profiler";
 import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
@@ -26,7 +26,7 @@ import { ShaderMaterial } from "./utils/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
 import { SelectorNode } from "./nodes/SelectorNode";
 import { GroupNode } from "./nodes/GroupNode";
-import Preloader from "./core/Preloader";
+import { Preloader } from "./core/Preloader";
 import { Syncer } from "./utils/Syncer";
 
 const TETSUO = {

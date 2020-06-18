@@ -1,5 +1,5 @@
 import { Node } from "../nodes/Node";
-import { uniqueColor } from "../utils/utils";
+import { uniqueColor } from "../utils";
 
 export interface ProfilerNodeConfig {
     id: string;

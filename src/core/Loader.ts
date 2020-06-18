@@ -16,6 +16,9 @@ export class Loader {
      */
     protected _geometryLoader: THREE.BufferGeometryLoader;
 
+    /**
+     * three.js object JSON loader
+     */
     protected _objectLoader: THREE.ObjectLoader;
 
     constructor() {
@@ -34,6 +37,12 @@ export class Loader {
         return this._textureLoader.load(url, onLoad);
     }
 
+    /**
+     * Load a three.js object located at a given url
+     *
+     * @param url
+     * @param onLoad
+     */
     loadObject(url: string, onLoad?: Callback) {
         return this._objectLoader.load(url, onLoad);
     }
@@ -48,14 +57,18 @@ export class Loader {
         return this._geometryLoader.load(url, onLoad);
     }
 
-    loadAudio(url: string): Promise<Howl> {
-        return new Promise((resolve, reject) => {
-            let howl = new Howl({
-                src: [url],
-            });
-
-            howl.on("load", () => resolve(howl));
+    /**
+     * Load an audio file located at a given url into a Howler instance
+     *
+     * @param url
+     * @param onLoad
+     */
+    loadAudio(url: string, onLoad?: Callback) {
+        let howl = new Howl({
+            src: [url],
         });
+
+        howl.on("load", () => onLoad && onLoad(howl));
     }
 }
 
