@@ -1,9 +1,18 @@
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
-import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
 
+/**
+ * Overlay node initialization options
+ *
+ * @category Nodes
+ */
 export interface OverlayNodeOptions extends ShaderNodeOptions {}
 
+/**
+ * Overlays two inputs using alpha
+ *
+ * @category Nodes
+ */
 export class OverlayNode extends ShaderNode {
     constructor(id: string, options?: OverlayNodeOptions) {
         super(id, options, false);

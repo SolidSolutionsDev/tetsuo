@@ -2,6 +2,8 @@ import { Node } from "./Node";
 
 /**
  * Represents a connection between nodes
+ *
+ * @category Nodes
  */
 export class Connection {
     /**

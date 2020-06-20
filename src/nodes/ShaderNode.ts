@@ -3,12 +3,16 @@ import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 import defaultUniforms from "../shaders/defaultUniforms";
 import { IUniform, WebGLRenderTarget } from "three";
-import Profiler from "../core/Profiler";
 import { UniformNode } from "./UniformNode";
 
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/defaultPost.frag");
 
+/**
+ * Shader node initialization options
+ *
+ * @category Nodes
+ */
 export interface ShaderNodeOptions extends NodeOptions {
     /**
      * GLSL code for the vertex shader of this node
@@ -25,16 +29,18 @@ export interface ShaderNodeOptions extends NodeOptions {
      */
     manualRender?: boolean;
 
+    /**
+     * List of custom uniforms
+     */
     uniforms?: { [key: string]: IUniform };
 }
 
 /**
  * Pixel shader node
+ *
+ * @category Nodes
  */
 export class ShaderNode extends Node {
-    width: number = 0;
-    height: number = 0;
-
     /**
      * Internal three.js scene
      * Used for rendering shader
@@ -65,7 +71,7 @@ export class ShaderNode extends Node {
     /**
      * Uniforms passed to constructor as option
      */
-    customUniforms?: { [key: string]: IUniform } = {};
+    private _customUniforms?: { [key: string]: IUniform } = {};
 
     /**
      * Shader uniforms
@@ -75,18 +81,23 @@ export class ShaderNode extends Node {
     /**
      * Render target for this node
      */
-    target: WebGLRenderTarget;
+    private _target: WebGLRenderTarget;
 
     /**
      * Whether to render this node only when needsUpdate is true
      */
-    manualRender?: boolean;
+    private _manualRender?: boolean;
 
     /**
      * Whether to rerender this node on the next pass (for manual render)
      */
     needsUpdate: boolean = true;
 
+    /**
+     * @param id - Node id
+     * @param options - Shader node initialization options
+     * @param prepare - Whether to run the prepare method for this node on construction
+     */
     constructor(
         id: string,
         options?: ShaderNodeOptions,
@@ -98,14 +109,14 @@ export class ShaderNode extends Node {
         this.vertexShader = options.vertexShader || defaultVertexShader;
         this.fragmentShader = options.fragmentShader || defaultFragmentShader;
 
-        this.target = new THREE.WebGLRenderTarget(this.width, this.height);
+        this._target = new THREE.WebGLRenderTarget(this.width, this.height);
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 100);
 
-        this.manualRender = options?.manualRender;
+        this._manualRender = options?.manualRender;
 
-        this.customUniforms = options.uniforms;
+        this._customUniforms = options.uniforms;
 
         prepare && this.prepare();
     }
@@ -116,12 +127,10 @@ export class ShaderNode extends Node {
     prepare() {
         super.prepare();
 
-        Profiler.register(this);
-
         // (re)initialize shader uniforms
         let uniforms: { [key: string]: IUniform } = {
             ...defaultUniforms,
-            ...this.customUniforms,
+            ...this._customUniforms,
         };
         for (let key in this.inputs) {
             if (!uniforms[key])
@@ -174,23 +183,17 @@ export class ShaderNode extends Node {
     render(renderer: NodeRenderer) {
         super.render(renderer);
 
-        let initTime = performance.now();
-
-        if (!this.manualRender || this.needsUpdate) {
+        if (!this._manualRender || this.needsUpdate) {
             // render to a render target
-            renderer.glRenderer.setRenderTarget(this.target);
+            renderer.glRenderer.setRenderTarget(this._target);
             renderer.glRenderer.clear(true, true, true);
             renderer.glRenderer.render(this.scene, this.camera);
 
             // update output connection
-            this.output.setValue(this.target.texture);
+            this.output.setValue(this._target.texture);
 
             this.needsUpdate = false;
         }
-
-        let finalTime = performance.now();
-
-        Profiler.update(this, finalTime - initTime);
 
         return this;
     }
@@ -202,23 +205,20 @@ export class ShaderNode extends Node {
         this.width = width;
         this.height = height;
 
-        this.target.setSize(this.width, this.height);
+        this._target.setSize(this.width, this.height);
 
         return this;
     }
 
     /**
      * Wrapper over UniformNode creation to reduce boilerplate
+     *
+     * @param uniformID - Uniform id
+     * @param value - Uniform initial value
      */
-    uniform(
-        uniformID: string,
-        value: any,
-        alias?: string,
-        hide: boolean = false
-    ) {
+    uniform(uniformID: string, value: any) {
         let node = new UniformNode(uniformID, {
             value,
-            gui: { alias: alias || uniformID, hide },
         });
         this.addInput(node);
         return this;

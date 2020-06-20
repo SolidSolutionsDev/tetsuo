@@ -1,0 +1,8 @@
+{
+    "mode": "library",
+    "out": "docs",
+    "excludePrivate": true,
+    "includeDeclarations": true,
+    "excludeExternals": true,
+    "theme": "./node_modules/typedoc-neo-theme/bin/default"
+}

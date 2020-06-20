@@ -1,34 +1,11 @@
 import { Node, NodeOptions } from "./Node";
 import { Callback } from "../types/Callback";
 
-export interface UniformGuiOptions {
-    /**
-     * Whether to hide the control from dat.gui
-     */
-    hide?: boolean;
-
-    /**
-     * Alias for the controller
-     * If not set, controller name will be node ID
-     */
-    alias?: string;
-
-    /**
-     * Uniform minimum value
-     */
-    minValue?: number;
-
-    /**
-     * Uniform maximum value
-     */
-    maxValue?: number;
-
-    /**
-     * Controller value change step amount
-     */
-    step?: number;
-}
-
+/**
+ * Uniform node initialization options
+ *
+ * @category Nodes
+ */
 export interface UniformNodeOptions<T> extends NodeOptions {
     /**
      * Initial value of the uniform
@@ -39,15 +16,12 @@ export interface UniformNodeOptions<T> extends NodeOptions {
      * Callback when value changes
      */
     onChange?: Callback;
-
-    /**
-     * dat.gui controller configuration
-     */
-    gui?: UniformGuiOptions;
 }
 
 /**
- * Node for uniform control
+ * Node for controlling uniforms in nodes
+ *
+ * @category Nodes
  */
 export class UniformNode<T> extends Node {
     /**
@@ -60,14 +34,17 @@ export class UniformNode<T> extends Node {
      */
     onChange?: Callback;
 
+    /**
+     *
+     * @param id - Node id
+     * @param options - Uniform node initialization options
+     */
     constructor(id: string, options: UniformNodeOptions<T>) {
         super(id, options);
 
         this.setValue(options.value);
 
         this.onChange = options.onChange;
-
-        this.setupGui(options.gui);
     }
 
     /**
@@ -82,31 +59,6 @@ export class UniformNode<T> extends Node {
         this.output.setValue(value);
 
         this.onChange && this.onChange(value);
-
-        return this;
-    }
-
-    /**
-     * Sets up a dat.gui controller for this uniform
-     *
-     * @param options - dat.gui configuration
-     */
-    setupGui(options?: UniformGuiOptions) {
-        options = options || {};
-        let gui: dat.GUI = (window as any).TETSUO.gui;
-        if (gui && !options.hide) {
-            gui.add(
-                this,
-                "value",
-                options.minValue,
-                options.maxValue,
-                options.step
-            )
-                .name(options.alias || this.id)
-                .onChange((value: T) => {
-                    this.setValue(value);
-                });
-        }
 
         return this;
     }

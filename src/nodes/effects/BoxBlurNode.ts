@@ -1,9 +1,13 @@
 import * as THREE from "three";
 
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
-import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
 
+/**
+ * Box blur node initialization options
+ *
+ * @category Nodes
+ */
 export interface BoxBlurNodeOptions extends ShaderNodeOptions {
     /**
      * Size of the input texture
@@ -16,6 +20,11 @@ export interface BoxBlurNodeOptions extends ShaderNodeOptions {
     separation?: number;
 }
 
+/**
+ * Box blur effect node
+ *
+ * @category Nodes
+ */
 export class BoxBlurNode extends ShaderNode {
     options: BoxBlurNodeOptions;
 

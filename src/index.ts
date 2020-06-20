@@ -1,58 +1,63 @@
 import { Viewport } from "./core/Viewport";
-import { Scene } from "./core/Scene";
+import { Scene, SceneOptions } from "./core/Scene";
 import { Clock } from "./core/Clock";
 import { Shaders } from "./shaders";
-import { ShadedObject } from "./utils/ShadedObject";
-import { NodeRenderer } from "./nodes/NodeRenderer";
+import { ShadedObject, ShadedObjectOptions } from "./shaders/ShadedObject";
+import { NodeRenderer, NodeRendererOptions } from "./nodes/NodeRenderer";
 import { NodeGraph } from "./nodes/NodeGraph";
-import { Node } from "./nodes/Node";
-import { ShaderNode } from "./nodes/ShaderNode";
-import { THREENode } from "./nodes/THREENode";
-import { PIXINode } from "./nodes/PIXINode";
-import { UniformNode } from "./nodes/UniformNode";
-import { TextureNode } from "./nodes/TextureNode";
-import { MeshNode } from "./nodes/MeshNode";
+import { Node, NodeOptions } from "./nodes/Node";
+import { ShaderNode, ShaderNodeOptions } from "./nodes/ShaderNode";
+import { THREENode, THREENodeOptions } from "./nodes/THREENode";
+import { PIXINode, PIXINodeOptions } from "./nodes/PIXINode";
+import { UniformNode, UniformNodeOptions } from "./nodes/UniformNode";
+import { TextureNode, TextureNodeOptions } from "./nodes/TextureNode";
+import { MeshNode, MeshNodeOptions } from "./nodes/MeshNode";
 import { Connection } from "./nodes/Connection";
-import * as Utils from "./utils";
-import Loader from "./core/Loader";
-import Profiler from "./core/Profiler";
-import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
-import { BloomNode } from "./nodes/effects/BloomNode";
-import { DisplaceGlitchNode } from "./nodes/effects/DisplaceGlitchNode";
-import { FogNode } from "./nodes/effects/FogNode";
-import { BoxBlurNode } from "./nodes/effects/BoxBlurNode";
-import { DOFNode } from "./nodes/effects/DOFNode";
-import { ShaderMaterial } from "./utils/ShaderMaterial";
-import { OverlayNode } from "./nodes/effects/OverlayNode";
-import { SelectorNode } from "./nodes/SelectorNode";
-import { GroupNode } from "./nodes/GroupNode";
+import { Loader } from "./core/Loader";
+import { Profiler, ProfilerNodeConfig } from "./debug/Profiler";
+import {
+    AnaglyphNode,
+    AnaglyphNodeOptions,
+} from "./nodes/effects/AnaglyphNode";
+import { BloomNode, BloomNodeOptions } from "./nodes/effects/BloomNode";
+import {
+    DisplaceGlitchNode,
+    DisplaceGlitchNodeOptions,
+} from "./nodes/effects/DisplaceGlitchNode";
+import { FogNode, FogNodeOptions } from "./nodes/effects/FogNode";
+import { BoxBlurNode, BoxBlurNodeOptions } from "./nodes/effects/BoxBlurNode";
+import { DOFNode, DOFNodeOptions } from "./nodes/effects/DOFNode";
+import {
+    ShaderMaterial,
+    ShaderMaterialOptions,
+} from "./shaders/ShaderMaterial";
+import { OverlayNode, OverlayNodeOptions } from "./nodes/effects/OverlayNode";
+import { SelectorNode, SelectorNodeOptions } from "./nodes/SelectorNode";
+import { GroupNode, GroupNodeOptions } from "./nodes/GroupNode";
 import { Preloader } from "./core/Preloader";
-import { Syncer } from "./utils/Syncer";
+import { Syncer, SyncerOptions } from "./utils/Syncer";
+import { Callback } from "./types/Callback";
+import { MaskedMaterial, UnmaskedMaterial } from "./shaders/maskMaterials";
+import { ColorUtils } from "./utils/color";
+import { PageUtils } from "./utils/page";
+import { NumberUtils } from "./utils/number";
 
-const TETSUO = {
+export {
+    //
     // core
     Scene,
     Viewport,
     Clock,
     Preloader,
     Loader,
-    Profiler,
-
-    // utils
-    Utils,
-    ShadedObject,
-    ShaderMaterial,
     Syncer,
-
-    // shader lib
-    Shaders,
-
+    //
     // node structure classes
     NodeRenderer,
     NodeGraph,
     Node,
     Connection,
-
+    //
     // base nodes
     ShaderNode,
     THREENode,
@@ -62,7 +67,7 @@ const TETSUO = {
     MeshNode,
     GroupNode,
     SelectorNode,
-
+    //
     // effect nodes
     AnaglyphNode,
     BloomNode,
@@ -71,8 +76,44 @@ const TETSUO = {
     BoxBlurNode,
     DOFNode,
     OverlayNode,
+    //
+    // shader lib
+    Shaders,
+    ShadedObject,
+    ShaderMaterial,
+    MaskedMaterial,
+    UnmaskedMaterial,
+    //
+    // debug
+    Profiler,
+    //
+    // utils
+    ColorUtils,
+    PageUtils,
+    NumberUtils,
+    //
+    // types
+    SceneOptions,
+    ProfilerNodeConfig,
+    ShadedObjectOptions,
+    ShaderMaterialOptions,
+    Callback,
+    SyncerOptions,
+    NodeOptions,
+    NodeRendererOptions,
+    THREENodeOptions,
+    ShaderNodeOptions,
+    SelectorNodeOptions,
+    PIXINodeOptions,
+    MeshNodeOptions,
+    GroupNodeOptions,
+    AnaglyphNodeOptions,
+    BloomNodeOptions,
+    DisplaceGlitchNodeOptions,
+    FogNodeOptions,
+    BoxBlurNodeOptions,
+    OverlayNodeOptions,
+    DOFNodeOptions,
+    UniformNodeOptions,
+    TextureNodeOptions,
 };
-
-(window as any)["TETSUO"] = TETSUO;
-
-export default TETSUO;

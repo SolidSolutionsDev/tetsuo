@@ -1,5 +1,10 @@
 import { Node } from "./Node";
 
+/**
+ * Class for controlling a node graph
+ *
+ * @category Nodes
+ */
 export class NodeGraph {
     /**
      * Root node

@@ -1,6 +1,11 @@
 import { Howl } from "howler";
 import { Callback } from "../types/Callback";
 
+/**
+ * Syncer initialization options
+ *
+ * @category Utils
+ */
 export interface SyncerOptions {
     /**
      * BPM of the associated music track
@@ -19,6 +24,11 @@ export interface SyncerOptions {
     sections?: { id: string; time: number }[];
 }
 
+/**
+ * Class for synchronizing code with a music playback
+ *
+ * @category Utils
+ */
 export class Syncer {
     /**
      * Audio controller of the associated music
@@ -28,70 +38,91 @@ export class Syncer {
     /**
      * Music sync options
      */
-    options: SyncerOptions;
+    private options: SyncerOptions;
 
     /**
      * List of callbacks to call when music starts playing
      */
-    _onPlay: Callback[] = [];
+    private _onPlay: Callback[] = [];
 
     /**
      * List of callbacks to call when music finishes playing
      */
-    _onEnd: Callback[] = [];
+    private _onEnd: Callback[] = [];
 
     /**
      * List of callbacks to call when there's a beat on the music
      * This is approximated using current seek point and passed bpm value
      */
-    _onBPM: Callback[] = [];
+    private _onBPM: Callback[] = [];
 
     /**
      * List of callbacks to call when music enters a custom section defined in the passed options
      */
-    _onSection: { id: string; callback: Callback; done: boolean }[] = [];
+    private _onSection: {
+        id: string;
+        callback: Callback;
+        done: boolean;
+    }[] = [];
 
     /**
      * List of callbacks to call when music seek time passes a value
      */
-    _onTime: { time: number; callback: Callback; done: boolean }[] = [];
+    private _onTime: { time: number; callback: Callback; done: boolean }[] = [];
 
     /**
      * Last update call seek time value
      */
-    _lastSeek: number = 0;
+    private _lastSeek: number = 0;
 
     /**
      * Time until next bpm event
      */
-    _untilBPM: number = 0;
+    private _untilBPM: number = 0;
 
     constructor(audio: Howl, options: SyncerOptions) {
         this.audio = audio;
         this.options = options;
 
+        // convert BPM to ms and add start delay
         this._untilBPM = (options.startDelay || 0) + 60000 / options.bpm;
 
-        this.audio.on("end", () => this.end());
+        // listen to audio playback end and trigger end events
+        this.audio.on("end", () => this._onEnd.forEach((fn) => fn()));
     }
 
+    /**
+     * Starts audio playback
+     */
     play() {
         this.audio.play();
 
+        // trigger audio playback start events
         this._onPlay.forEach((fn) => fn());
     }
 
+    /**
+     * Updates the internal counters and triggers events according to current playback position
+     */
     update() {
         if (this.audio.playing()) {
+            // get current playback position
             let seek = this.audio.seek();
 
+            // howler problem: seek() calls sometimes return something other than a number
             if (typeof seek === "number") {
+                // convert from seconds to ms
                 seek = seek * 1000;
+                // difference between last update() playback position and current position
                 let seekDelta = seek - this._lastSeek;
 
-                // bpm events
                 let bpm = this.options.bpm;
+
+                // update time until next BPM event counter
                 this._untilBPM -= seekDelta;
+
+                // if a BPM time has been passed, trigger BPM events
+                // and calculate next BPM time
                 if (this._untilBPM < 0) {
                     this._onBPM.forEach((fn) => fn());
                     this._untilBPM = 60000 / bpm + this._untilBPM;
@@ -126,35 +157,62 @@ export class Syncer {
         }
     }
 
-    end() {
-        this._onEnd.forEach((fn) => fn());
-    }
-
+    /**
+     * Add a new playback start event listener
+     *
+     * @param fn
+     */
     onPlay(fn: Callback) {
         this._onPlay.push(fn);
         return this;
     }
 
+    /**
+     * Add a new playback end event listener
+     *
+     * @param fn
+     */
     onEnd(fn: Callback) {
         this._onEnd.push(fn);
         return this;
     }
 
+    /**
+     * Add a new event listener to trigger at every music beat
+     * This is calculated using the BPM option of the syncer
+     *
+     * @param fn
+     */
     onBPM(fn: Callback) {
         this._onBPM.push(fn);
         return this;
     }
 
+    /**
+     * Add a new event listener to trigger at a section with a given id
+     *
+     * @param fn
+     */
     onSection(event: { id: string; callback: Callback }) {
         this._onSection.push({ ...event, done: false });
         return this;
     }
 
+    /**
+     * Add a new event listener to trigger when playback reaches a given time
+     *
+     * @param fn
+     */
     onTime(event: { time: number; callback: Callback }) {
         this._onTime.push({ ...event, done: false });
         return this;
     }
 
+    /**
+     * Get time left until the next music beat
+     *
+     * @param fn
+     */
     getUntilBPM() {
         return this._untilBPM;
     }

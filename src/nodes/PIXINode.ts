@@ -1,9 +1,12 @@
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
 import { Node, NodeOptions } from "./Node";
-import { NodeRenderer } from "./NodeRenderer";
-import Profiler from "../core/Profiler";
 
+/**
+ * pixi node initialization options
+ *
+ * @category Nodes
+ */
 export interface PIXINodeOptions extends NodeOptions {
     /**
      * Whether to render this node only when needsUpdate is true
@@ -27,26 +30,25 @@ export interface PIXINodeOptions extends NodeOptions {
 }
 
 /**
- * pixi.js scene node
+ * pixi.js node
+ *
+ * @category Nodes
  */
 export class PIXINode extends Node {
-    width: number = 0;
-    height: number = 0;
-
     /**
      * Internal PIXI application
      */
-    app: PIXI.Application;
+    private _app: PIXI.Application;
 
     /**
      * Texture that is used for output
      */
-    texture: THREE.CanvasTexture;
+    private _texture: THREE.CanvasTexture;
 
     /**
      * Whether to render this node only when needsUpdate is true
      */
-    manualRender?: boolean;
+    private _manualRender?: boolean;
 
     /**
      * Whether to rerender this node on the next pass (for manual render)
@@ -56,21 +58,21 @@ export class PIXINode extends Node {
     /**
      * Whether the size for the internal renderer is fixed (passed to the constructor)
      */
-    fixedSize: boolean = false;
+    private _fixedSize: boolean = false;
 
     constructor(id: string, options?: PIXINodeOptions) {
         super(id, options);
 
         PIXI.utils.skipHello();
 
-        this.manualRender = options?.manualRender;
+        this._manualRender = options?.manualRender;
 
-        this.fixedSize = !!(options?.width || options?.height);
+        this._fixedSize = !!(options?.width || options?.height);
 
         this.width = options?.width || 0;
         this.height = options?.height || 0;
 
-        this.app = new PIXI.Application({
+        this._app = new PIXI.Application({
             width: this.width,
             height: this.height,
             resizeTo: options?.viewportElement
@@ -81,11 +83,9 @@ export class PIXINode extends Node {
             antialias: true,
         });
 
-        this.texture = new THREE.CanvasTexture(this.app.view);
-        this.texture.minFilter = THREE.LinearFilter;
-        this.texture.magFilter = THREE.LinearFilter;
-
-        Profiler.register(this);
+        this._texture = new THREE.CanvasTexture(this._app.view);
+        this._texture.minFilter = THREE.LinearFilter;
+        this._texture.magFilter = THREE.LinearFilter;
     }
 
     /**
@@ -94,26 +94,20 @@ export class PIXINode extends Node {
      * @param obj
      */
     add(obj: PIXI.DisplayObject) {
-        this.app.stage.addChild(obj);
+        this._app.stage.addChild(obj);
     }
 
     /**
      * Renders the node to an output connection
      */
     render() {
-        let initTime = performance.now();
-
-        if (!this.manualRender || this.needsUpdate) {
-            this.app.render();
-            this.texture.needsUpdate = true;
-            this.output.setValue(this.texture);
+        if (!this._manualRender || this.needsUpdate) {
+            this._app.render();
+            this._texture.needsUpdate = true;
+            this.output.setValue(this._texture);
 
             this.needsUpdate = false;
         }
-
-        let finalTime = performance.now();
-
-        Profiler.update(this, finalTime - initTime);
 
         return this;
     }
@@ -122,10 +116,10 @@ export class PIXINode extends Node {
      * Handles renderer resize
      */
     resize(width: number, height: number) {
-        this.app.renderer.resize(width, height);
+        this._app.renderer.resize(width, height);
         this.width = width;
         this.height = height;
-        this.app.resize();
+        this._app.resize();
         return this;
     }
 }

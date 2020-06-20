@@ -2,6 +2,11 @@ import { Connection } from "./Connection";
 import { Callback } from "../types/Callback";
 import { NodeRenderer } from "./NodeRenderer";
 
+/**
+ * Node initialization options
+ *
+ * @category Nodes
+ */
 export interface NodeOptions {
     /**
      * Callback when the renderer initializes this node
@@ -19,6 +24,11 @@ export interface NodeOptions {
     onRender?: Callback;
 }
 
+/**
+ * Node base class
+ *
+ * @category Nodes
+ */
 export class Node {
     /**
      * Node ID
@@ -42,6 +52,16 @@ export class Node {
     enabled: boolean = true;
 
     /**
+     * Width of the node's output
+     */
+    width: number = 0;
+
+    /**
+     * Height of the node's output
+     */
+    height: number = 0;
+
+    /**
      * Callback when the renderer updates this node
      */
     protected _onUpdate: Callback[];
@@ -56,6 +76,10 @@ export class Node {
      */
     protected _onRender: Callback[];
 
+    /**
+     * @param id - Node id
+     * @param options - Node initialization options
+     */
     constructor(id: string, options?: NodeOptions) {
         this.id = id;
 
@@ -67,7 +91,8 @@ export class Node {
     /**
      * Connect this node to another
      *
-     * @param node
+     * @param node - Node to connect to
+     * @param inputName - Rename the connected node's reference to this node
      */
     connectTo(node: Node, inputName?: string) {
         node.addInput(this, inputName);
@@ -75,9 +100,10 @@ export class Node {
     }
 
     /**
-     * Connect another node to this one
+     * Connect another node to this node
      *
-     * @param node
+     * @param node - Node to connect
+     * @param inputName - Rename this node's reference to the connected node
      */
     addInput(node: Node, inputName?: string) {
         node.output.addTo(this);
@@ -152,6 +178,8 @@ export class Node {
      * Handles renderer resize
      */
     resize(width: number, height: number) {
+        this.width = width;
+        this.height = height;
         return this;
     }
 }

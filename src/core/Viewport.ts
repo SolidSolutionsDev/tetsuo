@@ -1,7 +1,9 @@
 import { Callback } from "../types/Callback";
 
 /**
- * This class wraps the viewport div element
+ * This class wraps the viewport div element that will contain the canvas
+ *
+ * @category Core
  */
 export class Viewport {
     /**
@@ -15,7 +17,7 @@ export class Viewport {
     canvas: HTMLCanvasElement;
 
     /**
-     * @param {HTMLElement} domElement - element to attach viewport to
+     * @param domElement - element to attach viewport to
      */
     constructor(domElement: HTMLElement) {
         this.domElement = domElement;
@@ -52,7 +54,7 @@ export class Viewport {
     /**
      * Creates an event listener that listens for the window's resize
      *
-     * @param {*} onResize - callback when window resizes
+     * @param onResize - callback when window resizes
      */
     createResizeListener(onResize: Callback) {
         if ((process as any)["browser"]) {

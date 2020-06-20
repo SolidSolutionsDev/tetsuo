@@ -4,6 +4,11 @@ import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
 
+/**
+ * Depth of field node initialization options
+ *
+ * @category Nodes
+ */
 export interface DOFNodeOptions extends ShaderNodeOptions {
     /**
      * Size of the input texture
@@ -26,6 +31,11 @@ export interface DOFNodeOptions extends ShaderNodeOptions {
     far?: number;
 }
 
+/**
+ * Depth of field effect node using depth buffer
+ *
+ * @category Nodes
+ */
 export class DOFNode extends ShaderNode {
     options: DOFNodeOptions;
 

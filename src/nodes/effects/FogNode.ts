@@ -1,9 +1,11 @@
-import * as THREE from "three";
-
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
-import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
 
+/**
+ * Fog node initialization options
+ *
+ * @category Nodes
+ */
 export interface FogNodeOptions extends ShaderNodeOptions {
     /**
      * Default fog near setting
@@ -16,6 +18,11 @@ export interface FogNodeOptions extends ShaderNodeOptions {
     far?: number;
 }
 
+/**
+ * Fog effect node using depth buffer
+ *
+ * @category Nodes
+ */
 export class FogNode extends ShaderNode {
     options: FogNodeOptions;
 

@@ -1,9 +1,13 @@
 import * as THREE from "three";
 
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
-import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
 
+/**
+ * Bloom node options
+ *
+ * @category Nodes
+ */
 export interface BloomNodeOptions extends ShaderNodeOptions {
     /**
      * Size of the input texture
@@ -31,6 +35,11 @@ export interface BloomNodeOptions extends ShaderNodeOptions {
     mask?: boolean;
 }
 
+/**
+ * Bloom effect node
+ *
+ * @category Nodes
+ */
 export class BloomNode extends ShaderNode {
     options: BloomNodeOptions;
 

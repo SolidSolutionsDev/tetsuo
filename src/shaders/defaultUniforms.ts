@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 /**
- * List of default uniforms passed to PostShaders and ShadedObjects
+ * List of default uniforms
  */
 const defaultUniforms: { [key: string]: { value: any } } = {
     iTime: { value: null },

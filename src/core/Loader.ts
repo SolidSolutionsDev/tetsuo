@@ -3,23 +3,25 @@ import { Callback } from "../types/Callback";
 import { Howl } from "howler";
 
 /**
- * Wrapper singleton for all the relevant resource loaders
+ * Wrapper for all the relevant resource loaders
+ *
+ * @category Core
  */
 export class Loader {
     /**
      * three.js texture loader
      */
-    protected _textureLoader: THREE.TextureLoader;
+    private _textureLoader: THREE.TextureLoader;
 
     /**
      * three.js geometry JSON loader
      */
-    protected _geometryLoader: THREE.BufferGeometryLoader;
+    private _geometryLoader: THREE.BufferGeometryLoader;
 
     /**
      * three.js object JSON loader
      */
-    protected _objectLoader: THREE.ObjectLoader;
+    private _objectLoader: THREE.ObjectLoader;
 
     constructor() {
         this._textureLoader = new THREE.TextureLoader();
@@ -71,5 +73,3 @@ export class Loader {
         howl.on("load", () => onLoad && onLoad(howl));
     }
 }
-
-export default new Loader();

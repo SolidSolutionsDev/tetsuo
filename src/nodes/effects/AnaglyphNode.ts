@@ -1,7 +1,11 @@
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
-import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
 
+/**
+ * Anaglyph node initialization options
+ *
+ * @category Nodes
+ */
 export interface AnaglyphNodeOptions extends ShaderNodeOptions {
     /**
      * Default anaglyph amount setting
@@ -9,6 +13,11 @@ export interface AnaglyphNodeOptions extends ShaderNodeOptions {
     amount?: number;
 }
 
+/**
+ * Anaglyph effect node
+ *
+ * @category Nodes
+ */
 export class AnaglyphNode extends ShaderNode {
     options: AnaglyphNodeOptions;
 

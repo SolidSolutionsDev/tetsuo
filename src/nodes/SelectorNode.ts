@@ -1,5 +1,10 @@
 import { Node, NodeOptions } from "./Node";
 
+/**
+ * Selector node initialization options
+ *
+ * @category Nodes
+ */
 export interface SelectorNodeOptions extends NodeOptions {
     /**
      * Node id to be initially enabled
@@ -7,6 +12,11 @@ export interface SelectorNodeOptions extends NodeOptions {
     enabledNode?: string;
 }
 
+/**
+ * Receives many nodes as input, and outputs one of them, like a switchboard.
+ *
+ * @category Nodes
+ */
 export class SelectorNode extends Node {
     /**
      * Currently enabled node
@@ -19,6 +29,12 @@ export class SelectorNode extends Node {
         this.enabledNode = options?.enabledNode;
     }
 
+    /**
+     * Connect a node to this node
+     *
+     * @param node
+     * @param inputName
+     */
     addInput(node: Node, inputName?: string) {
         super.addInput(node, inputName);
 
@@ -38,7 +54,7 @@ export class SelectorNode extends Node {
     }
 
     /**
-     * Change the currently selected node
+     * Change the currently enabled node
      *
      * @param id
      */

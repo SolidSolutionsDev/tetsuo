@@ -1,9 +1,11 @@
-import * as THREE from "three";
-
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
-import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
 
+/**
+ * Displace glitch node initialization options
+ *
+ * @category Nodes
+ */
 export interface DisplaceGlitchNodeOptions extends ShaderNodeOptions {
     /**
      * Number of vertical divisions
@@ -26,6 +28,11 @@ export interface DisplaceGlitchNodeOptions extends ShaderNodeOptions {
     amount?: number;
 }
 
+/**
+ * Displace glitch effect node
+ *
+ * @category Nodes
+ */
 export class DisplaceGlitchNode extends ShaderNode {
     options: DisplaceGlitchNodeOptions;
 

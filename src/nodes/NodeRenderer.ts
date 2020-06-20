@@ -4,11 +4,22 @@ import { NodeGraph } from "./NodeGraph";
 import { Node } from "./Node";
 import { ShaderNode } from "./ShaderNode";
 
+/**
+ * Node renderer initialization options
+ *
+ * @category Nodes
+ */
 export interface NodeRendererOptions {
     /**
      * Element where the renderer will drop his canvas
      */
     viewportElement?: HTMLElement;
+
+    /**
+     * Whether to run the renderer without a viewport.
+     * This skips the handling of the canvas and viewport element.
+     * The output is accessible using the node graph's root node texture or quad.
+     */
     noViewport?: boolean;
 
     /**
@@ -21,14 +32,27 @@ export interface NodeRendererOptions {
      */
     alpha?: boolean;
 
+    /**
+     * Whether the node renderer has fixed size output
+     */
     fixedSize?: boolean;
+
+    /**
+     * Width of the node renderer output
+     */
     width?: number;
+
+    /**
+     * Height of the node renderer output
+     */
     height?: number;
     autoClear?: boolean;
 }
 
 /**
- * Node-based renderer.
+ * Node-based renderer
+ *
+ * @category Nodes
  */
 export class NodeRenderer {
     /**
@@ -44,27 +68,22 @@ export class NodeRenderer {
     /**
      * Graph of nodes attached to this renderer
      */
-    nodeGraph: NodeGraph;
+    private _nodeGraph: NodeGraph;
 
     /**
      * Internal threejs camera for rendering
      */
-    camera: THREE.OrthographicCamera;
+    private _camera: THREE.OrthographicCamera;
 
     /**
      * Internal threejs scene for rendering
      */
-    scene: THREE.Scene;
+    private _scene: THREE.Scene;
 
     /**
      * Quad where the result of the node graph is applied on when rendering
      */
-    quad: THREE.Mesh;
-
-    /**
-     * Quad's material
-     */
-    material: THREE.MeshBasicMaterial;
+    private _quad: THREE.Mesh;
 
     /**
      * Whether the size for the renderer is fixed
@@ -143,15 +162,14 @@ export class NodeRenderer {
         this.glRenderer.autoClear = !!options?.autoClear;
 
         // initialize node graph and create the root node
-        this.nodeGraph = new NodeGraph();
-        this.nodeGraph.setRootNode(new ShaderNode("root"));
+        this._nodeGraph = new NodeGraph();
+        this._nodeGraph.setRootNode(new ShaderNode("root"));
 
         // setup rendering
-        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-        this.scene = new THREE.Scene();
-        this.quad = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2));
-        this.scene.add(this.quad);
-        this.material = new THREE.MeshBasicMaterial();
+        this._camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        this._scene = new THREE.Scene();
+        this._quad = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2));
+        this._scene.add(this._quad);
     }
 
     /**
@@ -163,7 +181,7 @@ export class NodeRenderer {
         frameCount?: number,
         fromNode?: Node
     ) {
-        this.nodeGraph.traverse(
+        this._nodeGraph.traverse(
             (node) => node.update(totalTime, deltaTime, frameCount),
             fromNode
         );
@@ -198,7 +216,9 @@ export class NodeRenderer {
         }
 
         // resize each node
-        this.nodeGraph.traverse((node) => node.resize(this.width, this.height));
+        this._nodeGraph.traverse((node) =>
+            node.resize(this.width, this.height)
+        );
 
         // render everything with the new size
         this.render();
@@ -210,12 +230,12 @@ export class NodeRenderer {
      * @param node
      */
     connectToScreen(node: Node) {
-        if (this.nodeGraph.root) {
-            this.nodeGraph.root.addInput(node, "tDiffuse");
+        if (this._nodeGraph.root) {
+            this._nodeGraph.root.addInput(node, "tDiffuse");
 
             // traverse all nodes and do an initial render
             // this prevents first render bugs
-            this.nodeGraph.traverse(
+            this._nodeGraph.traverse(
                 (n) => {
                     n.resize(this.width, this.height);
                     n.render(this);
@@ -232,19 +252,19 @@ export class NodeRenderer {
      */
     render(fromNode?: Node) {
         if (fromNode) {
-            this.nodeGraph.traverse((node) => node.render(this), fromNode);
-        } else if (this.nodeGraph.root) {
+            this._nodeGraph.traverse((node) => node.render(this), fromNode);
+        } else if (this._nodeGraph.root) {
             // traverse the node graph and render each node
-            this.nodeGraph.traverse((node) => node.render(this));
+            this._nodeGraph.traverse((node) => node.render(this));
 
             // render the result to screen
-            let map = this.nodeGraph.root.output.getValue() as THREE.Texture;
-            this.quad.material = new THREE.MeshBasicMaterial({
+            let map = this._nodeGraph.root.output.getValue() as THREE.Texture;
+            this._quad.material = new THREE.MeshBasicMaterial({
                 map,
             });
             this.glRenderer.setRenderTarget(null);
             this.glRenderer.clear(true, true, true);
-            this.glRenderer.render(this.scene, this.camera);
+            this.glRenderer.render(this._scene, this._camera);
         }
     }
 }

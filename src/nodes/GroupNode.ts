@@ -5,10 +5,20 @@ import defaultUniforms from "../shaders/defaultUniforms";
 import { THREENode } from "./THREENode";
 import { Callback } from "../types/Callback";
 
+/**
+ * Group node initialization options
+ *
+ * @category Nodes
+ */
 export interface GroupNodeOptions extends NodeOptions {
     group: THREE.Group;
 }
 
+/**
+ * THREE.js group node for use with {@link THREENode}
+ *
+ * @category Nodes
+ */
 export class GroupNode extends Node {
     group: THREE.Group;
 
@@ -91,7 +101,7 @@ export class GroupNode extends Node {
     }
 
     /**
-     * Connect the mesh to a THREENode
+     * Connect the group to a THREENode
      *
      * @param node
      */

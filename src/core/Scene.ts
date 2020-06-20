@@ -2,12 +2,12 @@ import Stats from "stats.js";
 import { Clock } from "./Clock";
 import { NodeRenderer } from "../nodes/NodeRenderer";
 import { Node } from "../nodes/Node";
-import dat from "dat.gui";
 import { THREENode } from "../nodes/THREENode";
-import { Callback } from "../types/Callback";
 
 /**
  * Scene initialization options
+ *
+ * @Category Core
  */
 export interface SceneOptions {
     /**
@@ -28,11 +28,13 @@ export interface SceneOptions {
 }
 
 /**
- * Scene wrapper
+ * This class wraps a node renderer and a clock for providing a loop.
+ *
+ * @category Core
  */
 export class Scene {
     /**
-     * Clock for animating
+     * Clock that provides the animation loop
      */
     clock: Clock;
 
@@ -42,12 +44,12 @@ export class Scene {
     renderer: NodeRenderer;
 
     /**
-     * Stats (fps etc) instance
+     * Stats.js instance for debugging. Automatically attached to the viewport element
      */
-    stats: Stats | null = null;
+    private _stats: Stats | null = null;
 
     /**
-     * Whether this scene is in development mode (dat.gui, stats)
+     * Whether this scene is in development mode (for displaying stats)
      */
     dev: boolean = false;
 
@@ -57,33 +59,28 @@ export class Scene {
     autoStart: boolean = false;
 
     /**
-     * dat.gui UI
+     * @param options - Scene options
      */
-    gui: dat.GUI | null = null;
-
-    constructor({ dev, autoStart, viewportElement }: SceneOptions) {
+    constructor(options: SceneOptions) {
         // initialize renderer
         this.renderer = new NodeRenderer({
-            viewportElement,
+            viewportElement: options.viewportElement,
         });
 
         // initialize the clock
-        this.clock = new Clock(autoStart, (elapsed, delta, frameCount) =>
-            this.animate(elapsed, delta, frameCount)
+        this.clock = new Clock(
+            options.autoStart,
+            (elapsed, delta, frameCount) =>
+                this.animate(elapsed, delta, frameCount)
         );
 
         // dev utils initialization
-        this.dev = !!dev;
+        this.dev = !!options.dev;
         if (this.dev) {
-            // instantiate dat.gui UI
-            this.gui = new dat.GUI();
-            // add it to the global context for easy access
-            (window as any).TETSUO.gui = this.gui;
-
             // add a stats element to the viewport for tracking fps
-            this.stats = new Stats();
+            this._stats = new Stats();
             this.renderer.viewport &&
-                this.renderer.viewport.domElement.appendChild(this.stats.dom);
+                this.renderer.viewport.domElement.appendChild(this._stats.dom);
         }
     }
 
@@ -96,14 +93,7 @@ export class Scene {
     animate(elapsed: number, delta: number, frameCount: number) {
         if (this.dev) {
             // start counting fps time for this frame
-            this.stats && this.stats.begin();
-
-            // Iterate over all dat.gui controllers and update values
-            if (this.gui) {
-                for (let i in this.gui.__controllers) {
-                    this.gui.__controllers[i].updateDisplay();
-                }
-            }
+            this._stats && this._stats.begin();
         }
 
         // update all nodes in the render
@@ -114,7 +104,7 @@ export class Scene {
 
         if (this.dev) {
             // finish counting fps time
-            this.stats && this.stats.end();
+            this._stats && this._stats.end();
         }
     }
 

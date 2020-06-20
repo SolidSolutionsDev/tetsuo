@@ -3,10 +3,13 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonControls";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
-import Profiler from "../core/Profiler";
-import { UnmaskedMaterial, MaskedMaterial } from "../utils/maskMaterials";
-import { WebGLRenderer } from "three";
+import { UnmaskedMaterial, MaskedMaterial } from "../shaders/maskMaterials";
 
+/**
+ * THREE.js node initialization options
+ *
+ * @category Nodes
+ */
 export interface THREENodeOptions extends NodeOptions {
     /**
      * Whether this node will render and output a depth texture
@@ -48,16 +51,18 @@ export interface THREENodeOptions extends NodeOptions {
         fov?: number;
     };
 
+    /**
+     * List of mask buffers
+     */
     masks?: string[];
 }
 
 /**
  * THREE.js scene node
+ *
+ * @category Nodes
  */
 export class THREENode extends Node {
-    width: number = 0;
-    height: number = 0;
-
     /**
      * Internal three.js scene
      */
@@ -69,34 +74,32 @@ export class THREENode extends Node {
     camera: THREE.PerspectiveCamera;
 
     /**
-     * Camera orbit controls for debug
-     */
-    controls?: OrbitControls | FirstPersonControls;
-
-    /**
      * Whether this node will render and output a depth texture
      * If true, the output value is a struct containing 2 textures - diffuse and depth
      */
-    depthBuffer: boolean = false;
+    private _depthBuffer: boolean = false;
 
     /**
      * Render target for this node
      */
-    target: THREE.WebGLRenderTarget;
+    private _target: THREE.WebGLRenderTarget;
 
     /**
      * Whether to render this node only when needsUpdate is true
      */
-    manualRender?: boolean;
+    private _manualRender?: boolean;
 
     /**
      * Whether to rerender this node on the next pass (for manual render)
      */
     needsUpdate: boolean = true;
 
+    /**
+     * List of objects added to the scene
+     */
     objects: any[] = [];
 
-    masks?: {
+    private _masks?: {
         [maskKey: string]: {
             id: number;
             name: string;
@@ -121,7 +124,7 @@ export class THREENode extends Node {
         options?.cameraSettings?.position &&
             this.camera.position.copy(options.cameraSettings.position);
 
-        this.target = new THREE.WebGLRenderTarget(this.width, this.height);
+        this._target = new THREE.WebGLRenderTarget(this.width, this.height);
 
         this.output.value = null;
 
@@ -129,9 +132,9 @@ export class THREENode extends Node {
             if (!this.output.value) this.output.value = {};
 
             options.masks.forEach((mask, index) => {
-                if (!this.masks) this.masks = {};
+                if (!this._masks) this._masks = {};
 
-                this.masks[mask] = {
+                this._masks[mask] = {
                     id: index,
                     name: mask,
                     target: new THREE.WebGLRenderTarget(
@@ -144,48 +147,29 @@ export class THREENode extends Node {
             });
         }
 
-        // if (options && this.nodeRenderer.viewport) {
-        //     if (options.orbitControls)
-        //         this.controls = new OrbitControls(
-        //             this.camera,
-        //             this.viewport.domElement
-        //         );
-        //     else if (options.firstPersonControls) {
-        //         this.controls = new FirstPersonControls(
-        //             this.camera,
-        //             this.nodeRenderer.viewport.domElement
-        //         );
-
-        //         (this.controls as FirstPersonControls).movementSpeed = 10;
-        //         this.controls.lookSpeed = 0.1;
-        //     }
-        // }
-
         // if depth texture is active, create it and setup the output
-        this.depthBuffer = !!options && !!options.depthBuffer;
-        if (this.depthBuffer) {
+        this._depthBuffer = !!options && !!options.depthBuffer;
+        if (this._depthBuffer) {
             if (!this.output.value) this.output.value = {};
             this.output.value.diffuse = null;
             this.output.value.depth = null;
 
-            this.target.depthTexture = new THREE.DepthTexture(
+            this._target.depthTexture = new THREE.DepthTexture(
                 this.width,
                 this.height
             );
 
-            this.target.texture.format = THREE.RGBFormat;
-            this.target.texture.minFilter = THREE.NearestFilter;
-            this.target.texture.magFilter = THREE.NearestFilter;
-            this.target.texture.generateMipmaps = false;
-            this.target.stencilBuffer = false;
-            this.target.depthBuffer = true;
-            this.target.depthTexture.format = THREE.DepthFormat;
-            this.target.depthTexture.type = THREE.UnsignedShortType;
+            this._target.texture.format = THREE.RGBFormat;
+            this._target.texture.minFilter = THREE.NearestFilter;
+            this._target.texture.magFilter = THREE.NearestFilter;
+            this._target.texture.generateMipmaps = false;
+            this._target.stencilBuffer = false;
+            this._target.depthBuffer = true;
+            this._target.depthTexture.format = THREE.DepthFormat;
+            this._target.depthTexture.type = THREE.UnsignedShortType;
         }
 
-        this.manualRender = options?.manualRender;
-
-        Profiler.register(this);
+        this._manualRender = options?.manualRender;
     }
 
     /**
@@ -211,30 +195,24 @@ export class THREENode extends Node {
         return this;
     }
 
-    update(totalTime: number, deltaTime: number) {
-        super.update(totalTime, deltaTime);
-        this.controls?.update(deltaTime);
-        return this;
-    }
-
     /**
      * Renders the node to an output connection
      */
     render(renderer: NodeRenderer) {
-        let initTime = performance.now();
-
-        if (!this.manualRender || this.needsUpdate) {
+        if (!this._manualRender || this.needsUpdate) {
             let output: any = null;
 
-            let preMaskMaterials: any = {};
-            if (this.masks) {
+            // mask buffer rendering
+            if (this._masks) {
+                let preMaskMaterials: any = {};
                 output = {};
 
-                Object.keys(this.masks).forEach((maskKey) => {
-                    if (!this.masks) return;
+                Object.keys(this._masks).forEach((maskKey) => {
+                    if (!this._masks) return;
 
-                    let mask = this.masks[maskKey];
+                    let mask = this._masks[maskKey];
 
+                    // switch objects materials depending on whether they're masked or not
                     this.objects.forEach((object) => {
                         preMaskMaterials[object.uuid] = object.material;
 
@@ -252,33 +230,31 @@ export class THREENode extends Node {
                     output[maskKey] = mask.target.texture;
                 });
 
+                // reset object materials
                 this.objects.forEach((object) => {
                     object.material = preMaskMaterials[object.uuid];
                 });
             }
 
-            renderer.glRenderer.setRenderTarget(this.target);
+            renderer.glRenderer.setRenderTarget(this._target);
             renderer.glRenderer.clear(true, true, true);
             renderer.glRenderer.render(this.scene, this.camera);
 
-            // update output connection
-            if (this.depthBuffer) {
+            // update depth buffer
+            if (this._depthBuffer) {
                 if (!output) output = {};
-                output["depth"] = this.target.depthTexture;
+                output["depth"] = this._target.depthTexture;
             }
 
+            // update diffuse buffer
             this.output.setValue(
                 output
-                    ? { ...output, diffuse: this.target.texture }
-                    : this.target.texture
+                    ? { ...output, diffuse: this._target.texture }
+                    : this._target.texture
             );
 
             this.needsUpdate = false;
         }
-
-        let finalTime = performance.now();
-
-        Profiler.update(this, finalTime - initTime);
 
         return this;
     }
@@ -289,9 +265,10 @@ export class THREENode extends Node {
     resize(width: number, height: number) {
         this.width = width;
         this.height = height;
+
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
-        this.target.setSize(width, height);
+        this._target.setSize(width, height);
 
         return this;
     }

@@ -1,9 +1,12 @@
 import { Callback } from "../types/Callback";
 
 /**
- * Clock class to control time.
+ * Clock class to control time and looping.
+ *
  * Inspired by THREE.Clock but with different operation.
  * Uses performance.now if available, Date() otherwise
+ *
+ * @category Core
  */
 export class Clock {
     /**
@@ -34,8 +37,12 @@ export class Clock {
     /**
      * Callback when clock ticks
      */
-    onTick?: Callback;
+    private onTick?: Callback;
 
+    /**
+     * @param autoStart - Whether to autostart the clock loop
+     * @param onTick - Callback when clock ticks
+     */
     constructor(autoStart: boolean = true, onTick?: Callback) {
         this.onTick = onTick;
         autoStart && this.start();
@@ -104,7 +111,7 @@ export class Clock {
     /**
      * Moves the clock along
      */
-    tick() {
+    private tick() {
         let diff = 0;
 
         if (this.running) {

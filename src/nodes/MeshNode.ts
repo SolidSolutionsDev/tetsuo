@@ -8,6 +8,11 @@ import { Callback } from "../types/Callback";
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/default.frag");
 
+/**
+ * Mesh node initialization options
+ *
+ * @category Nodes
+ */
 export interface MeshNodeOptions extends NodeOptions {
     /**
      * THREE.js geometry for this mesh
@@ -51,26 +56,31 @@ export interface MeshNodeOptions extends NodeOptions {
     depthTest?: boolean;
 }
 
+/**
+ * THREE.js mesh node to be used with {@link THREENode}
+ *
+ * @category Nodes
+ */
 export class MeshNode extends Node {
     /**
      * THREE.js geometry for this mesh
      */
-    geometry: THREE.Geometry;
+    private _geometry: THREE.Geometry;
 
     /**
      * THREE.js material for this mesh
      */
-    material?: THREE.Material;
+    private _material?: THREE.Material;
 
     /**
      * Mesh instance
      */
-    mesh?: THREE.Mesh;
+    private _mesh?: THREE.Mesh;
 
     /**
      * Mesh material uniforms for updating
      */
-    uniforms: { [key: string]: IUniform } = {};
+    private _uniforms: { [key: string]: IUniform } = {};
 
     /**
      * Options passed to the constructor when instancing the node
@@ -81,8 +91,8 @@ export class MeshNode extends Node {
         super(id, options);
 
         this.options = options;
-        this.geometry = options?.geometry;
-        this.material = options.material;
+        this._geometry = options?.geometry;
+        this._material = options.material;
 
         this.prepare();
     }
@@ -104,9 +114,9 @@ export class MeshNode extends Node {
         }
 
         // instanciate the mesh
-        this.mesh = new THREE.Mesh(
-            this.geometry,
-            this.material ||
+        this._mesh = new THREE.Mesh(
+            this._geometry,
+            this._material ||
                 new THREE.ShaderMaterial({
                     vertexShader:
                         this.options.vertexShader || defaultVertexShader,
@@ -127,12 +137,12 @@ export class MeshNode extends Node {
                 })
         );
 
-        this.uniforms = (this.mesh.material as THREE.ShaderMaterial).uniforms;
+        this._uniforms = (this._mesh.material as THREE.ShaderMaterial).uniforms;
 
         // update the output of the node
-        this.output.setValue(this.mesh);
+        this.output.setValue(this._mesh);
 
-        this._onPrepare && this._onPrepare.forEach((fn) => fn(this.mesh));
+        this._onPrepare && this._onPrepare.forEach((fn) => fn(this._mesh));
 
         return this;
     }
@@ -149,17 +159,19 @@ export class MeshNode extends Node {
 
     update(time: number) {
         // pass the mesh to the update function for easy updating of values
-        this._onUpdate && this._onUpdate.forEach((fn) => fn(time, this.mesh));
+        this._onUpdate && this._onUpdate.forEach((fn) => fn(time, this._mesh));
 
-        if (this.uniforms) {
+        if (this._uniforms) {
             // update default uniforms
-            this.uniforms["iTime"].value = time;
+            this._uniforms["iTime"].value = time;
 
             // update node connection uniforms
             for (let key in this.inputs) {
-                if (!this.uniforms[key])
-                    this.uniforms[key] = { value: this.inputs[key].getValue() };
-                else this.uniforms[key].value = this.inputs[key].getValue();
+                if (!this._uniforms[key])
+                    this._uniforms[key] = {
+                        value: this.inputs[key].getValue(),
+                    };
+                else this._uniforms[key].value = this.inputs[key].getValue();
             }
         }
 
