@@ -63,6 +63,11 @@ export const Shaders = {
     sdf: require("./lib/sdf.glsl") as string,
 
     /**
+     * Raymarch specific stuff
+     */
+    raymarch: require("./lib/raymarch.glsl") as string,
+
+    /**
      * GLSL worley-noise functions
      */
     worley: require("./lib/worley.glsl") as string,
