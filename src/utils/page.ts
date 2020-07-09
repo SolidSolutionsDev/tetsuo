@@ -30,6 +30,8 @@ export const PageUtils = {
             width?: number;
             height?: number;
             backgroundColor?: string;
+            border?: boolean;
+            borderColor?: string;
         },
         onPrepared?: Callback
     ) => {
@@ -50,6 +52,9 @@ export const PageUtils = {
             #viewport {
                 width: ${options?.width ? options.width + "px" : "100vw"};
                 height: ${options?.height ? options.height + "px" : "100vh"};
+                border: ${
+                    options?.border ? "1px solid " + options?.borderColor : "0"
+                }
             }
         `;
         document.head.append(style);
