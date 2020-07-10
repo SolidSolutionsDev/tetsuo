@@ -1,3 +1,4 @@
+
 float sdSphere (vec3 point, vec3 position, float radius) {
     return distance(point, position) - radius;
 }
