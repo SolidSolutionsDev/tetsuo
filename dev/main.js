@@ -13,20 +13,30 @@ let frag = TETSUO.Shaders.compile(
         uniform vec3 iResolution;
     `,
 
-    TETSUO.Shaders.sdf,
+    TETSUO.Shaders.RaymarchLib.structs,
+    TETSUO.Shaders.RaymarchLib.sdf,
 
     /* glsl */ `
-        float map (vec3 point) {
-            vec3 center = vec3(0., 0., 0.);
-            return sdSphere(point, center, 0.2);
+        mapHit map (vec3 point) {
+            float sphere1 = sdSphere(point, vec3(.5, 0., 0.), 0.2);
+            float sphere2 = sdSphere(point, vec3(-.5, 0., 0.), 0.2);
+            float dist = 0.;
+
+            if (sphere1 < sphere2) {
+                return mapHit(sphere1, 0.);
+            } 
+
+            dist = sphere2;
+
+            return mapHit(dist, 1.);;
         }
     `,
 
-    TETSUO.Shaders.raymarch,
+    TETSUO.Shaders.RaymarchLib.ray,
 
     /* glsl */ `
         vec4 mainColor (hit h) {
-            return vec4(1.);
+            return vec4(h.material);
         }   
 
         vec4 background () {

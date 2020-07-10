@@ -1,5 +1,6 @@
 import defaultUniforms from "./defaultUniforms";
 import { compile } from "./compile";
+import { RaymarchLib } from "./lib/raymarch";
 
 /**
  * Shader code library and utilities
@@ -30,7 +31,7 @@ export const Shaders = {
     /**
      * Lighting related GLSL code
      */
-    light: require("./lib/light.glsl"),
+    light: require("./lib/light.glsl") as string,
 
     /**
      * Math related GLSL code
@@ -58,16 +59,6 @@ export const Shaders = {
     move: require("./lib/move.glsl") as string,
 
     /**
-     * GLSL signed distance functions
-     */
-    sdf: require("./lib/sdf.glsl") as string,
-
-    /**
-     * Raymarch specific stuff
-     */
-    raymarch: require("./lib/raymarch.glsl") as string,
-
-    /**
      * GLSL worley-noise functions
      */
     worley: require("./lib/worley.glsl") as string,
@@ -76,6 +67,8 @@ export const Shaders = {
      * Image filtering related GLSL code
      */
     filters: require("./lib/filters.glsl") as string,
+
+    RaymarchLib,
 
     /**
      * List of default uniforms passed to {@link ShaderMaterial}, {@link ShadedObject}, {@link ShaderNode}
