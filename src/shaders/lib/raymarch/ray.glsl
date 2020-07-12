@@ -13,12 +13,16 @@ hit castRay (vec3 origin, vec3 direction) {
     float stepSize, dist = 1.;
     mapHit h;
     
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < MAX_STEPS; i++) {
         h = map(origin + direction * dist);
         stepSize = h.dist;
         dist += stepSize;
 
-        if (stepSize < 0.01) {
+        if (dist > MAX_DIST) {
+           return hit(false, vec3(0.), vec3(0.), 0., 0.);
+        }
+
+        if (stepSize < MIN_STEP_SIZE) {
             vec3 point = origin + direction * dist;
             vec3 normal = estimateNormal(point);
 
