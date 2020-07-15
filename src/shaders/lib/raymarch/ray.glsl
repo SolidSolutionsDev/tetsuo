@@ -26,7 +26,7 @@ hit castRay (vec3 origin, vec3 direction) {
             vec3 point = origin + direction * dist;
             vec3 normal = estimateNormal(point);
 
-            return hit(true, point, normal, h.dist, h.material);
+            return hit(true, point, normal, dist, h.material);
         }
     }
 
