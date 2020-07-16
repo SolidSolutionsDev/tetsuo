@@ -4,5 +4,6 @@ export const RaymarchLib = {
     structs: require("./structs.glsl"),
     sdf: require("./sdf.glsl"),
     ray: require("./ray.glsl"),
+    camera: require("./camera.glsl"),
     main: require("./main.glsl"),
 };
