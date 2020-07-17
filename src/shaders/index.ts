@@ -1,6 +1,7 @@
 import defaultUniforms from "./defaultUniforms";
 import { compile } from "./compile";
 import { RaymarchLib, Raymarcher } from "./lib/raymarch";
+import { toShadertoy } from "./toShadertoy";
 
 /**
  * Shader code library and utilities
@@ -80,4 +81,6 @@ export const Shaders = {
      * Compiles several shader chunks into a single shader piece of code
      */
     compile,
+
+    toShadertoy,
 };
