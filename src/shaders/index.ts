@@ -1,6 +1,6 @@
 import defaultUniforms from "./defaultUniforms";
 import { compile } from "./compile";
-import { RaymarchLib } from "./lib/raymarch";
+import { RaymarchLib, Raymarcher } from "./lib/raymarch";
 
 /**
  * Shader code library and utilities
@@ -69,6 +69,7 @@ export const Shaders = {
     filters: require("./lib/filters.glsl") as string,
 
     RaymarchLib,
+    Raymarcher,
 
     /**
      * List of default uniforms passed to {@link ShaderMaterial}, {@link ShadedObject}, {@link ShaderNode}
