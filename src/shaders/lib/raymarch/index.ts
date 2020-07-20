@@ -1,11 +1,3 @@
-import { Shaders } from "../..";
-import { compile } from "../../compile";
-
-export interface RaymarcherOptions {
-    code: string;
-    consts?: string;
-}
-
 export const RaymarchLib = {
     consts: require("./consts.glsl"),
     uniforms: require("./uniforms.glsl"),
@@ -14,23 +6,5 @@ export const RaymarchLib = {
     ray: require("./ray.glsl"),
     camera: require("./camera.glsl"),
     main: require("./main.glsl"),
+    shadertoyMain: require("./shadertoyMain.glsl"),
 };
-
-export const Raymarcher = ({ code, consts }: RaymarcherOptions) =>
-    compile(
-        Shaders.math,
-        Shaders.hash,
-        Shaders.simplex,
-
-        consts || RaymarchLib.consts,
-        RaymarchLib.uniforms,
-        RaymarchLib.structs,
-        RaymarchLib.sdf,
-
-        RaymarchLib.camera,
-
-        code,
-
-        RaymarchLib.ray,
-        RaymarchLib.main
-    );
