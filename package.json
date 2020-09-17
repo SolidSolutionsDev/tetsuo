@@ -39,7 +39,7 @@
         "build:dev": "cross-env NODE_ENV=development webpack",
         "watch": "npm run build:dev -- --watch",
         "build:prod": "cross-env NODE_ENV=production webpack",
-        "serve": "live-server --no-browser --watch=dist,examples,dev",
+        "serve": "live-server --port=6969 --no-browser --watch=dist,examples,dev",
         "docs": "typedoc src/index.ts",
         "test": "jest --detectOpenHandles --colors",
         "test:watch": "npm run test -- --watch",
