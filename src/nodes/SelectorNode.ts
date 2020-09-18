@@ -61,8 +61,11 @@ export class SelectorNode extends Node {
     set(id: string) {
         this.enabledNode = id;
 
+        let node: Node | undefined;
         for (let key in this.inputs) {
             if (id === key) {
+                node = this.inputs[key].from;
+
                 this.inputs[key].from.enabled = true;
                 setTimeout(
                     () => this.output.setValue(this.inputs[key].value),
@@ -71,6 +74,10 @@ export class SelectorNode extends Node {
             } else {
                 this.inputs[key].from.enabled = false;
             }
+        }
+
+        if (node) {
+            Object.values(node.inputs).forEach((n) => (n.from.enabled = true));
         }
 
         return this;

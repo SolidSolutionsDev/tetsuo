@@ -183,7 +183,9 @@ export class NodeRenderer {
     ) {
         this._nodeGraph.traverse(
             (node) => node.update(totalTime, deltaTime, frameCount),
-            fromNode
+            fromNode,
+            [],
+            true
         );
     }
 

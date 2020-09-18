@@ -199,6 +199,8 @@ export class THREENode extends Node {
      * Renders the node to an output connection
      */
     render(renderer: NodeRenderer) {
+        super.render(renderer);
+
         if (!this._manualRender || this.needsUpdate) {
             let output: any = null;
 

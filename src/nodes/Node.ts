@@ -169,7 +169,7 @@ export class Node {
     /**
      * Renders the node
      */
-    render(renderer: NodeRenderer) {
+    render(renderer?: NodeRenderer) {
         this._onRender && this._onRender.forEach((fn) => fn(renderer));
         return this;
     }
