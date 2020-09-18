@@ -216,8 +216,11 @@ export class NodeRenderer {
         }
 
         // resize each node
-        this._nodeGraph.traverse((node) =>
-            node.resize(this.width, this.height)
+        this._nodeGraph.traverse(
+            (node) => node.resize(this.width, this.height),
+            undefined,
+            [],
+            true
         );
 
         // render everything with the new size
