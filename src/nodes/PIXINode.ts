@@ -101,6 +101,8 @@ export class PIXINode extends Node {
      * Renders the node to an output connection
      */
     render() {
+        super.render();
+
         if (!this._manualRender || this.needsUpdate) {
             this._app.render();
             this._texture.needsUpdate = true;
