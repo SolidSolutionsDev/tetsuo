@@ -66,16 +66,23 @@ export class SelectorNode extends Node {
             if (id === key) {
                 node = this.inputs[key].from;
 
+                // enable new node
                 this.inputs[key].from.enabled = true;
+
+                // set it as output of selector
                 setTimeout(
                     () => this.output.setValue(this.inputs[key].value),
                     0
                 );
-            } else {
+            }
+            // disable other nodes
+            else {
                 this.inputs[key].from.enabled = false;
             }
         }
 
+        // after enabling the new node and disabling the rest, we need to enable the node's input nodes
+        // this is because these input nodes can also be children of the selector and been disabled in the previous step
         if (node) {
             Object.values(node.inputs).forEach((n) => (n.from.enabled = true));
         }
