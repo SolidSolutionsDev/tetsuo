@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { Callback } from "../types/Callback";
 import { Howl } from "howler";
 
@@ -23,10 +25,27 @@ export class Loader {
      */
     private _objectLoader: THREE.ObjectLoader;
 
+    /**
+     * GLTF loader
+     */
+    private _gltfLoader: GLTFLoader;
+
+    /**
+     * OBJ loader
+     */
+    private _objLoader: OBJLoader;
+
+    /*
+        this.manager.addHandler(/.pmx$/i, new MMDLoader(this.manager));
+        this.manager.addHandler(/.glb$/i, new GLTFLoader(this.manager));
+        this.manager.addHandler(/.obj$/i, new OBJLoader(this.manager));
+*/
     constructor() {
         this._textureLoader = new THREE.TextureLoader();
         this._geometryLoader = new THREE.BufferGeometryLoader();
         this._objectLoader = new THREE.ObjectLoader();
+        this._gltfLoader = new GLTFLoader();
+        this._objLoader = new OBJLoader();
     }
 
     /**
@@ -47,6 +66,26 @@ export class Loader {
      */
     loadObject(url: string, onLoad?: Callback) {
         return this._objectLoader.load(url, onLoad);
+    }
+
+    /**
+     * Loads a OBJ model
+     *
+     * @param url
+     * @param onLoad
+     */
+    loadOBJ(url: string, onLoad?: Callback) {
+        return this._objLoader.load(url, (obj) => onLoad && onLoad(obj));
+    }
+
+    /**
+     * Loads a GLTF (.glb/.gltf) model
+     *
+     * @param url
+     * @param onLoad
+     */
+    loadGLTF(url: string, onLoad?: Callback) {
+        return this._gltfLoader.load(url, (obj) => onLoad && onLoad(obj));
     }
 
     /**

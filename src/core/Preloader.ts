@@ -48,6 +48,8 @@ export class Preloader extends Loader {
             object: this.loadObject,
             geometry: this.loadGeometry,
             texture: this.loadTexture,
+            obj: this.loadOBJ,
+            gltf: this.loadGLTF,
         };
 
         // download manifest file
