@@ -59,7 +59,9 @@ export const PageUtils = {
         `;
         document.head.append(style);
 
-        onPrepared && onPrepared();
+        onPrepared && onPrepared(viewport);
+
+        return viewport;
     },
 
     /**

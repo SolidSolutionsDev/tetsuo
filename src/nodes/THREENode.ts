@@ -27,6 +27,11 @@ export interface THREENodeOptions extends NodeOptions {
     firstPersonControls?: boolean;
 
     /**
+     * Viewport element. Recommended for using controls
+     */
+    viewportElement?: HTMLElement;
+
+    /**
      * Whether to only render this node when needsUpdate flag is true
      */
     manualRender?: boolean;
@@ -107,6 +112,8 @@ export class THREENode extends Node {
         };
     };
 
+    private _controls?: OrbitControls | FirstPersonControls;
+
     constructor(id: string, options?: THREENodeOptions) {
         super(id, options);
 
@@ -170,6 +177,18 @@ export class THREENode extends Node {
         }
 
         this._manualRender = options?.manualRender;
+
+        if (options?.orbitControls) {
+            this._controls = new OrbitControls(
+                this.camera,
+                options?.viewportElement || document.body
+            );
+        } else if (options?.firstPersonControls) {
+            this._controls = new FirstPersonControls(
+                this.camera,
+                options?.viewportElement
+            );
+        }
     }
 
     /**
@@ -271,6 +290,14 @@ export class THREENode extends Node {
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
         this._target.setSize(width, height);
+
+        return this;
+    }
+
+    update(totalTime: number, deltaTime: number) {
+        super.update(totalTime, deltaTime);
+
+        this._controls?.update(deltaTime);
 
         return this;
     }
