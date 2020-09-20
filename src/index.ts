@@ -24,6 +24,7 @@ import { DOFNode } from "./nodes/effects/DOFNode";
 import { ShaderMaterial } from "./shaders/ShaderMaterial";
 import { OverlayNode } from "./nodes/effects/OverlayNode";
 import { SelectorNode } from "./nodes/SelectorNode";
+import { CrossfadeNode } from "./nodes/CrossfadeNode";
 import { GroupNode } from "./nodes/GroupNode";
 import { Preloader } from "./core/Preloader";
 import { Syncer } from "./utils/Syncer";
@@ -57,6 +58,7 @@ const TETSUO = {
     MeshNode,
     GroupNode,
     SelectorNode,
+    CrossfadeNode,
     //
     // effect nodes
     AnaglyphNode,
