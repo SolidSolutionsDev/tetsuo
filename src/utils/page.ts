@@ -98,4 +98,6 @@ export const PageUtils = {
         `;
         document.head.appendChild(style);
     },
+
+    getGUI: () => (window as any)["TETSUO"]?.gui,
 };

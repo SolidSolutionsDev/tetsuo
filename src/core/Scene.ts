@@ -3,6 +3,7 @@ import { Clock } from "./Clock";
 import { NodeRenderer } from "../nodes/NodeRenderer";
 import { Node } from "../nodes/Node";
 import { THREENode } from "../nodes/THREENode";
+import dat from "dat.gui";
 
 /**
  * Scene initialization options
@@ -81,6 +82,8 @@ export class Scene {
             this._stats = new Stats();
             this.renderer.viewport &&
                 this.renderer.viewport.domElement.appendChild(this._stats.dom);
+
+            (window as any)["TETSUO"].gui = new dat.GUI();
         }
     }
 
