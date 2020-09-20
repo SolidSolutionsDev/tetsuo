@@ -1,5 +1,6 @@
 import { Node, NodeOptions } from "./Node";
 import { Callback } from "../types/Callback";
+import { PageUtils } from "../utils/page";
 
 /**
  * Uniform node initialization options
@@ -16,6 +17,16 @@ export interface UniformNodeOptions<T> extends NodeOptions {
      * Callback when value changes
      */
     onChange?: Callback;
+
+    /**
+     * dat.gui configurations
+     */
+    gui?: {
+        name?: string;
+        min?: number;
+        max?: number;
+        step?: number;
+    };
 }
 
 /**
@@ -45,6 +56,19 @@ export class UniformNode<T> extends Node {
         this.setValue(options.value);
 
         this.onChange = options.onChange;
+
+        let gui = PageUtils.getGUI();
+        if (gui) {
+            gui.add(
+                this,
+                "value",
+                options.gui?.min,
+                options.gui?.max,
+                options.gui?.step
+            )
+                .name(options.gui?.name || this.id)
+                .onChange((value: any) => this.setValue(value));
+        }
     }
 
     /**
