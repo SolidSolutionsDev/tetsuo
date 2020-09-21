@@ -7,11 +7,11 @@ import { PageUtils } from "../utils/page";
  *
  * @category Nodes
  */
-export interface UniformNodeOptions<T> extends NodeOptions {
+export interface UniformNodeOptions extends NodeOptions {
     /**
      * Initial value of the uniform
      */
-    value: T | null;
+    value: any;
 
     /**
      * Callback when value changes
@@ -26,6 +26,7 @@ export interface UniformNodeOptions<T> extends NodeOptions {
         min?: number;
         max?: number;
         step?: number;
+        [key: string]: any;
     };
 }
 
@@ -34,11 +35,11 @@ export interface UniformNodeOptions<T> extends NodeOptions {
  *
  * @category Nodes
  */
-export class UniformNode<T> extends Node {
+export class UniformNode extends Node {
     /**
      * Current uniform value
      */
-    value: T | null = null;
+    value: any = null;
 
     /**
      * Callback when value changes
@@ -50,7 +51,7 @@ export class UniformNode<T> extends Node {
      * @param id - Node id
      * @param options - Uniform node initialization options
      */
-    constructor(id: string, options: UniformNodeOptions<T>) {
+    constructor(id: string, options: UniformNodeOptions) {
         super(id, options);
 
         this.setValue(options.value);
@@ -59,15 +60,46 @@ export class UniformNode<T> extends Node {
 
         let gui = PageUtils.getGUI();
         if (gui) {
-            gui.add(
-                this,
-                "value",
-                options.gui?.min,
-                options.gui?.max,
-                options.gui?.step
-            )
-                .name(options.gui?.name || this.id)
-                .onChange((value: any) => this.setValue(value));
+            if (typeof this.value === "object" && this.value !== null) {
+                let folder = gui.addFolder(this.id);
+                Object.keys(this.value).forEach((key) => {
+                    folder
+                        .add(
+                            this.value,
+                            key,
+                            options.gui && options.gui[key]
+                                ? options.gui[key].min
+                                : undefined,
+                            options.gui && options.gui[key]
+                                ? options.gui[key].max
+                                : undefined,
+                            options.gui && options.gui[key]
+                                ? options.gui[key].step
+                                : undefined
+                        )
+                        .name(
+                            options.gui && options.gui[key]
+                                ? options.gui[key].name
+                                : key
+                        )
+                        .onChange((value: any) => {
+                            console.log("value", value, this.value);
+                            if (this.value) {
+                                this.value[key] = value;
+                            }
+                        });
+                });
+            } else {
+                gui.add(
+                    this,
+                    "value",
+                    options.gui?.min,
+                    options.gui?.max,
+                    options.gui?.step
+                )
+                    .name(options.gui?.name || this.id)
+                    .onChange((value: any) => this.setValue(value));
+            }
         }
     }
 
@@ -76,7 +108,7 @@ export class UniformNode<T> extends Node {
      *
      * @param value
      */
-    setValue(value: T | null) {
+    setValue(value: any) {
         this.value = value;
 
         // update output connection value in order to propagate value change to the connected nodes
