@@ -7,25 +7,41 @@ let currentLogLevel: LoggerLevel = "error";
 const Logger = {
     verbose: (...msgs: any[]) => {
         if (currentLogLevel === "verbose") {
-            console.log(`${Date.now()} [VERBOSE]`, ...msgs);
+            console.log(
+                `%c[VERBOSE]`,
+                "font-weight:bold; background: black; color: gray",
+                ...msgs
+            );
         }
     },
 
     log: (...msgs: any[]) => {
         if (currentLogLevel === "info" || currentLogLevel === "verbose") {
-            console.log(`${Date.now()} [LOG]`, ...msgs);
+            console.log(
+                `%c[LOG]`,
+                "font-weight:bold; background: black; color: lightblue",
+                ...msgs
+            );
         }
     },
 
     warn: (...msgs: any[]) => {
         if (currentLogLevel === "info" || currentLogLevel === "verbose") {
-            console.warn(`${Date.now()} [WARNING]`, ...msgs);
+            console.warn(
+                `%c[WARNING]`,
+                "font-weight:bold; background: black; color: yellow",
+                ...msgs
+            );
         }
     },
 
     error: (...msgs: any[]) => {
         if (currentLogLevel === "error") {
-            console.trace(`${Date.now()} [ERROR]`, ...msgs);
+            console.trace(
+                `%c[ERROR]`,
+                "font-weight:bold; background: black; color: red",
+                ...msgs
+            );
         }
     },
 

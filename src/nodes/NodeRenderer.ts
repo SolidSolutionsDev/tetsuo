@@ -3,6 +3,7 @@ import { Viewport } from "../core/Viewport";
 import { NodeGraph } from "./NodeGraph";
 import { Node } from "./Node";
 import { ShaderNode } from "./ShaderNode";
+import Logger from "../utils/Logger";
 
 /**
  * Node renderer initialization options
@@ -131,9 +132,10 @@ export class NodeRenderer {
             (!options.width || !options.height) &&
             !this.viewport
         ) {
-            throw new Error(
+            Logger.error(
                 "Node renderer - Fixed size set to true but no width/height defined"
             );
+            throw new Error();
         }
 
         let canvas;
@@ -190,7 +192,10 @@ export class NodeRenderer {
         // update non-root nodes
         this._nonRootNodes.forEach((n) =>
             this._nodeGraph.traverse(
-                (node) => node.update(totalTime, deltaTime, frameCount),
+                (node) => {
+                    Logger.verbose(`update non-root traversal - ${node.id}`);
+                    node.update(totalTime, deltaTime, frameCount);
+                },
                 n,
                 [],
                 true
@@ -198,7 +203,10 @@ export class NodeRenderer {
         );
 
         this._nodeGraph.traverse(
-            (node) => node.update(totalTime, deltaTime, frameCount),
+            (node) => {
+                Logger.verbose(`update traversal - ${node.id}`);
+                node.update(totalTime, deltaTime, frameCount);
+            },
             fromNode,
             [],
             true
@@ -236,7 +244,10 @@ export class NodeRenderer {
         // resize non-root nodes
         this._nonRootNodes.forEach((n) =>
             this._nodeGraph.traverse(
-                (node) => node.resize(this.width, this.height),
+                (node) => {
+                    Logger.verbose(`resize non-root traversal - ${node.id}`);
+                    node.resize(this.width, this.height);
+                },
                 n,
                 [],
                 true
@@ -245,7 +256,10 @@ export class NodeRenderer {
 
         // resize each node
         this._nodeGraph.traverse(
-            (node) => node.resize(this.width, this.height),
+            (node) => {
+                Logger.verbose(`resize traversal - ${node.id}`);
+                node.resize(this.width, this.height);
+            },
             undefined,
             [],
             true
@@ -268,6 +282,7 @@ export class NodeRenderer {
             // this prevents first render bugs
             this._nodeGraph.traverse(
                 (n) => {
+                    Logger.verbose(`connectToScreen traversal - ${n.id}`);
                     n.resize(this.width, this.height);
                     n.render(this);
                 },
@@ -290,6 +305,7 @@ export class NodeRenderer {
         // this prevents first render bugs
         this._nodeGraph.traverse(
             (n) => {
+                Logger.verbose(`connectNonRootNode traversal - ${n.id}`);
                 n.resize(this.width, this.height);
                 n.render(this);
             },
@@ -307,12 +323,18 @@ export class NodeRenderer {
             this._nodeGraph.traverse((node) => node.render(this), fromNode);
         } else if (this._nodeGraph.root) {
             // render non-root nodes
-            this._nonRootNodes.forEach((n) =>
-                this._nodeGraph.traverse((node) => node.render(this), n)
-            );
+            this._nonRootNodes.forEach((n) => {
+                this._nodeGraph.traverse((node) => {
+                    Logger.verbose(`render non-root traversal - ${node.id}`);
+                    node.render(this);
+                }, n);
+            });
 
             // traverse the node graph and render each node
-            this._nodeGraph.traverse((node) => node.render(this));
+            this._nodeGraph.traverse((node) => {
+                Logger.verbose(`render traversal - ${node.id}`);
+                node.render(this);
+            });
 
             // render the result to screen
             let map = this._nodeGraph.root.output.getValue() as THREE.Texture;
