@@ -4,6 +4,7 @@ import { NodeRenderer } from "../nodes/NodeRenderer";
 import { Node } from "../nodes/Node";
 import { THREENode } from "../nodes/THREENode";
 import dat from "dat.gui";
+import TETSUO from "..";
 
 /**
  * Scene initialization options
@@ -84,6 +85,8 @@ export class Scene {
                 this.renderer.viewport.domElement.appendChild(this._stats.dom);
 
             (window as any)["TETSUO"].gui = new dat.GUI();
+
+            TETSUO.Logger.setLevel("info");
         }
     }
 

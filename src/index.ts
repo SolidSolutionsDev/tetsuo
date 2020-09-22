@@ -33,6 +33,7 @@ import { MaskedMaterial, UnmaskedMaterial } from "./shaders/maskMaterials";
 import { ColorUtils } from "./utils/color";
 import { PageUtils } from "./utils/page";
 import { NumberUtils } from "./utils/number";
+import Logger from "./utils/Logger";
 
 const TETSUO = {
     //
@@ -85,6 +86,7 @@ const TETSUO = {
     ColorUtils,
     PageUtils,
     NumberUtils,
+    Logger,
 };
 
 export default TETSUO;
