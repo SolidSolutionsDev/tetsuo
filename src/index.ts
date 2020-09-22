@@ -7,6 +7,7 @@ import { NodeRenderer } from "./nodes/NodeRenderer";
 import { NodeGraph } from "./nodes/NodeGraph";
 import { Node } from "./nodes/Node";
 import { ShaderNode } from "./nodes/ShaderNode";
+import { MaterialNode } from "./nodes/MaterialNode";
 import { THREENode } from "./nodes/THREENode";
 import { PIXINode } from "./nodes/PIXINode";
 import { UniformNode } from "./nodes/UniformNode";
@@ -56,6 +57,7 @@ const TETSUO = {
     UniformNode,
     TextureNode,
     MeshNode,
+    MaterialNode,
     GroupNode,
     SelectorNode,
     CrossfadeNode,

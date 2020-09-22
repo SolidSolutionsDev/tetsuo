@@ -71,6 +71,12 @@ export class NodeRenderer {
     private _nodeGraph: NodeGraph;
 
     /**
+     * Collection of nodes for the renderer to render that are not attached to the main graph.
+     * Used for rendering materials
+     */
+    private _nonRootNodes: Node[] = [];
+
+    /**
      * Internal threejs camera for rendering
      */
     private _camera: THREE.OrthographicCamera;
@@ -181,6 +187,16 @@ export class NodeRenderer {
         frameCount?: number,
         fromNode?: Node
     ) {
+        // update non-root nodes
+        this._nonRootNodes.forEach((n) =>
+            this._nodeGraph.traverse(
+                (node) => node.update(totalTime, deltaTime, frameCount),
+                n,
+                [],
+                true
+            )
+        );
+
         this._nodeGraph.traverse(
             (node) => node.update(totalTime, deltaTime, frameCount),
             fromNode,
@@ -216,6 +232,16 @@ export class NodeRenderer {
             this.width = this.viewport.width;
             this.height = this.viewport.height;
         }
+
+        // resize non-root nodes
+        this._nonRootNodes.forEach((n) =>
+            this._nodeGraph.traverse(
+                (node) => node.resize(this.width, this.height),
+                n,
+                [],
+                true
+            )
+        );
 
         // resize each node
         this._nodeGraph.traverse(
@@ -253,12 +279,38 @@ export class NodeRenderer {
     }
 
     /**
+     * Connects a node separated from the main graph to be rendered by this renderer
+     *
+     * @param node
+     */
+    connectNonRootNode(node: Node) {
+        this._nonRootNodes.push(node);
+
+        // traverse all nodes and do an initial render
+        // this prevents first render bugs
+        this._nodeGraph.traverse(
+            (n) => {
+                n.resize(this.width, this.height);
+                n.render(this);
+            },
+            node,
+            [],
+            true
+        );
+    }
+
+    /**
      * Renders the node graph onto the screen
      */
     render(fromNode?: Node) {
         if (fromNode) {
             this._nodeGraph.traverse((node) => node.render(this), fromNode);
         } else if (this._nodeGraph.root) {
+            // render non-root nodes
+            this._nonRootNodes.forEach((n) =>
+                this._nodeGraph.traverse((node) => node.render(this), n)
+            );
+
             // traverse the node graph and render each node
             this._nodeGraph.traverse((node) => node.render(this));
 
