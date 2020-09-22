@@ -62,6 +62,7 @@ export class MaterialNode extends Node {
 
         this.material = ShaderMaterial({
             ...options,
+            uniforms: { ...options?.uniforms, inputTex: { value: null } },
             vertexShader: options?.vertexShader || defaultMaterialNodeVertex,
             fragmentShader: options?.fragmentShader || defaultMaterialNodeFrag,
         });
