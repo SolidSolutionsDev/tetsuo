@@ -47,7 +47,15 @@ export interface MaterialNodeOptions extends NodeOptions {
 }
 
 export class MaterialNode extends Node {
+    /**
+     * Output material
+     */
     material: THREE.ShaderMaterial;
+
+    /**
+     * Custom uniforms for this material
+     */
+    uniforms: { [key: string]: { value: any; gui?: boolean } };
 
     constructor(id: string, options?: MaterialNodeOptions) {
         super(id, options);
@@ -57,12 +65,36 @@ export class MaterialNode extends Node {
             vertexShader: options?.vertexShader || defaultMaterialNodeVertex,
             fragmentShader: options?.fragmentShader || defaultMaterialNodeFrag,
         });
+
+        this.uniforms = this.material.uniforms;
     }
 
     prepare() {
         super.prepare();
 
         this.output.setValue(this.material);
+
+        return this;
+    }
+
+    /**
+     * Updates shader's uniforms
+     *
+     * @param time - Current clock time
+     */
+    update(totalTime: number, deltaTime: number) {
+        super.update(totalTime, deltaTime);
+
+        // update default uniforms
+        this.uniforms["iTime"].value = totalTime;
+        this.uniforms["iResolution"].value.set(this.width, this.height, 1);
+
+        // update node connection uniforms
+        for (let key in this.inputs) {
+            if (!this.uniforms[key])
+                this.uniforms[key] = { value: this.inputs[key].getValue() };
+            else this.uniforms[key].value = this.inputs[key].getValue();
+        }
 
         return this;
     }
