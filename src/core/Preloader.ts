@@ -44,12 +44,12 @@ export class Preloader extends Loader {
 
         // list of loaders for each resource type
         let loaders: { [type: string]: any } = {
-            music: this.loadAudio,
-            object: this.loadObject,
-            geometry: this.loadGeometry,
-            texture: this.loadTexture,
-            obj: this.loadOBJ,
-            gltf: this.loadGLTF,
+            music: this.loadAudio.bind(this),
+            object: this.loadObject.bind(this),
+            geometry: this.loadGeometry.bind(this),
+            texture: this.loadTexture.bind(this),
+            obj: this.loadOBJ.bind(this),
+            gltf: this.loadGLTF.bind(this),
         };
 
         // download manifest file
