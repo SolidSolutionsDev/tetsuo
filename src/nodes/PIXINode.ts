@@ -118,6 +118,7 @@ export class PIXINode extends Node {
      * Handles renderer resize
      */
     resize(width: number, height: number) {
+        if (this._fixedSize) return this;
         this._app.renderer.resize(width, height);
         this.width = width;
         this.height = height;
