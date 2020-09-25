@@ -117,11 +117,11 @@ export class PIXINode extends Node {
     /**
      * Handles renderer resize
      */
-    //resize(width: number, height: number) {
-    //    this._app.renderer.resize(width, height);
-    //    this.width = width;
-    //    this.height = height;
-    //    this._app.resize();
-    //    return this;
-    //}
+    resize(width: number, height: number) {
+        this._app.renderer.resize(width, height);
+        this.width = width;
+        this.height = height;
+        this._app.resize();
+        return this;
+    }
 }
