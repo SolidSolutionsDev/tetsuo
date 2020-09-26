@@ -1,10 +1,13 @@
 vec4 anaglyph(sampler2D tex, vec2 p, float k) {
+    vec4 r = texture2D(tex, vec2(p.x - k, p.y));
+    vec4 g = texture2D(tex, p);
+    vec4 b = texture2D(tex,  vec2(p.x + k, p.y));
+
+    float a = r.a * (1. / 3.) + g.a * (1. / 3.) + b.a * (1. / 3.);
+
     return vec4(
-        texture2D(tex, vec2(p.x - k, p.y)).r, 
-        texture2D(tex, p).g, 
-        texture2D(tex,  vec2(p.x + k, p.y)).b,
-        1.
-    );
+        r.r,g.g,b.b,a
+    );  
 }
 
 vec4 boxblur(sampler2D tex, vec2 texSize, vec2 p, float separation) {
