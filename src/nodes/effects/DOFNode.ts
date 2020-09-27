@@ -81,4 +81,13 @@ export class DOFNode extends ShaderNode {
 
         return this;
     }
+
+    resize(width: number, height: number) {
+        super.resize(width, height);
+
+        // update texture size uniform with current viewport size
+        this.uniforms["texSize"].value.set(width, height);
+
+        return this;
+    }
 }
