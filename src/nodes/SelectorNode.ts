@@ -1,3 +1,4 @@
+import { Callback } from "../types/Callback";
 import { Node, NodeOptions } from "./Node";
 
 /**
@@ -22,6 +23,11 @@ export class SelectorNode extends Node {
      * Currently enabled node
      */
     enabledNode?: string;
+
+    /**
+     * Callbacks for when the selected node changes
+     */
+    private _onSet: Callback[] = [];
 
     constructor(options?: SelectorNodeOptions) {
         super("selector", options);
@@ -59,6 +65,8 @@ export class SelectorNode extends Node {
      * @param id
      */
     set(id: string) {
+        let previousNode = this.enabledNode;
+
         this.enabledNode = id;
 
         let node: Node | undefined;
@@ -86,6 +94,18 @@ export class SelectorNode extends Node {
         if (node) {
             Object.values(node.inputs).forEach((n) => (n.from.enabled = true));
         }
+
+        // trigger the callbacks
+        this._onSet.forEach((s) => s(previousNode, this.enabledNode));
+
+        return this;
+    }
+
+    /**
+     * Add a new callback to be called when a node is selected
+     */
+    onSet(callback: Callback): SelectorNode {
+        this._onSet.push(callback);
 
         return this;
     }
