@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { Shaders } from "../../shaders";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Bloom node options
@@ -43,8 +44,8 @@ export interface BloomNodeOptions extends ShaderNodeOptions {
 export class BloomNode extends ShaderNode {
     options: BloomNodeOptions;
 
-    constructor(id: string, options?: BloomNodeOptions) {
-        super(id, options, false);
+    constructor(options?: BloomNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("BloomNode_") }, false);
 
         this.options = options || {};
 

@@ -171,7 +171,7 @@ export class NodeRenderer {
 
         // initialize node graph and create the root node
         this._nodeGraph = new NodeGraph();
-        this._nodeGraph.setRootNode(new ShaderNode("root"));
+        this._nodeGraph.setRootNode(new ShaderNode({ id: "root" }));
 
         // setup rendering
         this._camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);

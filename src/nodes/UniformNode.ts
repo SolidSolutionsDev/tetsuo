@@ -1,6 +1,7 @@
 import { Node, NodeOptions } from "./Node";
 import { Callback } from "../types/Callback";
 import { getGUI } from "../utils/page";
+import { uniqueID } from "../utils/general";
 
 /**
  * Uniform node initialization options
@@ -47,12 +48,10 @@ export class UniformNode extends Node {
     onChange?: Callback;
 
     /**
-     *
-     * @param id - Node id
      * @param options - Uniform node initialization options
      */
-    constructor(id: string, options: UniformNodeOptions) {
-        super(id, options);
+    constructor(options: UniformNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("UniformNode") });
 
         this.setValue(options.value);
 

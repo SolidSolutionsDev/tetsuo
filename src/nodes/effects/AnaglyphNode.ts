@@ -1,5 +1,6 @@
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { Shaders } from "../../shaders";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Anaglyph node initialization options
@@ -21,8 +22,11 @@ export interface AnaglyphNodeOptions extends ShaderNodeOptions {
 export class AnaglyphNode extends ShaderNode {
     options: AnaglyphNodeOptions;
 
-    constructor(id: string, options?: AnaglyphNodeOptions) {
-        super(id, options, false);
+    constructor(options?: AnaglyphNodeOptions) {
+        super(
+            { ...options, id: options?.id || uniqueID("AnaglyphNode_") },
+            false
+        );
 
         this.options = options || {};
 

@@ -4,6 +4,7 @@ import { Node, NodeOptions } from "./Node";
 import defaultUniforms from "../shaders/defaultUniforms";
 import { THREENode } from "./THREENode";
 import { Callback } from "../types/Callback";
+import { uniqueID } from "../utils/general";
 
 /**
  * Group node initialization options
@@ -27,8 +28,8 @@ export class GroupNode extends Node {
      */
     options: GroupNodeOptions;
 
-    constructor(id: string, options: GroupNodeOptions) {
-        super(id, options);
+    constructor(options: GroupNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("GroupNode_") });
 
         this.options = options;
         this.group = options.group;

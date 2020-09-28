@@ -1,4 +1,5 @@
 import { ShaderMaterial } from "../shaders/ShaderMaterial";
+import { uniqueID } from "../utils/general";
 import { Node, NodeOptions } from "./Node";
 
 const defaultMaterialNodeVertex = require("../shaders/defaultMaterialNode.vert");
@@ -57,8 +58,8 @@ export class MaterialNode extends Node {
      */
     uniforms: { [key: string]: { value: any; gui?: boolean } };
 
-    constructor(id: string, options?: MaterialNodeOptions) {
-        super(id, options);
+    constructor(options?: MaterialNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("MaterialNode_") });
 
         this.material = ShaderMaterial({
             ...options,

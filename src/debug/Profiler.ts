@@ -1,5 +1,5 @@
 import { Node } from "../nodes/Node";
-import { ColorUtils } from "../utils/color";
+import { uniqueColor } from "../utils/color";
 
 /**
  * Configuration for a node registered in the profiler
@@ -42,7 +42,7 @@ export class Profiler {
     register(node: Node) {
         this._nodes[node.id] = {
             id: node.id,
-            color: ColorUtils.uniqueColor(),
+            color: uniqueColor(),
             time: 0,
         };
     }

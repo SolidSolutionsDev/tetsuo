@@ -4,6 +4,7 @@ import { Node, NodeOptions } from "./Node";
 import defaultUniforms from "../shaders/defaultUniforms";
 import { THREENode } from "./THREENode";
 import { Callback } from "../types/Callback";
+import { uniqueID } from "../utils/general";
 
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/default.frag");
@@ -87,8 +88,8 @@ export class MeshNode extends Node {
      */
     options: MeshNodeOptions;
 
-    constructor(id: string, options: MeshNodeOptions) {
-        super(id, options);
+    constructor(options: MeshNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("MeshNode_") });
 
         this.options = options;
         this._geometry = options?.geometry;

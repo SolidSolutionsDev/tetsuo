@@ -1,5 +1,6 @@
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { Shaders } from "../../shaders";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Displace glitch node initialization options
@@ -36,8 +37,11 @@ export interface DisplaceGlitchNodeOptions extends ShaderNodeOptions {
 export class DisplaceGlitchNode extends ShaderNode {
     options: DisplaceGlitchNodeOptions;
 
-    constructor(id: string, options?: DisplaceGlitchNodeOptions) {
-        super(id, options, false);
+    constructor(options?: DisplaceGlitchNodeOptions) {
+        super(
+            { ...options, id: options?.id || uniqueID("DisplaceGlitchNode_") },
+            false
+        );
 
         this.options = options || {};
 

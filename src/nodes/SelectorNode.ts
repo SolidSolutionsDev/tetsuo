@@ -1,4 +1,5 @@
 import { Callback } from "../types/Callback";
+import { uniqueID } from "../utils/general";
 import { Node, NodeOptions } from "./Node";
 
 /**
@@ -30,7 +31,7 @@ export class SelectorNode extends Node {
     private _onSet: Callback[] = [];
 
     constructor(options?: SelectorNodeOptions) {
-        super("selector", options);
+        super({ ...options, id: options?.id || uniqueID("SelectorNode_") });
 
         this.enabledNode = options?.enabledNode;
     }
