@@ -94,3 +94,10 @@ export const createStartButton = (onClick?: Callback) => {
 };
 
 export const getGUI = () => (window as any)["TETSUO"]?.gui;
+export const getNodeCache = () => {
+    if ((window as any)["TETSUO"] && !(window as any)["TETSUO"].nodes) {
+        (window as any)["TETSUO"].nodes = [];
+    }
+
+    return (window as any)["TETSUO"]?.nodes;
+};
