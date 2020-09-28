@@ -1,6 +1,6 @@
 import { Node, NodeOptions } from "./Node";
 import { Callback } from "../types/Callback";
-import { PageUtils } from "../utils/page";
+import { getGUI } from "../utils/page";
 
 /**
  * Uniform node initialization options
@@ -58,7 +58,7 @@ export class UniformNode extends Node {
 
         this.onChange = options.onChange;
 
-        let gui = PageUtils.getGUI();
+        let gui = getGUI();
         if (gui) {
             if (typeof this.value === "object" && this.value !== null) {
                 let folder = gui.addFolder(this.id);
