@@ -1,5 +1,6 @@
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { Shaders } from "../../shaders";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Overlay node initialization options
@@ -14,8 +15,11 @@ export interface OverlayNodeOptions extends ShaderNodeOptions {}
  * @category Nodes
  */
 export class OverlayNode extends ShaderNode {
-    constructor(id: string, options?: OverlayNodeOptions) {
-        super(id, options, false);
+    constructor(options?: OverlayNodeOptions) {
+        super(
+            { ...options, id: options?.id || uniqueID("OverlayNode_") },
+            false
+        );
 
         this.fragmentShader = [
             Shaders.filters,

@@ -1,5 +1,6 @@
 import { ShaderNode, ShaderNodeOptions } from "./ShaderNode";
 import { Shaders } from "../shaders";
+import { uniqueID } from "../utils/general";
 
 /**
  * Overlay node initialization options
@@ -16,8 +17,11 @@ export interface CrossfadeNodeOptions extends ShaderNodeOptions {
  * @category Nodes
  */
 export class CrossfadeNode extends ShaderNode {
-    constructor(id: string, options?: CrossfadeNodeOptions) {
-        super(id, options, false);
+    constructor(options?: CrossfadeNodeOptions) {
+        super(
+            { ...options, id: options?.id || uniqueID("CrossfadeNode_") },
+            false
+        );
 
         this.fragmentShader = options?.mask
             ? [

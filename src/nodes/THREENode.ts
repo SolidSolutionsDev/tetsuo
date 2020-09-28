@@ -4,6 +4,7 @@ import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonCont
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 import { UnmaskedMaterial, MaskedMaterial } from "../shaders/maskMaterials";
+import { uniqueID } from "../utils/general";
 
 /**
  * THREE.js node initialization options
@@ -114,8 +115,8 @@ export class THREENode extends Node {
 
     private _controls?: OrbitControls | FirstPersonControls;
 
-    constructor(id: string, options?: THREENodeOptions) {
-        super(id, options);
+    constructor(options?: THREENodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("THREENode_") });
 
         this.scene = options?.scene || new THREE.Scene();
 

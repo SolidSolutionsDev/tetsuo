@@ -1,6 +1,7 @@
 import { Node, NodeOptions } from "./Node";
 import { Callback } from "../types/Callback";
-import { PageUtils } from "../utils/page";
+import { getGUI } from "../utils/page";
+import { uniqueID } from "../utils/general";
 
 /**
  * Uniform node initialization options
@@ -47,18 +48,16 @@ export class UniformNode extends Node {
     onChange?: Callback;
 
     /**
-     *
-     * @param id - Node id
      * @param options - Uniform node initialization options
      */
-    constructor(id: string, options: UniformNodeOptions) {
-        super(id, options);
+    constructor(options: UniformNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("UniformNode") });
 
         this.setValue(options.value);
 
         this.onChange = options.onChange;
 
-        let gui = PageUtils.getGUI();
+        let gui = getGUI();
         if (gui) {
             if (typeof this.value === "object" && this.value !== null) {
                 let folder = gui.addFolder(this.id);

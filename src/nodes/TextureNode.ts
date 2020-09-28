@@ -1,5 +1,6 @@
 import { Node, NodeOptions } from "./Node";
 import { Loader } from "../core/Loader";
+import { uniqueID } from "../utils/general";
 
 /**
  * Texture node initialization options
@@ -24,8 +25,8 @@ export class TextureNode extends Node {
      */
     value: THREE.Texture | null = null;
 
-    constructor(id: string, options: TextureNodeOptions) {
-        super(id, options);
+    constructor(options: TextureNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("TextureNode_") });
 
         this.setValue(options.url);
     }

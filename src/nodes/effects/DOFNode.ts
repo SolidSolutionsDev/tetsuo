@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { NodeRenderer } from "../NodeRenderer";
 import { Shaders } from "../../shaders";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Depth of field node initialization options
@@ -39,8 +40,8 @@ export interface DOFNodeOptions extends ShaderNodeOptions {
 export class DOFNode extends ShaderNode {
     options: DOFNodeOptions;
 
-    constructor(id: string, options?: DOFNodeOptions) {
-        super(id, options, false);
+    constructor(options?: DOFNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("DOFNode_") }, false);
 
         this.options = options || {};
 

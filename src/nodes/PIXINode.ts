@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import * as THREE from "three";
+import { uniqueID } from "../utils/general";
 import { Node, NodeOptions } from "./Node";
 
 /**
@@ -60,8 +61,8 @@ export class PIXINode extends Node {
      */
     private _fixedSize: boolean = false;
 
-    constructor(id: string, options?: PIXINodeOptions) {
-        super(id, options);
+    constructor(options?: PIXINodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("PIXINode_") });
 
         PIXI.utils.skipHello();
 

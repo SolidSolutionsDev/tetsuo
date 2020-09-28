@@ -1,6 +1,7 @@
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 import * as THREE from "three";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Overlay node initialization options
@@ -17,8 +18,8 @@ export interface FXAANodeOptions extends ShaderNodeOptions {}
 export class FXAANode extends ShaderNode {
     options: FXAANodeOptions;
 
-    constructor(id: string, options?: FXAANodeOptions) {
-        super(id, options, false);
+    constructor(options?: FXAANodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("FXAANode_") }, false);
 
         this.options = options || {};
 

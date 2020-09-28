@@ -1,6 +1,7 @@
 import { Connection } from "./Connection";
 import { Callback } from "../types/Callback";
 import { NodeRenderer } from "./NodeRenderer";
+import { addToNodeCache, uniqueID } from "../utils/general";
 
 /**
  * Node initialization options
@@ -8,6 +9,11 @@ import { NodeRenderer } from "./NodeRenderer";
  * @category Nodes
  */
 export interface NodeOptions {
+    /**
+     * ID of the node
+     */
+    id?: string;
+
     /**
      * Callback when the renderer initializes this node
      */
@@ -80,8 +86,10 @@ export class Node {
      * @param id - Node id
      * @param options - Node initialization options
      */
-    constructor(id: string, options?: NodeOptions) {
-        this.id = id;
+    constructor(options?: NodeOptions) {
+        this.id = options?.id || uniqueID("Node_");
+
+        addToNodeCache(this);
 
         this._onPrepare = options?.onPrepare ? [options.onPrepare] : [];
         this._onUpdate = options?.onUpdate ? [options?.onUpdate] : [];

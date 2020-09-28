@@ -31,10 +31,11 @@ import { GroupNode } from "./nodes/GroupNode";
 import { Preloader } from "./core/Preloader";
 import { Syncer } from "./utils/Syncer";
 import { MaskedMaterial, UnmaskedMaterial } from "./shaders/maskMaterials";
-import { ColorUtils } from "./utils/color";
-import { PageUtils } from "./utils/page";
-import { NumberUtils } from "./utils/number";
 import Logger from "./utils/Logger";
+import * as GeneralUtils from "./utils/general";
+import * as ColorUtils from "./utils/color";
+import * as PageUtils from "./utils/page";
+import * as NumberUtils from "./utils/number";
 
 const TETSUO = {
     //
@@ -83,12 +84,15 @@ const TETSUO = {
     //
     // debug
     Profiler,
+    Logger,
     //
     // utils
-    ColorUtils,
-    PageUtils,
-    NumberUtils,
-    Logger,
+    Utils: {
+        ...ColorUtils,
+        ...PageUtils,
+        ...NumberUtils,
+        ...GeneralUtils,
+    },
 };
 
 export default TETSUO;

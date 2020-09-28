@@ -1,5 +1,6 @@
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { Shaders } from "../../shaders";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Fog node initialization options
@@ -26,8 +27,8 @@ export interface FogNodeOptions extends ShaderNodeOptions {
 export class FogNode extends ShaderNode {
     options: FogNodeOptions;
 
-    constructor(id: string, options?: FogNodeOptions) {
-        super(id, options, false);
+    constructor(options?: FogNodeOptions) {
+        super({ ...options, id: options?.id || uniqueID("FogNode_") }, false);
 
         this.options = options || {};
 

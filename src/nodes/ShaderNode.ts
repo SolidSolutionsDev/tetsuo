@@ -4,6 +4,7 @@ import { NodeRenderer } from "./NodeRenderer";
 import defaultUniforms from "../shaders/defaultUniforms";
 import { IUniform, WebGLRenderTarget } from "three";
 import { UniformNode } from "./UniformNode";
+import { uniqueID } from "../utils/general";
 
 const defaultVertexShader = require("../shaders/default.vert");
 const defaultFragmentShader = require("../shaders/defaultPost.frag");
@@ -94,16 +95,11 @@ export class ShaderNode extends Node {
     needsUpdate: boolean = true;
 
     /**
-     * @param id - Node id
      * @param options - Shader node initialization options
      * @param prepare - Whether to run the prepare method for this node on construction
      */
-    constructor(
-        id: string,
-        options?: ShaderNodeOptions,
-        prepare: boolean = true
-    ) {
-        super(id, options);
+    constructor(options?: ShaderNodeOptions, prepare: boolean = true) {
+        super({ ...options, id: options?.id || uniqueID("THREENode_") });
 
         options = options || {};
         this.vertexShader = options.vertexShader || defaultVertexShader;
@@ -217,7 +213,8 @@ export class ShaderNode extends Node {
      * @param value - Uniform initial value
      */
     uniform(uniformID: string, value: any) {
-        let node = new UniformNode(uniformID, {
+        let node = new UniformNode({
+            id: uniformID,
             value,
         });
         this.addInput(node);

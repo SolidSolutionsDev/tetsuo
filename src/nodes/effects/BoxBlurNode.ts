@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { ShaderNode, ShaderNodeOptions } from "../ShaderNode";
 import { Shaders } from "../../shaders";
+import { uniqueID } from "../../utils/general";
 
 /**
  * Box blur node initialization options
@@ -28,8 +29,11 @@ export interface BoxBlurNodeOptions extends ShaderNodeOptions {
 export class BoxBlurNode extends ShaderNode {
     options: BoxBlurNodeOptions;
 
-    constructor(id: string, options?: BoxBlurNodeOptions) {
-        super(id, options, false);
+    constructor(options?: BoxBlurNodeOptions) {
+        super(
+            { ...options, id: options?.id || uniqueID("BoxBlurNode_") },
+            false
+        );
 
         this.options = options || {};
 

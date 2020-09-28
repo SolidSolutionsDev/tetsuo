@@ -118,7 +118,7 @@ export class Scene {
      * Creates a basic scene for three.js.
      */
     basic(): { scene: Scene; node: Node } {
-        let node = new THREENode("node");
+        let node = new THREENode();
 
         this.connectToScreen(node);
 
