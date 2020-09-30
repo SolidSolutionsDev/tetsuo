@@ -52,6 +52,7 @@ export class DisplaceGlitchNode extends ShaderNode {
             /* glsl */ `
                 uniform float iTime;
 
+                uniform bool off;
                 uniform sampler2D inputTex;
                 uniform float speed;
                 uniform float amount;
@@ -64,9 +65,9 @@ export class DisplaceGlitchNode extends ShaderNode {
                     vec2 p = vUv + floor(iTime * speed);
                     vec2 fl = vec2(floor(p.x * horizontalDivs), floor(p.y * verticalDivs));
                     float c = sat(hash12(fl), 0.9, 0., 1.);
-                    vec4 t = texture2D(inputTex, vUv + c * .005);
+                    vec4 t = texture2D(inputTex, off ? vUv : vUv + c * .01);
                     
-                    gl_FragColor = t * amount + t * c * 0.9 * (1. - amount);
+                    gl_FragColor = off ? t :  t + t * c * 0.9 * (1. - amount);
                 }
             `,
         ].join("\n");
