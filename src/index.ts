@@ -19,6 +19,7 @@ import { Profiler } from "./debug/Profiler";
 import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
 import { BloomNode } from "./nodes/effects/BloomNode";
 import { FXAANode } from "./nodes/effects/FXAANode";
+import { GrainNode } from "./nodes/effects/GrainNode";
 import { DisplaceGlitchNode } from "./nodes/effects/DisplaceGlitchNode";
 import { FogNode } from "./nodes/effects/FogNode";
 import { BoxBlurNode } from "./nodes/effects/BoxBlurNode";
@@ -74,6 +75,7 @@ const TETSUO = {
     DOFNode,
     OverlayNode,
     FXAANode,
+    GrainNode,
     //
     // shader lib
     Shaders,
