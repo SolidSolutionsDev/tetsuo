@@ -7,24 +7,24 @@ import dat from "dat.gui";
 import TETSUO from "..";
 
 /**
- * Scene initialization options
+ * Bootstrap initialization options
  *
  * @Category Core
  */
-export interface SceneOptions {
+export interface BootstrapOptions {
     /**
      * Element where the renderer will drop its canvas
      */
     viewportElement?: HTMLElement;
 
     /**
-     * Whether to initialize the scene in development mode
+     * Whether to initialize the bootstrap in development mode
      * This attaches dat.gui and stats element and allows for other development utilities
      */
     dev?: boolean;
 
     /**
-     * Whether to start the animation loop automatically when the scene is created.
+     * Whether to start the animation loop automatically when the bootstrap is created.
      */
     autoStart?: boolean;
 }
@@ -34,7 +34,7 @@ export interface SceneOptions {
  *
  * @category Core
  */
-export class Scene {
+export class Bootstrap {
     /**
      * Clock that provides the animation loop
      */
@@ -51,19 +51,19 @@ export class Scene {
     private _stats: Stats | null = null;
 
     /**
-     * Whether this scene is in development mode (for displaying stats)
+     * Whether this bootstrap is in development mode (for displaying stats)
      */
     dev: boolean = false;
 
     /**
-     * Whether to start the animation loop automatically when the scene is created.
+     * Whether to start the animation loop automatically when the bootstrap is created.
      */
     autoStart: boolean = false;
 
     /**
-     * @param options - Scene options
+     * @param options - Bootstrap options
      */
-    constructor(options: SceneOptions) {
+    constructor(options: BootstrapOptions) {
         // initialize renderer
         this.renderer = new NodeRenderer({
             viewportElement: options.viewportElement,
@@ -92,7 +92,7 @@ export class Scene {
 
     /**
      * Animate method.
-     * Renders the scene, updates uniforms, updates dev utils, etc
+     * Renders, updates uniforms, updates dev utils, etc
      *
      * @param onTick - Callback when animation ticks
      */
@@ -115,14 +115,14 @@ export class Scene {
     }
 
     /**
-     * Creates a basic scene for three.js.
+     * Creates a basic node for three.js.
      */
-    basic(): { scene: Scene; node: Node } {
+    basic(): { bootstrap: Bootstrap; node: Node } {
         let node = new THREENode();
 
         this.connectToScreen(node);
 
-        return { scene: this, node };
+        return { bootstrap: this, node };
     }
 
     connectToScreen(node: Node) {

@@ -1,5 +1,5 @@
 import { Viewport } from "./core/Viewport";
-import { Scene } from "./core/Scene";
+import { Bootstrap } from "./core/Bootstrap";
 import { Clock } from "./core/Clock";
 import { Shaders } from "./shaders";
 import { ShadedObject } from "./shaders/ShadedObject";
@@ -40,7 +40,7 @@ import * as NumberUtils from "./utils/number";
 const TETSUO = {
     //
     // core
-    Scene,
+    Bootstrap,
     Viewport,
     Clock,
     Preloader,
