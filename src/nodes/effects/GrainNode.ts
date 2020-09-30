@@ -47,7 +47,7 @@ export class GrainNode extends ShaderNode {
                     vec2 uvRandom = vUv;
                     uvRandom.y *= random(vec2(uvRandom.y, iTime));
                     
-                    color.rgb -= random(uvRandom) * amount;
+                    color.rgb += random(uvRandom) * amount;
 
                     gl_FragColor = color;
                 }
