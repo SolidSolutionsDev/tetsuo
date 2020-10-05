@@ -43,6 +43,7 @@ module.exports = {
             },
         ],
     },
+    externals: {},
     plugins: [
         new webpack.DefinePlugin({
             MODE: JSON.stringify(isDev ? "development" : "production"),

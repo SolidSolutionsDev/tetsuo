@@ -63,26 +63,74 @@ export const prepareViewport = (
  * The button will hide automatically.
  *
  * @param onClicked - Callback when button is clicked
+ * @param extraOptions - Extra options
  */
-export const createStartButton = (onClick?: Callback) => {
+export const createStartButton = (
+    onClick?: Callback,
+    extraOptions?: { label?: string; sublabel?: string }
+) => {
+    let container = document.createElement("div");
+    container.setAttribute("id", "startContainer");
+    document.body.appendChild(container);
+
+    if (extraOptions?.label) {
+        let label = document.createElement("div");
+        label.setAttribute("id", "startLabel");
+        label.textContent = extraOptions.label;
+        container.appendChild(label);
+    }
+
+    if (extraOptions?.sublabel) {
+        let sublabel = document.createElement("div");
+        sublabel.setAttribute("id", "startSublabel");
+        sublabel.textContent = extraOptions.sublabel;
+        container.appendChild(sublabel);
+    }
+
     let startButton = document.createElement("div");
     startButton.setAttribute("id", "startButton");
     startButton.textContent = "start";
     startButton.onclick = () => {
         onClick && onClick();
-        startButton.style.display = "none";
+        container.style.display = "none";
     };
-    document.body.appendChild(startButton);
+    container.appendChild(startButton);
 
     const style = document.createElement("style");
     style.textContent = /* css */ `
-            #startButton {
+            body {
+                background: black;
+            }
+
+            #startContainer {
                 position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                text-align: center;
+                background: black;
+                padding: 2rem;
+                
+                font-family: monospace;
+                font-size: 2rem;
+
+                color: white;
+            }
+
+            #startLabel {
+                font-weight: bold;
+            }
+
+            #startSublabel {
+                font-size: 1rem;
+            }
+    
+            #startButton {
                 background-color: #1c1c1c;
                 padding: 1rem;
-                font-size: 2rem;
+                margin-top: 2rem;
                 color: white;
-                font-family: monospace;
             }
     
             #startButton:hover {
