@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { Viewport } from "../core/Viewport";
 import { NodeGraph } from "./NodeGraph";
 import { Node } from "./Node";
@@ -147,11 +148,25 @@ export class NodeRenderer {
             canvas = this.viewport?.canvas;
         }
 
+        let context: any;
+        if (WEBGL.isWebGL2Available()) {
+            context = canvas?.getContext("webgl2", {
+                antialias: options.antialias,
+            });
+        } else {
+            context = canvas?.getContext("webgl", {
+                antialias: options.antialias,
+                alpha: options.alpha,
+            });
+        }
+        console.log(context);
+
         // initialize renderer
         this.glRenderer = new THREE.WebGLRenderer({
             antialias: options.antialias,
             alpha: options.alpha,
             canvas,
+            context,
         });
 
         // set renderer size depending on size options

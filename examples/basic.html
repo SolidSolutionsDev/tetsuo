@@ -22,7 +22,7 @@
             TETSUO.Utils.ready(() => {
                 // initialize scene in basic mode
                 // returns a node where objects can be added
-                let { scene, node } = new TETSUO.Scene({
+                let { scene, node } = new TETSUO.Bootstrap({
                     viewportElement: document.getElementById("viewport"),
                     dev: true,
                 }).basic();

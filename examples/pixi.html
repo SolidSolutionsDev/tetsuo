@@ -23,7 +23,10 @@
 
         <script>
             TETSUO.Utils.ready(() => {
-                let scene = new TETSUO.Scene({ dev: true, autoStart: true });
+                let scene = new TETSUO.Bootstrap({
+                    dev: true,
+                    autoStart: true,
+                });
 
                 let pixi = new TETSUO.PIXINode("pixi", scene.renderer);
 
