@@ -62,6 +62,16 @@ export interface THREENodeOptions extends NodeOptions {
      * List of mask buffers
      */
     masks?: string[];
+
+    /**
+     * Whether to attempt antialias for this node
+     */
+    antialias?: boolean;
+
+    /**
+     * Number of samples for antialias
+     */
+    antialiasSamples?: number;
 }
 
 /**
@@ -137,12 +147,19 @@ export class THREENode extends Node {
         options?.cameraSettings?.position &&
             this.camera.position.copy(options.cameraSettings.position);
 
-        this._target = WEBGL.isWebGL2Available()
-            ? new THREE.WebGLMultisampleRenderTarget(this.width, this.height)
-            : new THREE.WebGLRenderTarget(this.width, this.height);
+        if (WEBGL.isWebGL2Available() && options?.antialias) {
+            this._target = new THREE.WebGLMultisampleRenderTarget(
+                this.width,
+                this.height
+            );
+
+            (this._target as any).samples = options?.antialiasSamples || 2;
+        } else {
+            this._target = new THREE.WebGLRenderTarget(this.width, this.height);
+        }
 
         //TODO: Check if antialising is active on NodeRenderer and change this to 4 or 8
-        //this._target.samples = 8; //default is 4 but to match the built-in AA quality 8 or 16 samples is needed
+        // //default is 4 but to match the built-in AA quality 8 or 16 samples is needed
 
         this.output.value = null;
 

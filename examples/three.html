@@ -28,7 +28,10 @@
                 });
 
                 // create a three node
-                let node = new TETSUO.THREENode();
+                let node = new TETSUO.THREENode({
+                    antialias: true,
+                    antialiasSamples: 16,
+                });
 
                 let mat = new THREE.MeshNormalMaterial();
 
