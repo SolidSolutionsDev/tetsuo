@@ -4,7 +4,8 @@ import { NodeRenderer } from "../nodes/NodeRenderer";
 import { Node } from "../nodes/Node";
 import { THREENode } from "../nodes/THREENode";
 import dat from "dat.gui";
-import TETSUO from "..";
+import { Callback } from "../types/Callback";
+import Logger from "../utils/Logger";
 
 /**
  * Bootstrap initialization options
@@ -27,6 +28,11 @@ export interface BootstrapOptions {
      * Whether to start the animation loop automatically when the bootstrap is created.
      */
     autoStart?: boolean;
+
+    /**
+     * Callback when render loop updates
+     */
+    onUpdate?: Callback;
 }
 
 /**
@@ -61,13 +67,26 @@ export class Bootstrap {
     autoStart: boolean = false;
 
     /**
+     * Callback when render loop updates
+     */
+    private _onUpdate?: Callback;
+
+    /**
      * @param options - Bootstrap options
      */
     constructor(options: BootstrapOptions) {
+        // initialize logger
+        this.dev = !!options.dev;
+        if (this.dev) {
+            Logger.setLevel("info");
+        }
+
         // initialize renderer
         this.renderer = new NodeRenderer({
             viewportElement: options.viewportElement,
         });
+
+        this._onUpdate = options.onUpdate;
 
         // initialize the clock
         this.clock = new Clock(
@@ -77,7 +96,6 @@ export class Bootstrap {
         );
 
         // dev utils initialization
-        this.dev = !!options.dev;
         if (this.dev) {
             // add a stats element to the viewport for tracking fps
             this._stats = new Stats();
@@ -85,8 +103,6 @@ export class Bootstrap {
                 this.renderer.viewport.domElement.appendChild(this._stats.dom);
 
             (window as any)["TETSUO"].gui = new dat.GUI();
-
-            TETSUO.Logger.setLevel("info");
         }
     }
 
@@ -112,6 +128,8 @@ export class Bootstrap {
             // finish counting fps time
             this._stats && this._stats.end();
         }
+
+        this._onUpdate && this._onUpdate(elapsed, delta);
     }
 
     /**

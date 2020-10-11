@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>Bootstrap example</title>
+
+        <style>
+            body,
+            html {
+                margin: 0;
+                background: gray;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="viewport"></div>
+
+        <script src="../node_modules/three/build/three.min.js"></script>
+        <script src="../dist/tetsuo.min.js"></script>
+
+        <script>
+            // when page is ready
+            TETSUO.Utils.ready(() => {
+                // initialize tetsuo renderer and loop
+                let bootstrap = new TETSUO.Bootstrap({
+                    viewportElement: document.getElementById("viewport"),
+                    dev: true,
+                    autoStart: true,
+                });
+
+                // create a three node
+                let node = new TETSUO.THREENode();
+
+                let mat = new THREE.MeshNormalMaterial();
+
+                let cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1), mat);
+                cube.position.z = -10;
+
+                node.onUpdate((time) => {
+                    cube.rotation.set(
+                        Math.sin(time),
+                        Math.cos(time),
+                        Math.sin(time * 2)
+                    );
+                });
+
+                node.add(cube);
+
+                // connect node to the output
+                bootstrap.connectToScreen(node);
+            });
+        </script>
+    </body>
+</html>

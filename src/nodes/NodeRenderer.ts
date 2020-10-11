@@ -150,16 +150,19 @@ export class NodeRenderer {
 
         let context: any;
         if (WEBGL.isWebGL2Available()) {
+            Logger.log("NodeRenderer - Using WebGL2");
+
             context = canvas?.getContext("webgl2", {
                 antialias: options.antialias,
             });
         } else {
+            Logger.log("NodeRenderer - Using WebGL");
+
             context = canvas?.getContext("webgl", {
                 antialias: options.antialias,
                 alpha: options.alpha,
             });
         }
-        console.log(context);
 
         // initialize renderer
         this.glRenderer = new THREE.WebGLRenderer({

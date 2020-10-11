@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>Preloader example</title>
+
+        <style>
+            body,
+            html {
+                margin: 0;
+                background: gray;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="viewport"></div>
+
+        <script src="../node_modules/three/build/three.min.js"></script>
+        <script src="../dist/tetsuo.min.js"></script>
+
+        <script>
+            // when page is ready
+            TETSUO.Utils.ready(() => {
+                // initialize preloader
+                let preloader = new TETSUO.Preloader();
+
+                // load all files declared in the manifest
+                preloader.loadManifest("res/manifest.json", (assets) => {
+                    let music = assets["music"];
+                    music.play();
+                });
+            });
+        </script>
+    </body>
+</html>
