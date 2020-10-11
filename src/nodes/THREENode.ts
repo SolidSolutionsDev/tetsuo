@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonControls";
 import { Node, NodeOptions } from "./Node";
@@ -88,7 +89,9 @@ export class THREENode extends Node {
     /**
      * Render target for this node
      */
-    private _target: THREE.WebGLRenderTarget;
+    private _target:
+        | THREE.WebGLRenderTarget
+        | THREE.WebGLMultisampleRenderTarget;
 
     /**
      * Whether to render this node only when needsUpdate is true
@@ -109,7 +112,9 @@ export class THREENode extends Node {
         [maskKey: string]: {
             id: number;
             name: string;
-            target: THREE.WebGLRenderTarget;
+            target:
+                | THREE.WebGLRenderTarget
+                | THREE.WebGLMultisampleRenderTarget;
         };
     };
 
@@ -132,7 +137,12 @@ export class THREENode extends Node {
         options?.cameraSettings?.position &&
             this.camera.position.copy(options.cameraSettings.position);
 
-        this._target = new THREE.WebGLRenderTarget(this.width, this.height);
+        this._target = WEBGL.isWebGL2Available()
+            ? new THREE.WebGLMultisampleRenderTarget(this.width, this.height)
+            : new THREE.WebGLRenderTarget(this.width, this.height);
+
+        //TODO: Check if antialising is active on NodeRenderer and change this to 4 or 8
+        //this._target.samples = 8; //default is 4 but to match the built-in AA quality 8 or 16 samples is needed
 
         this.output.value = null;
 
@@ -145,10 +155,12 @@ export class THREENode extends Node {
                 this._masks[mask] = {
                     id: index,
                     name: mask,
-                    target: new THREE.WebGLRenderTarget(
-                        this.width,
-                        this.height
-                    ),
+                    target: WEBGL.isWebGL2Available()
+                        ? new THREE.WebGLMultisampleRenderTarget(
+                              this.width,
+                              this.height
+                          )
+                        : new THREE.WebGLRenderTarget(this.width, this.height),
                 };
 
                 this.output.value[mask] = null;

@@ -2,7 +2,12 @@ import * as THREE from "three";
 import { Node, NodeOptions } from "./Node";
 import { NodeRenderer } from "./NodeRenderer";
 import defaultUniforms from "../shaders/defaultUniforms";
-import { IUniform, WebGLRenderTarget } from "three";
+import {
+    IUniform,
+    WebGLRenderTarget,
+    WebGLMultisampleRenderTarget,
+} from "three";
+import { WEBGL } from "three/examples/jsm/WebGL.js";
 import { UniformNode } from "./UniformNode";
 import { uniqueID } from "../utils/general";
 
@@ -82,7 +87,7 @@ export class ShaderNode extends Node {
     /**
      * Render target for this node
      */
-    private _target: WebGLRenderTarget;
+    private _target: WebGLRenderTarget | WebGLMultisampleRenderTarget;
 
     /**
      * Whether to render this node only when needsUpdate is true
@@ -105,7 +110,12 @@ export class ShaderNode extends Node {
         this.vertexShader = options.vertexShader || defaultVertexShader;
         this.fragmentShader = options.fragmentShader || defaultFragmentShader;
 
-        this._target = new THREE.WebGLRenderTarget(this.width, this.height);
+        this._target = WEBGL.isWebGL2Available()
+            ? new THREE.WebGLMultisampleRenderTarget(this.width, this.height)
+            : new THREE.WebGLRenderTarget(this.width, this.height);
+
+        //TODO: Check if antialising is active on NodeRenderer and change this to 4 or 8
+        //this._target.samples = 8; //default is 4 but to match the built-in AA quality 8 or 16 samples is needed
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 100);
