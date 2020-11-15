@@ -20,32 +20,35 @@
         <script>
             // when page is ready
             TETSUO.Utils.ready(() => {
-                // initialize scene in basic mode
-                // returns a node where objects can be added
-                let { scene, node } = new TETSUO.Bootstrap({
-                    viewportElement: document.getElementById("viewport"),
-                    dev: true,
-                }).basic();
-
-                // add an object
+                // create a THREE object
                 let object = new THREE.Mesh(
                     new THREE.SphereGeometry(1, 30, 30),
                     new THREE.MeshLambertMaterial({ color: 0xff0000 })
                 );
                 object.position.z = -5;
+
+                // initialize bootstrap in basic mode
+                // returns a node where objects can be added
+                let { bootstrap, node } = new TETSUO.Bootstrap({
+                    viewportElement: document.getElementById("viewport"),
+                    dev: true,
+                    autoStart: true,
+
+                    // run on renderer update
+                    onUpdate: (time) => {
+                        object.position.set(
+                            Math.sin(time),
+                            Math.cos(time),
+                            object.position.z
+                        );
+                    },
+                }).basic();
+
+                // add object to the node
                 node.add(object);
 
                 // add a light
                 node.add(new THREE.DirectionalLight(0xffffff, 0.5));
-
-                // start animation loop
-                scene.animate((time) => {
-                    object.position.set(
-                        Math.sin(time),
-                        Math.cos(time),
-                        object.position.z
-                    );
-                });
             });
         </script>
     </body>
