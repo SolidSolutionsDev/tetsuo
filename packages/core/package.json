@@ -1,7 +1,5 @@
 {
     "name": "@tetsuo/core",
-    "private": true,
-    "repository": "git://github.com/SolidSolutionsDev/tetsuo.git",
     "version": "1.6.1",
     "main": "./dist/tetsuo.min.js",
     "types": "./dist/index.d.ts",

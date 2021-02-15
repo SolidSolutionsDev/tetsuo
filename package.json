@@ -22,6 +22,7 @@
         "serve": "live-server --port=6969 --no-browser --watch=packages/**/dist,dev",
         "test": "jest --detectOpenHandles --colors",
         "test:watch": "yarn test -- --watch",
-        "watch": "lerna exec -- yarn watch"
+        "watch": "lerna exec -- yarn watch",
+        "desktop": "lerna --scope @tetsuo/desktop run run-script --"
     }
 }
