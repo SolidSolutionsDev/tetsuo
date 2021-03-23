@@ -5,7 +5,6 @@ import { Node } from "../nodes/Node";
 import { THREENode } from "../nodes/THREENode";
 import dat from "dat.gui";
 import { Callback } from "../types/Callback";
-import Logger from "../utils/Logger";
 
 /**
  * Bootstrap initialization options
@@ -77,9 +76,6 @@ export class Bootstrap {
     constructor(options?: BootstrapOptions) {
         // initialize logger
         this.dev = !!options?.dev;
-        if (this.dev) {
-            Logger.setLevel("info");
-        }
 
         // initialize renderer
         this.renderer = new NodeRenderer({

@@ -1,1 +1,0 @@
-# tetsuo core

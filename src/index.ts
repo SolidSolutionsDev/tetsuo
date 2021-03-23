@@ -15,7 +15,6 @@ import { TextureNode } from "./nodes/TextureNode";
 import { MeshNode } from "./nodes/MeshNode";
 import { Connection } from "./nodes/Connection";
 import { Loader } from "./core/Loader";
-import { Profiler } from "./debug/Profiler";
 import { AnaglyphNode } from "./nodes/effects/AnaglyphNode";
 import { BloomNode } from "./nodes/effects/BloomNode";
 import { FXAANode } from "./nodes/effects/FXAANode";
@@ -32,7 +31,6 @@ import { GroupNode } from "./nodes/GroupNode";
 import { Preloader } from "./core/Preloader";
 import { Syncer } from "./utils/Syncer";
 import { MaskedMaterial, UnmaskedMaterial } from "./shaders/maskMaterials";
-import Logger from "./utils/Logger";
 import * as GeneralUtils from "./utils/general";
 import * as ColorUtils from "./utils/color";
 import * as PageUtils from "./utils/page";
@@ -83,10 +81,6 @@ const TETSUO = {
     ShaderMaterial,
     MaskedMaterial,
     UnmaskedMaterial,
-    //
-    // debug
-    Profiler,
-    Logger,
     //
     // utils
     Utils: {

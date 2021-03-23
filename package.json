@@ -19,9 +19,9 @@
         "ts-jest": "^25.4.0"
     },
     "scripts": {
-        "serve": "live-server --port=6969 --no-browser --watch=packages/core/dist,dev",
+        "serve": "live-server --port=6969 --no-browser --watch=dist,dev",
         "test": "jest --detectOpenHandles --colors",
         "test:watch": "yarn test -- --watch",
-        "watch": "lerna exec -- yarn watch"
+        "watch": "webpack --watch"
     }
 }
