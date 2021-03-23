@@ -11,7 +11,7 @@ export interface TextureNodeOptions extends NodeOptions {
     /**
      * URL of the texture
      */
-    url: string;
+    url?: string;
 }
 
 /**
@@ -25,22 +25,31 @@ export class TextureNode extends Node {
      */
     value: THREE.Texture | null = null;
 
-    constructor(options: TextureNodeOptions) {
+    constructor(options?: TextureNodeOptions) {
         super({ ...options, id: options?.id || uniqueID("TextureNode_") });
 
-        this.setValue(options.url);
+        if (options?.url) this.loadTexture(options.url);
     }
 
     /**
-     * Sets the texture
+     * Loads the texture
      *
-     * @param value
+     * @param url
      */
-    setValue(url: string) {
+    loadTexture(url: string) {
         this.value = new Loader().loadTexture(url);
 
         this.output.setValue(this.value);
 
         return this;
+    }
+
+    /**
+     * Sets the value
+     *
+     * @param texture
+     */
+    setValue(texture: THREE.Texture) {
+        this.output.setValue(texture);
     }
 }

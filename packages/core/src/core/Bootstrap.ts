@@ -74,23 +74,24 @@ export class Bootstrap {
     /**
      * @param options - Bootstrap options
      */
-    constructor(options: BootstrapOptions) {
+    constructor(options?: BootstrapOptions) {
         // initialize logger
-        this.dev = !!options.dev;
+        this.dev = !!options?.dev;
         if (this.dev) {
             Logger.setLevel("info");
         }
 
         // initialize renderer
         this.renderer = new NodeRenderer({
-            viewportElement: options.viewportElement,
+            viewportElement: options?.viewportElement,
+            alpha: true,
         });
 
-        this._onUpdate = options.onUpdate;
+        this._onUpdate = options?.onUpdate;
 
         // initialize the clock
         this.clock = new Clock(
-            options.autoStart,
+            options?.autoStart,
             (elapsed, delta, frameCount) =>
                 this.animate(elapsed, delta, frameCount)
         );
