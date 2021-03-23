@@ -4,7 +4,6 @@ import { Viewport } from "../core/Viewport";
 import { NodeGraph } from "./NodeGraph";
 import { Node } from "./Node";
 import { ShaderNode } from "./ShaderNode";
-import Logger from "../utils/Logger";
 
 /**
  * Node renderer initialization options
@@ -133,9 +132,6 @@ export class NodeRenderer {
             (!options.width || !options.height) &&
             !this.viewport
         ) {
-            Logger.error(
-                "Node renderer - Fixed size set to true but no width/height defined"
-            );
             throw new Error();
         }
 
@@ -150,14 +146,10 @@ export class NodeRenderer {
 
         let context: any;
         if (WEBGL.isWebGL2Available()) {
-            Logger.log("NodeRenderer - Using WebGL2");
-
             context = canvas?.getContext("webgl2", {
                 antialias: options.antialias,
             });
         } else {
-            Logger.log("NodeRenderer - Using WebGL");
-
             context = canvas?.getContext("webgl", {
                 antialias: options.antialias,
                 alpha: options.alpha,
@@ -211,7 +203,6 @@ export class NodeRenderer {
         this._nonRootNodes.forEach((n) =>
             this._nodeGraph.traverse(
                 (node) => {
-                    Logger.verbose(`update non-root traversal - ${node.id}`);
                     node.update(totalTime, deltaTime, frameCount);
                 },
                 n,
@@ -222,7 +213,6 @@ export class NodeRenderer {
 
         this._nodeGraph.traverse(
             (node) => {
-                Logger.verbose(`update traversal - ${node.id}`);
                 node.update(totalTime, deltaTime, frameCount);
             },
             fromNode,
@@ -263,7 +253,6 @@ export class NodeRenderer {
         this._nonRootNodes.forEach((n) =>
             this._nodeGraph.traverse(
                 (node) => {
-                    Logger.verbose(`resize non-root traversal - ${node.id}`);
                     node.resize(this.width, this.height);
                 },
                 n,
@@ -275,7 +264,6 @@ export class NodeRenderer {
         // resize each node
         this._nodeGraph.traverse(
             (node) => {
-                Logger.verbose(`resize traversal - ${node.id}`);
                 node.resize(this.width, this.height);
             },
             undefined,
@@ -300,7 +288,6 @@ export class NodeRenderer {
             // this prevents first render bugs
             this._nodeGraph.traverse(
                 (n) => {
-                    Logger.verbose(`connectToScreen traversal - ${n.id}`);
                     n.resize(this.width, this.height);
                     n.render(this);
                 },
@@ -323,7 +310,6 @@ export class NodeRenderer {
         // this prevents first render bugs
         this._nodeGraph.traverse(
             (n) => {
-                Logger.verbose(`connectNonRootNode traversal - ${n.id}`);
                 n.resize(this.width, this.height);
                 n.render(this);
             },
@@ -343,14 +329,12 @@ export class NodeRenderer {
             // render non-root nodes
             this._nonRootNodes.forEach((n) => {
                 this._nodeGraph.traverse((node) => {
-                    Logger.verbose(`render non-root traversal - ${node.id}`);
                     node.render(this);
                 }, n);
             });
 
             // traverse the node graph and render each node
             this._nodeGraph.traverse((node) => {
-                Logger.verbose(`render traversal - ${node.id}`);
                 node.render(this);
             });
 

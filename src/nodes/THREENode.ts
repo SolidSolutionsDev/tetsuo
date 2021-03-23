@@ -196,7 +196,7 @@ export class THREENode extends Node {
                 this.height
             );
 
-            this._target.texture.format = THREE.RGBFormat;
+            this._target.texture.format = THREE.RGBAFormat;
             this._target.texture.minFilter = THREE.NearestFilter;
             this._target.texture.magFilter = THREE.NearestFilter;
             this._target.texture.generateMipmaps = false;
@@ -233,10 +233,12 @@ export class THREENode extends Node {
 
         if (object.isMesh) {
             object.masks = masks;
+            this.objects.push(object);
         } else if (object.isGroup) {
-            object.children.forEach((child: any) => {
+            object.traverse((child: any) => {
                 if (child.isMesh) {
                     child.masks = masks;
+                    this.objects.push(child);
                 }
             });
         }
@@ -320,6 +322,13 @@ export class THREENode extends Node {
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
         this._target.setSize(width, height);
+
+        if (this._masks) {
+            Object.keys(this._masks).forEach((maskKey) => {
+                if (!this._masks) return;
+                this._masks[maskKey].target.setSize(width, height);
+            });
+        }
 
         return this;
     }

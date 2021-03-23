@@ -5,7 +5,6 @@ import { Node } from "../nodes/Node";
 import { THREENode } from "../nodes/THREENode";
 import dat from "dat.gui";
 import { Callback } from "../types/Callback";
-import Logger from "../utils/Logger";
 
 /**
  * Bootstrap initialization options
@@ -74,23 +73,21 @@ export class Bootstrap {
     /**
      * @param options - Bootstrap options
      */
-    constructor(options: BootstrapOptions) {
+    constructor(options?: BootstrapOptions) {
         // initialize logger
-        this.dev = !!options.dev;
-        if (this.dev) {
-            Logger.setLevel("info");
-        }
+        this.dev = !!options?.dev;
 
         // initialize renderer
         this.renderer = new NodeRenderer({
-            viewportElement: options.viewportElement,
+            viewportElement: options?.viewportElement,
+            alpha: true,
         });
 
-        this._onUpdate = options.onUpdate;
+        this._onUpdate = options?.onUpdate;
 
         // initialize the clock
         this.clock = new Clock(
-            options.autoStart,
+            options?.autoStart,
             (elapsed, delta, frameCount) =>
                 this.animate(elapsed, delta, frameCount)
         );
