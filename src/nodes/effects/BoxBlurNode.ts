@@ -41,7 +41,7 @@ export class BoxBlurNode extends ShaderNode {
             Shaders.filters,
             /* glsl */ `
                 varying vec2 vUv;
-                uniform float iTime;
+                uniform float time;
                 uniform sampler2D inputTex;
                 uniform vec2 texSize;
                 uniform float separation;

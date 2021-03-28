@@ -50,7 +50,7 @@ export class DisplaceGlitchNode extends ShaderNode {
             Shaders.math,
 
             /* glsl */ `
-                uniform float iTime;
+                uniform float time;
 
                 uniform bool off;
                 uniform sampler2D inputTex;
@@ -62,7 +62,7 @@ export class DisplaceGlitchNode extends ShaderNode {
                 varying vec2 vUv;
 
                 void main() {
-                    vec2 p = vUv + floor(iTime * speed);
+                    vec2 p = vUv + floor(time * speed);
                     vec2 fl = vec2(floor(p.x * horizontalDivs), floor(p.y * verticalDivs));
                     float c = sat(hash12(fl), 0.9, 0., 1.);
                     vec4 t = texture2D(inputTex, off ? vUv : vUv + c * .01);

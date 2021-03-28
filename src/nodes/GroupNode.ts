@@ -89,7 +89,7 @@ export class GroupNode extends Node {
             )
             .forEach((mesh) => {
                 let uniforms = (mesh as any).material.uniforms;
-                uniforms["iTime"].value = time;
+                uniforms["time"].value = time;
 
                 for (let key in this.inputs) {
                     if (!uniforms[key])

@@ -30,7 +30,7 @@ export class GrainNode extends ShaderNode {
         this.fragmentShader = Shaders.compile(/* glsl */ `
                 varying vec2 vUv;
                 uniform float amount;
-                uniform float iTime;
+                uniform float time;
                 uniform sampler2D inputTex;
 
                 float random(vec2 p) {
@@ -45,7 +45,7 @@ export class GrainNode extends ShaderNode {
                     vec4 color = texture2D(inputTex, vUv);
 
                     vec2 uvRandom = vUv;
-                    uvRandom.y *= random(vec2(uvRandom.y, iTime));
+                    uvRandom.y *= random(vec2(uvRandom.y, time));
                     
                     color.rgb += random(uvRandom) * amount;
 

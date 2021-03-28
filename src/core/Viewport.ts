@@ -57,10 +57,8 @@ export class Viewport {
      * @param onResize - callback when window resizes
      */
     createResizeListener(onResize: Callback) {
-        if ((process as any)["browser"]) {
-            window.addEventListener("resize", () => {
-                onResize && onResize();
-            });
-        }
+        window.addEventListener("resize", () => {
+            onResize && onResize();
+        });
     }
 }

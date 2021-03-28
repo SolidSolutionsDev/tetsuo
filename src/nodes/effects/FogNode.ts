@@ -36,7 +36,7 @@ export class FogNode extends ShaderNode {
             Shaders.depth,
             /* glsl */ `
                 varying vec2 vUv;
-                uniform float iTime;
+                uniform float time;
                 uniform DiffuseAndDepth inputTex;
                 uniform float near;
                 uniform float far;

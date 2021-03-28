@@ -18,7 +18,7 @@ export interface MeshNodeOptions extends NodeOptions {
     /**
      * THREE.js geometry for this mesh
      */
-    geometry: THREE.Geometry;
+    geometry: THREE.BufferGeometry;
 
     /**
      * THREE.js material for this mesh
@@ -66,7 +66,7 @@ export class MeshNode extends Node {
     /**
      * THREE.js geometry for this mesh
      */
-    private _geometry: THREE.Geometry;
+    private _geometry: THREE.BufferGeometry;
 
     /**
      * THREE.js material for this mesh
@@ -164,7 +164,7 @@ export class MeshNode extends Node {
 
         if (this._uniforms) {
             // update default uniforms
-            this._uniforms["iTime"].value = time;
+            this._uniforms["time"].value = time;
 
             // update node connection uniforms
             for (let key in this.inputs) {

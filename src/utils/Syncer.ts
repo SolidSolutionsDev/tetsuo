@@ -46,6 +46,11 @@ export class Syncer {
     private _onPlay: Callback[] = [];
 
     /**
+     * List of callbacks to call when syncer updates
+     */
+    private _onUpdate: Callback[] = [];
+
+    /**
      * List of callbacks to call when music finishes playing
      */
     private _onEnd: Callback[] = [];
@@ -117,6 +122,8 @@ export class Syncer {
                 let seekDelta = seek - this._lastSeek;
 
                 let bpm = this.options.bpm;
+                let currBeat = (seek * bpm) / 60000;
+                this._onUpdate.forEach((fn) => fn(currBeat));
 
                 // update time until next BPM event counter
                 this._untilBPM -= seekDelta;
@@ -174,6 +181,16 @@ export class Syncer {
      */
     onEnd(fn: Callback) {
         this._onEnd.push(fn);
+        return this;
+    }
+
+    /**
+     * Add a new update event listener
+     *
+     * @param fn
+     */
+    onUpdate(fn: Callback) {
+        this._onUpdate.push(fn);
         return this;
     }
 

@@ -49,6 +49,11 @@ export interface ShaderNodeOptions extends NodeOptions {
      * Number of samples for antialias
      */
     antialiasSamples?: number;
+
+    /**
+     * Don't update time uniform (for external update)
+     */
+    noUpdateTime?: boolean;
 }
 
 /**
@@ -110,6 +115,11 @@ export class ShaderNode extends Node {
     needsUpdate: boolean = true;
 
     /**
+     * Don't update time uniform (for external update)
+     */
+    _noUpdateTime: boolean = false;
+
+    /**
      * @param options - Shader node initialization options
      * @param prepare - Whether to run the prepare method for this node on construction
      */
@@ -138,6 +148,8 @@ export class ShaderNode extends Node {
         this._manualRender = options?.manualRender;
 
         this._customUniforms = options.uniforms;
+
+        this._noUpdateTime = !!options?.noUpdateTime;
 
         prepare && this.prepare();
     }
@@ -185,8 +197,11 @@ export class ShaderNode extends Node {
         super.update(totalTime, deltaTime);
 
         // update default uniforms
-        this.uniforms["iTime"].value = totalTime;
-        this.uniforms["iResolution"].value.set(this.width, this.height, 1);
+        if (!this._noUpdateTime && this.id !== "root") {
+            console.log(this.id);
+            this.uniforms["time"].value = totalTime;
+        }
+        this.uniforms["resolution"].value.set(this.width, this.height, 1);
 
         // update node connection uniforms
         for (let key in this.inputs) {

@@ -88,8 +88,8 @@ export class MaterialNode extends Node {
         super.update(totalTime, deltaTime);
 
         // update default uniforms
-        this.uniforms["iTime"].value = totalTime;
-        this.uniforms["iResolution"].value.set(this.width, this.height, 1);
+        this.uniforms["time"].value = totalTime;
+        this.uniforms["resolution"].value.set(this.width, this.height, 1);
 
         // update node connection uniforms
         for (let key in this.inputs) {

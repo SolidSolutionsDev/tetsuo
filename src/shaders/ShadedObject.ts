@@ -10,7 +10,7 @@ const defaultFragmentShader = require("../shaders/default.frag");
  * @category Shaders
  */
 export interface ShadedObjectOptions {
-    geometry: THREE.Geometry;
+    geometry: THREE.BufferGeometry;
     vertexShader?: string;
     fragmentShader?: string;
     points?: boolean;

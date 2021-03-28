@@ -53,7 +53,7 @@ export class BloomNode extends ShaderNode {
             Shaders.filters,
             /* glsl */ `
                 varying vec2 vUv;
-                uniform float iTime;
+                uniform float time;
                 uniform vec2 texSize;
                 uniform float separation;
                 uniform float threshold;

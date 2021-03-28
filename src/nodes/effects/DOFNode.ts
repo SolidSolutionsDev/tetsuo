@@ -50,7 +50,7 @@ export class DOFNode extends ShaderNode {
             Shaders.filters,
             /* glsl */ `
                 varying vec2 vUv;
-                uniform float iTime;
+                uniform float time;
                 uniform DiffuseAndDepth inputTex;
                 uniform vec2 texSize;
                 uniform float separation;
