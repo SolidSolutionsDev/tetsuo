@@ -85,6 +85,9 @@ export class PIXINode extends Node {
         });
 
         this._texture = new THREE.CanvasTexture(this._app.view);
+        this._texture.repeat.set(4, 4);
+        this._texture.wrapS = THREE.RepeatWrapping;
+        this._texture.wrapT = THREE.RepeatWrapping;
         this._texture.minFilter = THREE.LinearFilter;
         this._texture.magFilter = THREE.LinearFilter;
     }
@@ -96,6 +99,15 @@ export class PIXINode extends Node {
      */
     add(obj: PIXI.DisplayObject) {
         this._app.stage.addChild(obj);
+    }
+
+    /**
+     * Removes a PIXI object from the main container
+     *
+     * @param obj
+     */
+    remove(obj: PIXI.DisplayObject) {
+        this._app.stage.removeChild(obj);
     }
 
     /**
